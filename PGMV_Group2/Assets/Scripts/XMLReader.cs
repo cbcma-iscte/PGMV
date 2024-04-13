@@ -10,10 +10,11 @@ public class XMLReader : MonoBehaviour
     [SerializeField]
     XmlDocument doc;
 
-    //Game game;
-    //Role role;
-    //Board board;
-    //Gameplay gameplay;
+    Game game;
+    Role role;
+    Board board;
+    Gameplay gameplay;
+    
     // Start is called before the first frame update
     void Start()
     {
