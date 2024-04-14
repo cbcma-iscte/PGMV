@@ -14,6 +14,7 @@ public class XMLReader : MonoBehaviour
     Role role;
     Board board;
     Gameplay gameplay;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -33,19 +34,19 @@ public class XMLReader : MonoBehaviour
         {
             case "game" :
                 //invocar game
-                game.Start;
+                //game.Start;
                 return;
             case "role" :
                 // invocar player class com info
-                role.start;
+                //role.start;
                 return;
             case "board" :
                 // invocar funcao para dar render nos diferentes meshes do mapa.
-                board.start;
+                //board.start;
                 return;
             case "turn" :
                 // invocar funcao que le o unit que esta la dentro e mete os argumentos (unit, role, type, action e position)
-                gameplay.start
+                //gameplay.start;
                 return;
             default :
                 return;
