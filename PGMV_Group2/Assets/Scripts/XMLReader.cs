@@ -18,7 +18,6 @@ public class XMLReader : MonoBehaviour
 
         // Get the root element
         XmlNode rootNode = xmlDoc.SelectSingleNode("game");
-        Game game = new Game();
 
         // Get roles, board, and turns elements
         XmlNode rolesNode = rootNode.SelectSingleNode("roles");
