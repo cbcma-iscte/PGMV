@@ -1,61 +1,68 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
-using System;
 
 public class XMLReader : MonoBehaviour
 {
+    public TextAsset xmlFile; // Reference to the XML file
 
-    [SerializeField]
-    XmlDocument doc;
-
-    Game game;
-    Role role;
-    Board board;
-    Gameplay gameplay;
-    
-    // Start is called before the first frame update
     void Start()
     {
-        if (doc != null)
-        {
-            IdentifyTag(doc.DocumentElement);
-        }
-        else
-        {
-            Debug.Log("XML Document is not assigned");
-        }
+        ParseXML(xmlFile.text);
     }
 
-    void IdentifyTag(XmlNode node)
-    {
-        switch (node.Name)
-        {
-            case "game" :
-                //invocar game
-                //game.Start;
-                return;
-            case "role" :
-                // invocar player class com info
-                //role.start;
-                return;
-            case "board" :
-                // invocar funcao para dar render nos diferentes meshes do mapa.
-                //board.start;
-                return;
-            case "turn" :
-                // invocar funcao que le o unit que esta la dentro e mete os argumentos (unit, role, type, action e position)
-                //gameplay.start;
-                return;
-            default :
-                return;
-        }
-    }
 
-    // Update is called once per frame
-    void Update()
+    void ParseXML(string xmlText)
     {
+        XmlDocument xmlDoc = new XmlDocument();
+        xmlDoc.LoadXml(xmlText);
+
+        // Get the root element
+        XmlNode rootNode = xmlDoc.SelectSingleNode("game");
+        Game game = new Game();
+
+        // Get roles, board, and turns elements
+        XmlNode rolesNode = rootNode.SelectSingleNode("roles");
+        XmlNode boardNode = rootNode.SelectSingleNode("board");
+        XmlNode turnsNode = rootNode.SelectSingleNode("turns");
+
+        //Applies to Game Instance
         
+
+        // Parse roles
+        XmlNodeList roleNodes = rolesNode.SelectNodes("role");
+        foreach (XmlNode roleNode in roleNodes)
+        {
+            string roleName = roleNode.Attributes["name"].Value;
+            Debug.Log("Role: " + roleName);
+        }
+
+        // Parse board
+        int width = int.Parse(boardNode.Attributes["width"].Value);
+        int height = int.Parse(boardNode.Attributes["height"].Value);
+        Debug.Log("Board Width: " + width);
+        Debug.Log("Board Height: " + height);
+        XmlNodeList squareNodes = boardNode.ChildNodes;
+        foreach (XmlNode squareNode in squareNodes)
+        {
+            string groundType = squareNode.Name;
+            Debug.Log("Ground Type: " + groundType);
+        }
+
+        // Parse turns
+        XmlNodeList turnNodes = turnsNode.SelectNodes("turn");
+        foreach (XmlNode turnNode in turnNodes)
+        {
+            XmlNodeList unitNodes = turnNode.SelectNodes("unit");
+            foreach (XmlNode unitNode in unitNodes)
+            {
+                string id = unitNode.Attributes["id"].Value;
+                string roleRefId = unitNode.Attributes["role"].Value;
+                string type = unitNode.Attributes["type"].Value;
+                string action = unitNode.Attributes["action"].Value;
+                int x = int.Parse(unitNode.Attributes["x"].Value);
+                int y = int.Parse(unitNode.Attributes["y"].Value);
+                Debug.Log("Unit ID: " + id + ", RoleRefID: " + roleRefId + ", Type: " + type + ", Action: " + action + ", X: " + x + ", Y: " + y);
+            }
+        }
     }
 }
