@@ -2,18 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Archer : MonoBehaviour
+public class Archer : Role
 {
-    
-    // Start is called before the first frame update
-    void Start()
+    public void Awake()
     {
-        
+        finalPosition = transform.position;
+    }
+    public void changeFinalPosition(float x, float y, float z)
+    {
+        finalPosition = new Vector3(x, y, z);
     }
 
-    // Update is called once per frame
-    void Update()
+    protected override void attackTo()
     {
-        
+        throw new System.NotImplementedException();
     }
+
+    protected override void hold()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void spawn()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    protected override void moveTo()
+    {
+        if (transform.position == finalPosition || finalPosition == null)
+        {
+            return;
+        } else {
+            transform.position = Vector3.MoveTowards(transform.position, finalPosition, 0.1f);
+        }
+    }
+
 }

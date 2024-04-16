@@ -2,17 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Role : MonoBehaviour
+public abstract class Role : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject roleObject;
+    public Vector3 finalPosition{get; set;}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public Vector3 attackPosition{get; set;}
+
+    public Vector3 spawnPosition{get; set;}
+
+    protected abstract void moveTo();
+    protected abstract void attackTo();
+    protected abstract void spawn();
+    protected abstract void hold();
+    
+    public void Start(){
+        spawn();
+    }
+    public void Update(){
+        moveTo();
+        //attackTo();
+        //hold();
     }
 }
