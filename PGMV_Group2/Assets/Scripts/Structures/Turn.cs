@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class Turn : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //contains units that are a class that contains all the info that will happen
+    public List<Unit> Units { get; set; }
+    
 }

@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
+    public List<Tile> Tiles { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
