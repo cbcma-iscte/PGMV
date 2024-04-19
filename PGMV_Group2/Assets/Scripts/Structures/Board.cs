@@ -17,7 +17,7 @@ public class Board : MonoBehaviour
         Tiles = new List<Tile>();
 
         // Calculate the size of each tile based on the size of the board base
-        Vector3 tileSize = new Vector3(boardBase.transform.localScale.x / Width, 1, boardBase.transform.localScale.z / Height);
+        //Vector3 tileSize = new Vector3(boardBase.transform.localScale.x / Width, 1, boardBase.transform.localScale.z / Height);
 
         // Instantiate tiles based on width and height
         for (int x = 0; x < Width; x++)
