@@ -4,18 +4,22 @@ using System.Xml;
 
 public class GameManager : MonoBehaviour
 {
-    public List<Role> Roles { get; set; }
-    public Board Board { get; set; }
-    public List<Turn> Turns { get; set; }
+    public List<Role> Roles { get; private set; }
+    public Board Board { get; private set; }
+    public List<Turn> Turns { get; private set; }
 
-    [SerializeField]
-    public string xmlResourcePath;
+    [SerializeField] public string xmlResourcePath;
 
     public XmlDocument xmlDoc = new();
 
-    void Awake()
+    private void Awake(){
+        InitializeGame();
+    }
+
+    private void InitializeGame()
     {
-        xmlDoc.LoadXml(Resources.Load<TextAsset>(xmlResourcePath).text);
+         // Load XML data
+        TextToXml(Resources.Load<TextAsset>(xmlResourcePath));
 
         // Load game elements from the XmlDocument
         var gameNode = xmlDoc.DocumentElement;
@@ -23,6 +27,29 @@ public class GameManager : MonoBehaviour
         var boardNode = gameNode["board"];
         var turnsNode = gameNode["turns"];
 
+        //Load Roles
+        LoadRoles(rolesNode);
+
+        // Load Board
+        LoadBoard(boardNode);
+
+        // Load turns
+        LoadTurns(turnsNode);
+
+        Debug.Log("Game loaded successfully!");
+    }
+
+    private void TextToXml(TextAsset xmlTextAsset){
+         if (xmlTextAsset == null)
+        {
+            Debug.LogError("XML file not found at path: " + xmlResourcePath);
+            return;
+        }
+
+        xmlDoc.LoadXml(xmlTextAsset.text);
+    }
+
+    private void LoadRoles(XmlNode rolesNode){
         // Load roles
         Roles = new List<Role>();
         Debug.Log("Loading roles...");
@@ -35,51 +62,22 @@ public class GameManager : MonoBehaviour
             Roles.Add(role);
             Debug.Log($"Loaded role: {role.Name}");
         }
+    }
 
-        // Load board
-        Board = new Board
-        {
-            Tiles = new List<Tile>(),
-            Width = int.Parse(boardNode.Attributes["width"].Value),
-            Height = int.Parse(boardNode.Attributes["height"].Value)
-        };
-        Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
-        foreach (XmlNode tileNode in boardNode)
-        {
-            switch (tileNode.Name)
-            {
-                case "village":
-                    Board.Tiles.Add(new Tile("village"));
-                    Debug.Log("Loaded tile: village");
-                    break;
-                case "forest":
-                    Board.Tiles.Add(new Tile("forest"));
-                    Debug.Log("Loaded tile: forest");
-                    break;
-                case "plain":
-                    Board.Tiles.Add(new Tile("plain"));
-                    Debug.Log("Loaded tile: plain");
-                    break;
-                case "desert":
-                    Board.Tiles.Add(new Tile("desert"));
-                    Debug.Log("Loaded tile: desert");
-                    break;
-                case "sea":
-                    Board.Tiles.Add(new Tile("sea"));
-                    Debug.Log("Loaded tile: sea");
-                    break;
-                case "mountain":
-                    Board.Tiles.Add(new Tile("mountain"));
-                    Debug.Log("Loaded tile: mountain");
-                    break;
-            }
-        }
+    private void LoadBoard(XmlNode boardNode){
+        Board = new Board();
+        int Width = int.Parse(boardNode.Attributes["width"].Value);
+        int Height = int.Parse(boardNode.Attributes["height"].Value);
+        Board.InitializeBoard(Width, Height);
+        
+        Debug.Log($"Initializing board with dimensions {Board.Width}x{Board.Height}...");
+    }
 
-        // Load turns
+    private void LoadTurns(XmlNode turnNodes){
         Turns = new List<Turn>();
         int turnIndex = 0;
         Debug.Log("Loading turns...");
-        foreach (XmlNode turnNode in turnsNode)
+        foreach (XmlNode turnNode in turnNodes)
         {
             var turn = new Turn
             {
@@ -105,6 +103,5 @@ public class GameManager : MonoBehaviour
             }
             turnIndex++;
         }
-        Debug.Log("Game loaded successfully!");
     }
 }
