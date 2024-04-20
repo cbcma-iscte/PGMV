@@ -118,23 +118,37 @@ public class GameManager : MonoBehaviour
             {
                 Units = new List<Unit>()
             };
-            Turns.Add(turn);
-            Debug.Log($"Loaded turn: {turnIndex + 1}");
-            int unitIndex = 0;
             foreach (XmlNode unitNode in turnNode)
             {
-                var unit = new Unit
+                Unit unit;
+                switch (unitNode.Attributes["type"].Value)
                 {
-                    Id = unitNode.Attributes["id"].Value,
-                    Role = unitNode.Attributes["role"].Value,
-                    Type = unitNode.Attributes["type"].Value,
-                    Action = unitNode.Attributes["action"].Value,
-                    X = int.Parse(unitNode.Attributes["x"].Value),
-                    Y = int.Parse(unitNode.Attributes["y"].Value)
-                };
+                    case "archer":
+                        unit = new Archer();
+                        break;
+                    case "catapult":
+                        unit = new Catapult();
+                        break;
+                    case "mage":
+                        unit = new Mage();
+                        break;
+                    case "soldier":
+                        unit = new Soldier();
+                        break;
+                    default:
+                        throw new System.Exception("Invalid unit type");
+                }
+
+                unit.Id = unitNode.Attributes["id"].Value;
+                unit.Role = unitNode.Attributes["role"].Value;
+                unit.Type = unitNode.Attributes["type"].Value;
+                unit.Action = unitNode.Attributes["action"].Value;
+                unit.X = int.Parse(unitNode.Attributes["x"].Value);
+                unit.Y = int.Parse(unitNode.Attributes["y"].Value);
+
                 turn.Units.Add(unit);
                 Debug.Log($"Loaded unit: {unit.Id} ({unit.Type}) at ({unit.X}, {unit.Y})");
-                unitIndex++;
+                Debug.Log($"Loaded turn: {turnIndex + 1}");
             }
             turnIndex++;
         }
