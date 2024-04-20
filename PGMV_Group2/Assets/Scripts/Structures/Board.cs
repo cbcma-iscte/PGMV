@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Board : MonoBehaviour
+public class Board
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    
+    public List<Tile> Tiles { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    public void InitializeBoard(int width, int height, List<Tile> tiles){
+        Width = width;
+        Height = height;
+        Tiles = tiles;
     }
 }
