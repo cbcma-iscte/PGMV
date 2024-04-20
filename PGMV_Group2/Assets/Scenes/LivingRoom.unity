@@ -38,11 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-<<<<<<< HEAD
-  m_IndirectSpecularColor: {r: 0.17277329, g: 0.21589895, b: 0.2978331, a: 1}
-=======
   m_IndirectSpecularColor: {r: 0.17331189, g: 0.2166344, b: 0.29868826, a: 1}
->>>>>>> main
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3760,9 +3756,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: TableAndLamp2
       objectReference: {fileID: 0}
-<<<<<<< HEAD
-    - target: {fileID: 9104012631900252624, guid: e98323255f08a564fbc90c9089523f80, type: 3}
-=======
     - target: {fileID: 1950602138877448, guid: 00284cf2de272b74d864cac5ee59c480, type: 3}
       propertyPath: m_TagString
       value: Table
@@ -3780,7 +3773,6 @@ PrefabInstance:
       value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 4154779130590934, guid: 00284cf2de272b74d864cac5ee59c480, type: 3}
->>>>>>> main
       propertyPath: m_LocalPosition.x
       value: 3.91
       objectReference: {fileID: 0}
@@ -3822,11 +3814,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-<<<<<<< HEAD
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e98323255f08a564fbc90c9089523f80, type: 3}
-=======
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 4154779130590934, guid: 00284cf2de272b74d864cac5ee59c480, type: 3}
       insertIndex: -1
@@ -3836,7 +3823,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1615810293}
   m_SourcePrefab: {fileID: 100100000, guid: 00284cf2de272b74d864cac5ee59c480, type: 3}
->>>>>>> main
 --- !u!1001 &2025304663
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4128,8 +4114,4 @@ SceneRoots:
   - {fileID: 1304545364}
   - {fileID: 1977015606}
   - {fileID: 1680934228}
-<<<<<<< HEAD
-  - {fileID: 264453732}
-=======
   - {fileID: 1745791894}
->>>>>>> main

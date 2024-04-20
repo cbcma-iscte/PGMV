@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Archer : Role
+public class Archer : Unit
 {
     public void Awake()
     {
