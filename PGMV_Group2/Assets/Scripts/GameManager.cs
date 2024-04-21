@@ -124,16 +124,16 @@ public class GameManager : MonoBehaviour
                 switch (unitNode.Attributes["type"].Value)
                 {
                     case "archer":
-                        unit = new Archer();
+                        unit = gameObject.AddComponent<Archer>();
                         break;
                     case "catapult":
-                        unit = new Catapult();
+                        unit = gameObject.AddComponent<Catapult>();
                         break;
                     case "mage":
-                        unit = new Mage();
+                        unit = gameObject.AddComponent<Mage>();
                         break;
                     case "soldier":
-                        unit = new Soldier();
+                        unit = gameObject.AddComponent<Soldier>();
                         break;
                     default:
                         throw new System.Exception("Invalid unit type");
@@ -148,8 +148,9 @@ public class GameManager : MonoBehaviour
 
                 turn.Units.Add(unit);
                 Debug.Log($"Loaded unit: {unit.Id} ({unit.Type}) at ({unit.X}, {unit.Y})");
-                Debug.Log($"Loaded turn: {turnIndex + 1}");
             }
+            Debug.Log($"Loaded turn: {turnIndex + 1}");
+            Debug.Log($"Turn has {turn.Units.Count} units");
             turnIndex++;
         }
     }

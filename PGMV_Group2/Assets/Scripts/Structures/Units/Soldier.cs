@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Soldier : Unit
 {
+
+    GameObject soldierModel;
     protected override void moveTo()
     {
         throw new System.NotImplementedException();
@@ -16,7 +18,9 @@ public class Soldier : Unit
 
     protected override void spawn()
     {
-        throw new System.NotImplementedException();
+        
+        spawnPosition = new Vector3(0, 3, 0);
+        soldierModel = Instantiate(unitPrefab, spawnPosition, Quaternion.identity);
     }
 
     protected override void hold()

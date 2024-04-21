@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Mage : Unit
 {
+
+    GameObject mageModel;
     protected override void moveTo()
     {
         throw new System.NotImplementedException();
@@ -16,7 +18,8 @@ public class Mage : Unit
 
     protected override void spawn()
     {
-        throw new System.NotImplementedException();
+        spawnPosition = new Vector3(0, 3, 0);
+        mageModel = Instantiate(unitPrefab, spawnPosition, Quaternion.identity);
     }
 
     protected override void hold()

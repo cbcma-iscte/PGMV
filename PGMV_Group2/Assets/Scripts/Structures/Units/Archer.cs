@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Archer : Unit
 {
-    public void Awake()
-    {
-        finalPosition = transform.position;
-    }
+
+    GameObject archerModel;
+    
     public void changeFinalPosition(float x, float y, float z)
     {
         finalPosition = new Vector3(x, y, z);
@@ -25,7 +25,8 @@ public class Archer : Unit
 
     protected override void spawn()
     {
-        throw new System.NotImplementedException();
+        spawnPosition = new Vector3(0, 3, 0);
+        archerModel = Instantiate(unitPrefab, spawnPosition, Quaternion.identity);
     }
 
     protected override void moveTo()

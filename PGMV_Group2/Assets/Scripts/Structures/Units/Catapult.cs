@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Catapult : Unit
 {
+    GameObject catapultModel;
     protected override void moveTo()
     {
         throw new System.NotImplementedException();
@@ -16,7 +17,8 @@ public class Catapult : Unit
 
     protected override void spawn()
     {
-        throw new System.NotImplementedException();
+        spawnPosition = new Vector3(0, 3, 0);
+        catapultModel = Instantiate(unitPrefab, spawnPosition, Quaternion.identity);
     }
 
     protected override void hold()

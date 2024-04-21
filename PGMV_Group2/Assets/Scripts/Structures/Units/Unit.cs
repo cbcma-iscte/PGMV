@@ -10,7 +10,7 @@ public abstract class Unit : MonoBehaviour
     public string Action { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
-    public GameObject roleObject;
+    public GameObject unitPrefab;
     public Vector3 finalPosition{get; set;}
 
     public Vector3 attackPosition{get; set;}
@@ -20,6 +20,7 @@ public abstract class Unit : MonoBehaviour
     protected abstract void moveTo();
     protected abstract void attackTo();
     protected abstract void spawn();
+    
     protected abstract void hold();
 
     public override bool Equals(object obj)
@@ -35,8 +36,16 @@ public abstract class Unit : MonoBehaviour
     {
         return Id.GetHashCode();
     }
+
+    public void Start()
+    {
+        spawn();
+    }
     
     public void Update(){
+        if (true){
+            return;
+        }
         switch(Action){
             case "move":
                 moveTo();
