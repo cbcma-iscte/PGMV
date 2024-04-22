@@ -9,7 +9,7 @@ public class Board : MonoBehaviour
     
     [SerializeField] private Dictionary<string, Material> TilesMaterials; // Different types of tiles available -> squares
     [SerializeField] private GameObject boardBase; // Reference to the base GameObject
-
+/*
     public void InitializeBoard(int width, int height)
     {
         Width = width;
@@ -33,7 +33,8 @@ public class Board : MonoBehaviour
                 tileGO.transform.localPosition = tilePosition;
 
                 // Set material for the tile
-                string tileType = "village"/* logic to determine tile type based on position, or any other criteria */;
+                string tileType = "village"/* logic to determine tile type based on position, or any other criteria ;
+                
                 if (TilesMaterials.ContainsKey(tileType))
                 {
                     Renderer renderer = tileGO.GetComponent<Renderer>();
@@ -52,4 +53,5 @@ public class Board : MonoBehaviour
             }
         }
     }
+    */
 }

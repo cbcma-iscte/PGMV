@@ -65,12 +65,47 @@ public class GameManager : MonoBehaviour
     }
 
     private void LoadBoard(XmlNode boardNode){
-        Board = new Board();
-        int Width = int.Parse(boardNode.Attributes["width"].Value);
-        int Height = int.Parse(boardNode.Attributes["height"].Value);
-        Board.InitializeBoard(Width, Height);
+        List<Tile> tiles = new();
         
-        Debug.Log($"Initializing board with dimensions {Board.Width}x{Board.Height}...");
+        foreach (XmlNode tileNode in boardNode)
+        {
+            switch (tileNode.Name)
+            {
+                case "village":
+                    tiles.Add(new Tile("village"));
+                    Debug.Log("Loaded tile: village");
+                    break;
+                case "forest":
+                    tiles.Add(new Tile("forest"));
+                    Debug.Log("Loaded tile: forest");
+                    break;
+                case "plain":
+                    tiles.Add(new Tile("plain"));
+                    Debug.Log("Loaded tile: plain");
+                    break;
+                case "desert":
+                    tiles.Add(new Tile("desert"));
+                    Debug.Log("Loaded tile: desert");
+                    break;
+                case "sea":
+                    tiles.Add(new Tile("sea"));
+                    Debug.Log("Loaded tile: sea");
+                    break;
+                case "mountain":
+                    tiles.Add(new Tile("mountain"));
+                    Debug.Log("Loaded tile: mountain");
+                    break;
+            }
+        }
+         Board = new Board
+        {
+            Tiles = tiles,
+            Width = int.Parse(boardNode.Attributes["width"].Value),
+            Height = int.Parse(boardNode.Attributes["height"].Value)
+        };
+
+         Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
+
     }
 
     private void LoadTurns(XmlNode turnNodes){
@@ -83,24 +118,39 @@ public class GameManager : MonoBehaviour
             {
                 Units = new List<Unit>()
             };
-            Turns.Add(turn);
-            Debug.Log($"Loaded turn: {turnIndex + 1}");
-            int unitIndex = 0;
             foreach (XmlNode unitNode in turnNode)
             {
-                var unit = new Unit
+                Unit unit;
+                switch (unitNode.Attributes["type"].Value)
                 {
-                    Id = unitNode.Attributes["id"].Value,
-                    Role = unitNode.Attributes["role"].Value,
-                    Type = unitNode.Attributes["type"].Value,
-                    Action = unitNode.Attributes["action"].Value,
-                    X = int.Parse(unitNode.Attributes["x"].Value),
-                    Y = int.Parse(unitNode.Attributes["y"].Value)
-                };
+                    case "archer":
+                        unit = gameObject.AddComponent<Archer>();
+                        break;
+                    case "catapult":
+                        unit = gameObject.AddComponent<Catapult>();
+                        break;
+                    case "mage":
+                        unit = gameObject.AddComponent<Mage>();
+                        break;
+                    case "soldier":
+                        unit = gameObject.AddComponent<Soldier>();
+                        break;
+                    default:
+                        throw new System.Exception("Invalid unit type");
+                }
+
+                unit.Id = unitNode.Attributes["id"].Value;
+                unit.Role = unitNode.Attributes["role"].Value;
+                unit.Type = unitNode.Attributes["type"].Value;
+                unit.Action = unitNode.Attributes["action"].Value;
+                unit.X = int.Parse(unitNode.Attributes["x"].Value);
+                unit.Y = int.Parse(unitNode.Attributes["y"].Value);
+
                 turn.Units.Add(unit);
                 Debug.Log($"Loaded unit: {unit.Id} ({unit.Type}) at ({unit.X}, {unit.Y})");
-                unitIndex++;
             }
+            Debug.Log($"Loaded turn: {turnIndex + 1}");
+            Debug.Log($"Turn has {turn.Units.Count} units");
             turnIndex++;
         }
     }

@@ -70,6 +70,7 @@ GameObject:
   m_Component:
   - component: {fileID: 370588387580902674}
   - component: {fileID: 7892932341868199773}
+  - component: {fileID: 7002283218431404732}
   m_Layer: 0
   m_Name: FloorLampLight
   m_TagString: Untagged
@@ -85,13 +86,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2625844858321724876}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.6821089, y: -0.12861551, z: 0.07540855, w: 0.7158904}
+  m_LocalRotation: {x: 0.6661281, y: -0.124121875, z: 0.06384797, w: 0.73266006}
   m_LocalPosition: {x: 0.000006987507, y: 0.000010990701, z: 0.000005319213}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8606401562876196562}
-  m_LocalEulerAnglesHint: {x: 84.891, y: -65.891, z: -49.285}
+  m_LocalEulerAnglesHint: {x: 82.721, y: -49.828, z: -34.521}
 --- !u!108 &7892932341868199773
 Light:
   m_ObjectHideFlags: 0
@@ -115,8 +116,8 @@ Light:
     m_CustomResolution: -1
     m_Strength: 1
     m_Bias: 0
-    m_NormalBias: 1.38
-    m_NearPlane: 0.2
+    m_NormalBias: 0
+    m_NearPlane: 0.57
     m_CullingMatrixOverride:
       e00: 1
       e01: 0
@@ -154,6 +155,19 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &7002283218431404732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2625844858321724876}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7678b3a9f91901446ba5114c33c00ab8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lampObject: {fileID: 2625844858321724876}
 --- !u!1 &4788959569892396789
 GameObject:
   m_ObjectHideFlags: 0
