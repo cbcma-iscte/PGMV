@@ -12,6 +12,11 @@ public class GameManager : MonoBehaviour
 
     public XmlDocument xmlDoc = new();
 
+    [SerializeField] GameObject archerPrefab;
+    [SerializeField] GameObject magePrefab;
+    [SerializeField] GameObject soldierPrefab;
+    [SerializeField] GameObject catapultPrefab;
+
     private void Awake(){
         InitializeGame();
     }
@@ -97,12 +102,11 @@ public class GameManager : MonoBehaviour
                     break;
             }
         }
-         Board = new Board
-        {
-            Tiles = tiles,
-            Width = int.Parse(boardNode.Attributes["width"].Value),
-            Height = int.Parse(boardNode.Attributes["height"].Value)
-        };
+        Board = new Board();
+        
+         
+        // Initialize the board with the provided width and height
+        Board.InitializeBoard(int.Parse(boardNode.Attributes["width"].Value), int.Parse(boardNode.Attributes["height"].Value));
 
          Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
 
@@ -120,38 +124,29 @@ public class GameManager : MonoBehaviour
             };
             foreach (XmlNode unitNode in turnNode)
             {
-                Unit unit;
-                switch (unitNode.Attributes["type"].Value)
+
+                string Id = unitNode.Attributes["id"].Value;
+                string Role = unitNode.Attributes["role"].Value;
+                string Type = unitNode.Attributes["type"].Value;
+                string Action = unitNode.Attributes["action"].Value;
+                int X = int.Parse(unitNode.Attributes["x"].Value);
+                int Y = int.Parse(unitNode.Attributes["y"].Value);
+
+                if (Action == "spawn")//This only has archer
+                //1st spawn and add tag, 2nd had to turn, 3rd do action according to unit in turn
                 {
-                    case "archer":
-                        unit = gameObject.AddComponent<Archer>();
-                        break;
-                    case "catapult":
-                        unit = gameObject.AddComponent<Catapult>();
-                        break;
-                    case "mage":
-                        unit = gameObject.AddComponent<Mage>();
-                        break;
-                    case "soldier":
-                        unit = gameObject.AddComponent<Soldier>();
-                        break;
-                    default:
-                        throw new System.Exception("Invalid unit type");
+                    Unit unit = new Unit(Id, Role, Type, Action, X, Y);
+                    turn.Units.Add(unit);
+                    GameObject unitPrefab = unit.spawn(archerPrefab);
+                    unitPrefab.tag = "Archer";
                 }
+                
 
-                unit.Id = unitNode.Attributes["id"].Value;
-                unit.Role = unitNode.Attributes["role"].Value;
-                unit.Type = unitNode.Attributes["type"].Value;
-                unit.Action = unitNode.Attributes["action"].Value;
-                unit.X = int.Parse(unitNode.Attributes["x"].Value);
-                unit.Y = int.Parse(unitNode.Attributes["y"].Value);
-
-                turn.Units.Add(unit);
-                Debug.Log($"Loaded unit: {unit.Id} ({unit.Type}) at ({unit.X}, {unit.Y})");
             }
             Debug.Log($"Loaded turn: {turnIndex + 1}");
             Debug.Log($"Turn has {turn.Units.Count} units");
             turnIndex++;
         }
     }
+
 }
