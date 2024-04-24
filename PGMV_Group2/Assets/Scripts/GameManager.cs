@@ -6,18 +6,18 @@ public class GameManager : MonoBehaviour
 {
     public List<Role> Roles { get; private set; }
     public Board Board { get; private set; }
-    public List<Turn> Turns { get; private set; }
+    public List<GameObject> UnitHandler { get; private set; }
 
-    [SerializeField] public string xmlResourcePath;
+    [SerializeField] private string xmlResourcePath;
+    private XmlDocument xmlDoc = new XmlDocument();
 
-    public XmlDocument xmlDoc = new();
+    [SerializeField] private GameObject archerPrefab;
+    [SerializeField] private GameObject magePrefab;
+    [SerializeField] private GameObject soldierPrefab;
+    [SerializeField] private GameObject catapultPrefab;
 
-    [SerializeField] GameObject archerPrefab;
-    [SerializeField] GameObject magePrefab;
-    [SerializeField] GameObject soldierPrefab;
-    [SerializeField] GameObject catapultPrefab;
-
-    private void Awake(){
+    private void Awake()
+    {
         InitializeGame();
     }
 
@@ -44,28 +44,22 @@ public class GameManager : MonoBehaviour
         Debug.Log("Game loaded successfully!");
     }
 
-    private void TextToXml(TextAsset xmlTextAsset){
-         if (xmlTextAsset == null)
+    private void TextToXml(TextAsset xmlTextAsset)
+    {
+        if (xmlTextAsset == null)
         {
             Debug.LogError("XML file not found at path: " + xmlResourcePath);
             return;
         }
-
         xmlDoc.LoadXml(xmlTextAsset.text);
     }
 
-    private void LoadRoles(XmlNode rolesNode){
-        // Load roles
+    private void LoadRoles(XmlNode rolesNode)
+    {
         Roles = new List<Role>();
-        Debug.Log("Loading roles...");
         foreach (XmlNode roleNode in rolesNode)
         {
-            var role = new Role
-            {
-                Name = roleNode.Attributes["name"].Value
-            };
-            Roles.Add(role);
-            Debug.Log($"Loaded role: {role.Name}");
+            Roles.Add(new Role { Name = roleNode.Attributes["name"].Value });
         }
     }
 
@@ -104,49 +98,77 @@ public class GameManager : MonoBehaviour
         }
         Board = new Board();
         
-         
         // Initialize the board with the provided width and height
         Board.InitializeBoard(int.Parse(boardNode.Attributes["width"].Value), int.Parse(boardNode.Attributes["height"].Value));
 
-         Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
+        Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
 
     }
 
-    private void LoadTurns(XmlNode turnNodes){
-        Turns = new List<Turn>();
-        int turnIndex = 0;
-        Debug.Log("Loading turns...");
+
+    private void LoadTurns(XmlNode turnNodes)
+    {
+        UnitHandler = new List<GameObject>();
+
         foreach (XmlNode turnNode in turnNodes)
         {
-            var turn = new Turn
-            {
-                Units = new List<Unit>()
-            };
             foreach (XmlNode unitNode in turnNode)
             {
 
-                string Id = unitNode.Attributes["id"].Value;
-                string Role = unitNode.Attributes["role"].Value;
-                string Type = unitNode.Attributes["type"].Value;
-                string Action = unitNode.Attributes["action"].Value;
-                int X = int.Parse(unitNode.Attributes["x"].Value);
-                int Y = int.Parse(unitNode.Attributes["y"].Value);
+                string id = unitNode.Attributes["id"]?.Value;
+                string role = unitNode.Attributes["role"]?.Value;
+                string type = unitNode.Attributes["type"]?.Value;
+                string action = unitNode.Attributes["action"]?.Value;
+                int x = int.Parse(unitNode.Attributes["x"]?.Value);
+                int y = int.Parse(unitNode.Attributes["y"]?.Value);
 
-                if (Action == "spawn")//This only has archer
-                //1st spawn and add tag, 2nd had to turn, 3rd do action according to unit in turn
-                {
-                    Unit unit = new Unit(Id, Role, Type, Action, X, Y);
-                    turn.Units.Add(unit);
-                    GameObject unitPrefab = unit.spawn(archerPrefab);
-                    unitPrefab.tag = "Archer";
-                }
-                
+                GameObject prefab = GetPrefabByType(type);
+                if (prefab == null) continue;
+
+                Unit unitComponent = prefab.GetComponent<Unit>();
+                unitComponent.Initialize(id, role, type, action, x, y);
+                UnitHandler.Add(prefab);
+            
+                ManageActions(action, x, y, unitComponent, prefab);
 
             }
-            Debug.Log($"Loaded turn: {turnIndex + 1}");
-            Debug.Log($"Turn has {turn.Units.Count} units");
-            turnIndex++;
         }
     }
 
+    private void ManageActions(string action, int x, int y, Unit unit, GameObject prefab)
+    {
+        switch (action)
+        {
+            case "hold":
+                unit.Hold();
+                break;
+            case "attack":
+                unit.Attack();
+                break;
+            case "move_to":
+                unit.MoveTo(x, y);
+                break;
+            case "spawn":
+                unit.Spawn(prefab, new Vector3(x, y, 0));
+                break;
+        }
+    }
+
+    private GameObject GetPrefabByType(string type)
+    {
+        switch (type.ToLower())
+        {
+            case "archer": 
+                return archerPrefab;
+            case "mage": 
+                return magePrefab;
+            case "soldier": 
+                return soldierPrefab;
+            case "catapult": 
+                return catapultPrefab;
+            default:
+                Debug.LogError($"No prefab found for type: {type}");
+                return null;
+        }
+    }
 }

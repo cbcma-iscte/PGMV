@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public  class Unit : MonoBehaviour
+public class Unit : MonoBehaviour
 {
     public string Id { get; set; }
     public string Role { get; set; }
@@ -11,56 +9,51 @@ public  class Unit : MonoBehaviour
     public int X { get; set; }
     public int Y { get; set; }
 
-    private GameObject Prefab;
-    public Vector3 finalPosition{get; set;}
+    public bool isDead;
 
-    public Vector3 attackPosition{get; set;}
+    private GameObject prefab;
 
-    public Vector3 spawnPosition{get; set;}
-
-    public Unit(string id, string role, string type, string action, int x, int y)
+    public void Initialize(string id, string role, string type, string action, int x, int y)
     {
         Id = id;
         Role = role;
         Type = type;
         Action = action;
         X = x;
-        Y = y;       
+        Y = y;
+        isDead = false;
+        Debug.Log("Action: "+ action + ", Type: " + type + ", id: "+ id + " at x=" + X + " y=" + Y);
     }
 
-     
-    
-
-    public void changeFinalPosition(float x, float y, float z)
+    public void Attack()
     {
-        finalPosition = new Vector3(x, y, z);
+        // Attack Logic and Animation
+        Debug.Log("Attacking");
     }
 
-    public void attackTo()
+    public void Hold()
     {
-        throw new System.NotImplementedException();
+        // Play Hold Animation
+        Debug.Log("Holding");
     }
 
-    public void hold()
+    public GameObject Spawn(GameObject prefab, Vector3 spawnPosition)
     {
-        throw new System.NotImplementedException();
+        this.prefab = prefab;
+        GameObject newObject = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        return newObject;
     }
 
-    public GameObject spawn(GameObject prefab)
+    public void MoveTo(int x, int y)
     {
-        spawnPosition = new Vector3(0, 3, 0);
-        Prefab = prefab;
-        return Instantiate(prefab, spawnPosition, Quaternion.identity);
+        Debug.Log("Moving");
+        // Moving Logic and Animation
     }
 
-    public void moveTo()
+    public void Die()
     {
-        if (transform.position == finalPosition || finalPosition == null)
-        {
-            return;
-        } else {
-            transform.position = Vector3.MoveTowards(transform.position, finalPosition, 0.1f);
-        }
+        // Die Logic and destroys itself from gamescene (?)
+        isDead = true;
+        Destroy(gameObject);
     }
-    
 }
