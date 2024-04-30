@@ -8,7 +8,8 @@ public class Unit : MonoBehaviour
     public string Action { get; set; }
     public int X { get; set; }
     public int Y { get; set; }
-
+    private float speed = 1.5f;
+    
     public bool isDead;
 
     private GameObject prefab;
@@ -27,6 +28,18 @@ public class Unit : MonoBehaviour
 
     public void Attack()
     {
+        switch(Role){
+            case "catapult":
+            break;
+            case "mage":
+            break;
+            case "soldier":
+            break;
+            case "archer":
+            break;
+            default:
+            break;
+        }
         // Attack Logic and Animation
         Debug.Log("Attacking");
     }
@@ -37,17 +50,23 @@ public class Unit : MonoBehaviour
         Debug.Log("Holding");
     }
 
-    public GameObject Spawn(GameObject prefab, Vector3 spawnPosition)
-    {
+    public GameObject Spawn(GameObject prefab,Board board, int x, int y)
+    {   
         this.prefab = prefab;
-        GameObject newObject = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        GameObject newObject = Instantiate(prefab, board.FindPositionOfTile(x,y), Quaternion.identity);
         return newObject;
     }
 
-    public void MoveTo(int x, int y)
+    public void MoveTo(Board board,int x, int y)
     {
-        Debug.Log("Moving");
-        // Moving Logic and Animation
+        //needs to be different depending on the character
+        if(this.Role=="catapult"){
+            Hold(); //doesnt move
+        }else if(this.Role=="mage"){
+        //needs to go up  
+        }else{
+        transform.position = Vector3.MoveTowards(transform.position,board.FindPositionOfTile(x,y), speed * Time.deltaTime );
+        }// Moving Logic and Animation
     }
 
     public void Die()

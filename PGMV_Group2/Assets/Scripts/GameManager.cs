@@ -4,10 +4,12 @@ using System.Xml;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] public GameObject Table;
     public List<Role> Roles { get; private set; }
     public Board Board { get; private set; }
     public List<GameObject> UnitHandler { get; private set; }
-
+    [SerializeField] public Material[] tiles_materials;
+    
     [SerializeField] private string xmlResourcePath;
     private XmlDocument xmlDoc = new XmlDocument();
 
@@ -15,9 +17,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject magePrefab;
     [SerializeField] private GameObject soldierPrefab;
     [SerializeField] private GameObject catapultPrefab;
-
+    
     private void Awake()
     {
+        
         InitializeGame();
     }
 
@@ -66,6 +69,15 @@ public class GameManager : MonoBehaviour
     private void LoadBoard(XmlNode boardNode){
         List<Tile> tiles = new();
         
+        Dictionary<string,Material> tileAndMaterial = new Dictionary<string,Material>{
+            { "village", tiles_materials[4] },
+            { "forest", tiles_materials[0] },
+            { "plain", tiles_materials[3] },
+            { "sea", tiles_materials[5] },
+            { "desert", tiles_materials[2] },
+            { "mountain", tiles_materials[1] }
+
+        };
         foreach (XmlNode tileNode in boardNode)
         {
             switch (tileNode.Name)
@@ -99,7 +111,9 @@ public class GameManager : MonoBehaviour
         Board = new Board();
         
         // Initialize the board with the provided width and height
-        Board.InitializeBoard(int.Parse(boardNode.Attributes["width"].Value), int.Parse(boardNode.Attributes["height"].Value));
+        int board_width = int.Parse(boardNode.Attributes["width"].Value);
+        int board_height = int.Parse(boardNode.Attributes["height"].Value);
+        Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table);
 
         Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
 
@@ -146,10 +160,10 @@ public class GameManager : MonoBehaviour
                 unit.Attack();
                 break;
             case "move_to":
-                unit.MoveTo(x, y);
+                unit.MoveTo(Board,x, y);
                 break;
             case "spawn":
-                unit.Spawn(prefab, new Vector3(x, y, 0));
+                unit.Spawn(prefab,Board, x, y);
                 break;
         }
     }
