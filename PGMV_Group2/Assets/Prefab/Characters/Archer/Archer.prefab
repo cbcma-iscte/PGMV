@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4266151068525917622}
   - component: {fileID: 908515868582672915}
   - component: {fileID: 3134299833338957529}
+  - component: {fileID: -5933781799137871196}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 3494715690832867084}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: -3, y: 1.876, z: -1}
+  m_LocalPosition: {x: -2.9510455, y: 1.8453871, z: -0.9836818}
   m_LocalScale: {x: 184.77501, y: 184.77501, z: 184.77501}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -83,3 +84,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &-5933781799137871196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3494715690832867084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88030045191949f4c936027b3700d232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDead: 0

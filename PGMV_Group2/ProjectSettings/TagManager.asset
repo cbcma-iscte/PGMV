@@ -5,6 +5,12 @@ TagManager:
   serializedVersion: 2
   tags:
   - Table
+  - Lamp
+  - Board
+  - Archer
+  - Catapult
+  - Soldier
+  - Mage
   layers:
   - Default
   - TransparentFX
