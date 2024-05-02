@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4266151068525917622}
   - component: {fileID: 908515868582672915}
   - component: {fileID: 3134299833338957529}
-  - component: {fileID: -5933781799137871196}
+  - component: {fileID: -8367272691924056877}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -84,7 +84,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &-5933781799137871196
+--- !u!114 &-8367272691924056877
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,7 +93,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3494715690832867084}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88030045191949f4c936027b3700d232, type: 3}
+  m_Script: {fileID: 11500000, guid: b371162c3c6fb70459c4e6423b338b35, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isDead: 0

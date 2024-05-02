@@ -14,7 +14,6 @@ public class Board : MonoBehaviour
     private List<Tile> tiles;
 
     public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table ){
-        Debug.Log("Board Board Board is creating!!!");
         Width = width;
         Height = height;
         Table = table;
@@ -46,10 +45,6 @@ public class Board : MonoBehaviour
         }
 
     private void createTiles(){
-        foreach (var kvp in TileAndMaterial)
-    {
-        Debug.Log("Key: " + kvp.Key + ", Value: " + kvp.Value);
-    }
     int i=0;
     tilesGenerated = new GameObject[Width,Height];
         for(int y = Height - 1; y >= 0; y--){
@@ -96,16 +91,25 @@ public class Board : MonoBehaviour
         return tile_created; 
 
     }
-    public Vector3 FindPositionOfTile(string tipo,int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
-        string tileName = ("X"+valueX+",Y"+valueZ);
+    public Vector3 FindPositionOfTile(int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
+        string tileName = ("X"+(valueX-1)+",Y"+(valueZ-1));
 
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
-                Debug.Log("Estamos aqui:"+ new Vector3(tile.transform.position.x+valueX, 1.872f, tile.transform.position.z+valueZ)+"Eu sou: "+tipo);
-                return new Vector3(tile.transform.position.x+valueX, 1.872f, tile.transform.position.z+valueZ);
+                return new Vector3(tile.transform.position.x+valueX , 1.872f, tile.transform.position.z+valueZ);
             }
         }
     return Vector3.zero;
+    }
+
+    public Transform getTileFromName(int valueX, int valueZ){
+        string tileName = ("X"+(valueX-1)+",Y"+(valueZ-1));
+        foreach (GameObject tile in tilesGenerated) {
+            if (tile != null && tile.name == tileName) {
+                return tile.transform;
+            }
+        }
+        return null;
     }
         
 
