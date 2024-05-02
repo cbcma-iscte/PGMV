@@ -58,9 +58,11 @@ public class ViewChange : MonoBehaviour{
             transform.position = new Vector3((float)-0.37,(float)3.64,(float)-8.16);
             transform.localRotation = Quaternion.Euler((float)4.96,(float)0,(float)0);    
         }else{
+            
+            // Activate the minimap camera
+            miniMapCamera.SetActive(true);
 
-            //miniMapCamera.SetActive(true); This works but now it appears as the normal window not the miniMap :)
-
+            // Chamge the view of main camera to the view of the object that is being tracked
             transform.parent = trackedObject.transform;
             transform.position = new Vector3(trackedObject.transform.position.x,(float)3.5,trackedObject.transform.position.z-(float)0.35);
             transform.rotation = Quaternion.Euler(0, trackedObject.transform.rotation.y, 0);
