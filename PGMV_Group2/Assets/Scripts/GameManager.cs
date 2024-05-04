@@ -142,20 +142,11 @@ public class GameManager : MonoBehaviour
             turnId++;
             Turns.Add(newTurn);
         }
-        Debug.Log("Turnos:" + Turns.Count);
-        foreach(Turn turn in Turns)
-        {
-            Debug.Log("Units:" + turn.Units.Count);
-            foreach(Unit unit in turn.Units)
-            {
-                Debug.Log("ID: "+ unit.Id + ", Role: " + unit.Role + ", Type: " + unit.Type); 
-            } 
-        }       
+      
         PlayGame();
     }
 
     public void PlayGame(){
-        //vai buscar turnos e passa um turno inteiro.
         foreach(Turn turn in Turns)
         {
             if(turn.Id == currentTurn)
@@ -173,11 +164,13 @@ public class GameManager : MonoBehaviour
     public void GoForward()
     {
         currentTurn++;
+        PlayGame();
     }
 
     public void GoBack()
     {
         currentTurn--;
+        PlayGame();
     }
 
     public void RestartGame()
@@ -195,26 +188,34 @@ public class GameManager : MonoBehaviour
     }
 
     private void ManageActions(Unit unit)
-    {
+    {      
         switch (unit.Action)
         {
             case "hold":
-                //unit.Hold();
+                findGameObjectfromUnit(unit).GetComponent<Character>().Hold();
                 break;
             case "attack":
-                //unit.Attack();
+                findGameObjectfromUnit(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
-                //unit.MoveTo(Board,x, y);
+                findGameObjectfromUnit(unit).GetComponent<Character>().MoveTo(Board,unit.X,unit.Y);
                 break;
             case "spawn":
                 GameObject prefab = GetPrefabByType(unit.Type);
-                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y);
+                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id);
                 break;
         }
+        return;
     }
 
-
+    private GameObject findGameObjectfromUnit(Unit unit){
+        foreach(GameObject child in Board.getTileFromName(unit.X,unit.Y)){
+            if(child.GetComponent<Character>().Role ==unit.Role && child.GetComponent<Character>().Id ==unit.Id){
+                return child;
+            }
+        }
+        return null;
+    }
     private GameObject GetPrefabByType(string type)
     {
         switch (type.ToLower())

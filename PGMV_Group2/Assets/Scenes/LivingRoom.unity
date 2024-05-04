@@ -854,11 +854,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 090c731fd24a09340ae6a996bd5895fe, type: 2}
   - {fileID: 2100000, guid: cccfed4f7c7707c4e8293268db0cef90, type: 2}
   xmlResourcePath: xmltest
-  archerPrefab: {fileID: 3494715690832867084, guid: 3ced1be55039ad24d9989c028157f5a5, type: 3}
-  magePrefab: {fileID: 6877692218282578434, guid: 8f2bbf00f39750b47abf9377422786f1, type: 3}
-  soldierPrefab: {fileID: 5610725711434208708, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-  catapultPrefab: {fileID: 7965383161690781778, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
-  currentTurn: 1
+  archerPrefab: {fileID: 2553060034277268786, guid: 3ced1be55039ad24d9989c028157f5a5, type: 3}
+  magePrefab: {fileID: 5921420560980638146, guid: 8f2bbf00f39750b47abf9377422786f1, type: 3}
+  soldierPrefab: {fileID: 3976008685789294325, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
+  catapultPrefab: {fileID: 4111593646660320200, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
+  currentTurn: 0
+  isAutomatic: 0
 --- !u!4 &264453732
 Transform:
   m_ObjectHideFlags: 0
@@ -2198,6 +2199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4b4c3bd89e0f4c4b8e9bd0f5ca62464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Games: []
   player1Points: {fileID: 1593599398}
   player2Points: {fileID: 1635302343}
 --- !u!114 &855725820
@@ -4735,11 +4737,12 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 090c731fd24a09340ae6a996bd5895fe, type: 2}
   - {fileID: 2100000, guid: cccfed4f7c7707c4e8293268db0cef90, type: 2}
   xmlResourcePath: xmltest
-  archerPrefab: {fileID: 3494715690832867084, guid: 3ced1be55039ad24d9989c028157f5a5, type: 3}
-  magePrefab: {fileID: 6877692218282578434, guid: 8f2bbf00f39750b47abf9377422786f1, type: 3}
-  soldierPrefab: {fileID: 5610725711434208708, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-  catapultPrefab: {fileID: 7965383161690781778, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
+  archerPrefab: {fileID: 2553060034277268786, guid: 3ced1be55039ad24d9989c028157f5a5, type: 3}
+  magePrefab: {fileID: 5921420560980638146, guid: 8f2bbf00f39750b47abf9377422786f1, type: 3}
+  soldierPrefab: {fileID: 3976008685789294325, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
+  catapultPrefab: {fileID: 4111593646660320200, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
   currentTurn: 0
+  isAutomatic: 0
 --- !u!4 &1754980351
 Transform:
   m_ObjectHideFlags: 0

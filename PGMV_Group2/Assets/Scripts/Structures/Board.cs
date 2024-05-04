@@ -56,8 +56,8 @@ public class Board : MonoBehaviour
             }
         }
 
-    private GameObject create1Tile(int x , int y,string type){
-        GameObject tile_created = new GameObject(string.Format("X{0},Y{1}",x,y)); //X0Y0, X1Y0, X2Y0, X0Y1, X1Y1, X2Y1...
+    private GameObject create1Tile(int x , int y,string type){ //question with teacher (nomenclature)
+        GameObject tile_created = new GameObject(string.Format("X{0}Y{1}", x + 1, y + 1)); //X1.
         tile_created.transform.parent = baseBoard.transform; 
 
         Mesh mesh = new Mesh();
@@ -92,24 +92,51 @@ public class Board : MonoBehaviour
 
     }
     public Vector3 FindPositionOfTile(int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
-        string tileName = ("X"+(valueX-1)+",Y"+(valueZ-1));
+        string tileName = ("X" + valueX+"Y" +valueZ);
 
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
-                return new Vector3(tile.transform.position.x+valueX , 1.872f, tile.transform.position.z+valueZ);
+                return SpecificPosition(tile);
             }
         }
     return Vector3.zero;
     }
 
     public Transform getTileFromName(int valueX, int valueZ){
-        string tileName = ("X"+(valueX-1)+",Y"+(valueZ-1));
+        string tileName = ("X"+ valueX +"Y" + valueZ);
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
                 return tile.transform;
             }
         }
         return null;
+    }
+    
+
+    private Vector3 SpecificPosition(GameObject tile){
+        switch (nrOfCharactersInTile(tile)){
+            case 1:
+               //all characters and the new one need to change position
+            break;
+            case 2:
+                //all characters and the new one need to change position
+            break;
+            case 3:
+                 //all characters and the new one need to change position
+            break;
+            case 4:
+                throw new UnityException("Error: Too many characters in the tile.");
+            break;
+            default:
+                return new Vector3(tile.transform.position.x + (tile.transform.localScale.x/2f) , 1.91f, tile.transform.position.z + (tile.transform.localScale.z/2f) );
+            break;
+        }
+
+            return Vector3.zero;
+    }
+
+    private int nrOfCharactersInTile(GameObject tile){
+        return tile.transform.childCount;
     }
         
 
