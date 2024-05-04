@@ -22,11 +22,42 @@ public class ViewChange : MonoBehaviour{
           
     }   
         
+
+    void changeView(bool view_change){
+        if (!view_change){
+            miniMapCamera.SetActive(false);
+            
+            transform.parent = null;
+            transform.position = new Vector3((float)-0.37,(float)3.64,(float)-8.16);
+            transform.localRotation = Quaternion.Euler((float)4.96,(float)0,(float)0);    
+        }else{
+            
+            // Activate the minimap camera
+            miniMapCamera.SetActive(true);
+
+            // Chamge the view of main camera to the view of the object that is being tracked
+            transform.parent = trackedObject.transform;
+
+            // Set position of the camera to the top of the object that is being tracked
+            transform.position = new Vector3(trackedObject.transform.position.x,(float)3.5,trackedObject.transform.position.z);
+            //Debug.Log(transform.position);
+
+            //transform.rotation = Quaternion.Euler(0, trackedObject.transform.rotation.y, 0);
+            // Calculate the target rotation to center the object
+            transform.LookAt(trackedObject.transform);
+            Quaternion targetRotation = Quaternion.Euler(transform.eulerAngles.x, trackedObject.transform.eulerAngles.y, transform.eulerAngles.z);
+
+            // Rotate the camera to center the object
+            transform.rotation = targetRotation;
+        }  
+    }
+
     // Update is called once per frame
     void Update()
     {
          if(Input.GetKeyDown(KeyCode.Escape) ){ //when the Minimap is done we can get back to the normal view by clicking it as well
             view_change=false;
+            changeView(view_change);
             
         }
 
@@ -43,6 +74,7 @@ public class ViewChange : MonoBehaviour{
                     if (hit.collider.gameObject == table_board){
                         trackedObject = table_board;
                         view_change=!view_change;
+                        changeView(view_change);
                         
                     }
                 }
@@ -51,23 +83,6 @@ public class ViewChange : MonoBehaviour{
         }
        
         
-        if (!view_change){
-            miniMapCamera.SetActive(false);
-            
-            transform.parent = null;
-            transform.position = new Vector3((float)-0.37,(float)3.64,(float)-8.16);
-            transform.localRotation = Quaternion.Euler((float)4.96,(float)0,(float)0);    
-        }else{
-
-            //miniMapCamera.SetActive(true); This works but now it appears as the normal window not the miniMap :)
-
-            transform.parent = trackedObject.transform;
-            transform.position = new Vector3(trackedObject.transform.position.x,(float)3.5,trackedObject.transform.position.z-(float)0.35);
-            transform.rotation = Quaternion.Euler(0, trackedObject.transform.rotation.y, 0);
-            transform.LookAt(trackedObject.transform);
-            
         
-    
-        }
     }
 }
