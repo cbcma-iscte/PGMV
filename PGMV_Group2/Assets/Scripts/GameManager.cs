@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject catapultPrefab;
 
     [SerializeField] 
-    public int currentTurn = 0;
+    public int currentTurn = 1;
 
     public bool isAutomatic = false;
     
@@ -192,12 +192,15 @@ public class GameManager : MonoBehaviour
         switch (unit.Action)
         {
             case "hold":
+                Debug.Log("holding");
                 findGameObjectfromUnit(unit).GetComponent<Character>().Hold();
                 break;
             case "attack":
+                Debug.Log("attacking");
                 findGameObjectfromUnit(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
+                Debug.Log("moving");
                 findGameObjectfromUnit(unit).GetComponent<Character>().MoveTo(Board,unit.X,unit.Y);
                 break;
             case "spawn":
@@ -209,9 +212,43 @@ public class GameManager : MonoBehaviour
     }
 
     private GameObject findGameObjectfromUnit(Unit unit){
-        foreach(GameObject child in Board.getTileFromName(unit.X,unit.Y)){
-            if(child.GetComponent<Character>().Role ==unit.Role && child.GetComponent<Character>().Id ==unit.Id){
-                return child;
+        Unit oldUnit = GetUnitForLastPosition(unit);
+        Debug.Log("unit : " + oldUnit.X + "," + oldUnit.Y);
+
+        Transform tileTransform = Board.getTileFromName(oldUnit.X,oldUnit.Y);
+
+        if(tileTransform != null)
+        {
+            GameObject tileObject = tileTransform.gameObject;
+            
+            foreach(Transform childTransform in tileObject.transform){
+                
+                GameObject childObject = childTransform.gameObject;
+                Character character = childObject.GetComponent<Character>();
+
+                if(character != null && character.Role ==unit.Role && character.Id == unit.Id){
+                    return childObject;
+                }
+            }
+        }
+        Debug.Log("null");
+        return null;
+    }
+
+    private Unit GetUnitForLastPosition(Unit unit)
+    {
+        string id = unit.Id;
+        foreach(Turn turn in Turns)
+        {
+            if(turn.Id < currentTurn )
+            {
+                foreach (Unit oldUnit in turn.Units)
+                {
+                    if (oldUnit.Id == id && (oldUnit.Action == "move_to" || oldUnit.Action == "spawn"))
+                    {
+                        return oldUnit;
+                    }
+                }
             }
         }
         return null;

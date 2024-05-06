@@ -5,8 +5,11 @@ public class Character : MonoBehaviour
 {
     [SerializeField]
     public GameObject weapon;
-    public string Id { get; set; }
-    public string Role { get; set; }
+
+    [SerializeField]
+    public string Id;
+    [SerializeField]
+    public string Role;
     private float speed = 1.5f;
 
     public GameObject prefab;
@@ -44,10 +47,15 @@ public class Character : MonoBehaviour
     {   
         this.prefab = prefab;
         GameObject newObject = Instantiate(prefab, board.FindPositionOfTile(x,y), Quaternion.identity);
+        
+        string uniqueName = prefab.name + "-" + id;
+
+        newObject.name = uniqueName;
+
         newObject.transform.parent = board.getTileFromName(x,y);
         Initialize(id,role);
-        Debug.Log("My tag is "+this.tag);
-        Debug.Log("My ID is "+this.Id);
+       // Debug.Log("My tag is "+this.tag);
+       // Debug.Log("My ID is "+this.Id);
         return newObject;
 
     }
@@ -71,7 +79,7 @@ public class Character : MonoBehaviour
             break;
         }
         // Attack Logic and Animation
-        Debug.Log("Attacking");
+        //Debug.Log("Attacking");
     }
     private void catapultAttacks(Board b, int x, int y){
         //throw rock;
