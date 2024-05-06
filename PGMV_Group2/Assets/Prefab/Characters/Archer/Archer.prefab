@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1967642400996165696}
   m_Layer: 0
   m_Name: Archer
-  m_TagString: Archer
+  m_TagString: archer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 7909116329055765543, guid: 19c467f3816f597419cc4d18dfdc755c, type: 3}
+  Id: 
+  Role: 
   prefab: {fileID: 2553060034277268786}
   isDead: 0
   duration: 5

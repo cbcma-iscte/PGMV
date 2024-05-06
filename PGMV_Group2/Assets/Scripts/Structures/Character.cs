@@ -17,7 +17,18 @@ public class Character : MonoBehaviour
     public float duration = 5f;
     private float timer = 0f;
 
-    public GameObject[] trail; //for the trail
+    public class IntPair{
+    public int First { get; set; }
+    public int Second { get; set; }
+
+    public IntPair(int first, int second)
+    {
+        First = first;
+        Second = second;
+    }
+    }
+
+    public List<IntPair> trail = new List<IntPair>();
     
     public void Initialize(string id, string role)
     {
@@ -32,14 +43,17 @@ public class Character : MonoBehaviour
     }
 
     public void MoveTo(Board board,int x, int y)
-    {/*soldier and archer move throught ground, mage flies, catapult doesnt move*/
-
+    {
+        transform.parent = board.getTileFromName(x,y);
+        /*soldier and archer move throught ground, mage flies, catapult doesnt move*/
         if(this.tag=="catapult"){
             Hold(); 
         }else if(this.tag=="mage"){
         //needs to go up  
         }else{
-            transform.position = Vector3.MoveTowards(transform.position,board.FindPositionOfTile(x,y), speed * Time.deltaTime );
+            transform.position = Vector3.MoveTowards(transform.position,board.FindPositionOfTile(x,y), speed * Time.deltaTime);
+            IntPair newPair = new IntPair(x, y); // Example values
+            trail.Add(newPair);
         }// Moving Logic and Animation
     }
     
@@ -51,11 +65,10 @@ public class Character : MonoBehaviour
         string uniqueName = prefab.name + "-" + id;
 
         newObject.name = uniqueName;
-
+        IntPair newPair = new IntPair(x, y); // Example values
+        trail.Add(newPair);
         newObject.transform.parent = board.getTileFromName(x,y);
         Initialize(id,role);
-       // Debug.Log("My tag is "+this.tag);
-       // Debug.Log("My ID is "+this.Id);
         return newObject;
 
     }
@@ -118,9 +131,9 @@ public class Character : MonoBehaviour
     private void attackCharactersAt(Board b, int x, int y){
         Transform tile = b.getTileFromName(x,y);
         List<GameObject> enemies = new List<GameObject>();
-        foreach(GameObject childGameObject in tile){
-            if(childGameObject.GetComponent<Character>().Role != this.Role){
-                enemies.Add(childGameObject);
+        foreach(Transform child in tile){
+            if(child.GetComponent<Character>().Role != this.Role){
+                enemies.Add(child.gameObject);
             }
         }
         foreach(GameObject enemy in enemies){
@@ -132,7 +145,7 @@ public class Character : MonoBehaviour
     public void Die()
     {   //sound + particles
         //still needed
-        //opacity + scale 
+        //opacity + scale not done the scale
         StartCoroutine(GetScaleAndOpacityToZero());
         //logic
         isDead = true;
@@ -146,12 +159,12 @@ public class Character : MonoBehaviour
             timer += Time.deltaTime;
             float time = Mathf.Clamp01(timer / duration); // Normalize time between 0 and 1
 
-            Color initialColor = GetComponent<Renderer>().material.color;
-            float initialAlpha = initialColor.a;
-            Color newColor = initialColor;
+            //Color initialColor = GetComponent<Renderer>().material.color;
+            //float initialAlpha = initialColor.a;
+            //Color newColor = initialColor;
 
-            newColor.a = Mathf.Lerp(initialAlpha, 0, time);
-            GetComponent<Renderer>().material.color = newColor;
+            //newColor.a = Mathf.Lerp(initialAlpha, 0, time);
+            //GetComponent<Renderer>().material.color = newColor;
 
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, time);           
 

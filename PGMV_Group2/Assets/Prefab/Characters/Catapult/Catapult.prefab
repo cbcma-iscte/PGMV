@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3202184739967005427}
   m_Layer: 0
   m_Name: Catapult
-  m_TagString: Catapult
+  m_TagString: catapult
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 1319038183929158516, guid: 795f2213a75ed904dba14a4425d621e5, type: 3}
+  Id: 3
+  Role: player 2
   prefab: {fileID: 4111593646660320200}
   isDead: 0
   duration: 5

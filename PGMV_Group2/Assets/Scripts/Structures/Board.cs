@@ -8,10 +8,9 @@ public class Board : MonoBehaviour
     public int Width { get; private set; }
     public int Height { get; private set; }
     private GameObject baseBoard;
-    //private List<Tile> Tiles;
     Dictionary<string,Material> TileAndMaterial = new Dictionary<string, Material>();
     private GameObject[,] tilesGenerated; 
-    private List<Tile> tiles;
+    
 
     public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table ){
         Width = width;
@@ -92,14 +91,15 @@ public class Board : MonoBehaviour
 
     }
     public Vector3 FindPositionOfTile(int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
-        string tileName = ("X" + valueX+"Y" +valueZ);
-
-        foreach (GameObject tile in tilesGenerated) {
-            if (tile != null && tile.name == tileName) {
-                return SpecificPosition(tile);
-            }
-        }
-    return Vector3.zero;
+        Transform tile = getTileFromName(valueX,valueZ);
+        Debug.Log("X: " + tile.transform.position.x + " Z: " +tile.transform.position.z );
+        if(tile!=null)
+            return tile.position;
+            //new Vector3(tile.transform.position.x + (tile.transform.localScale.x/2f) , 1.91f, tile.transform.position.z + (tile.transform.localScale.z/2f) );
+    
+    //CHANGE TO THE FUNCTION BELOW WHEN ITS DONE
+        //SpecificPosition(tile);
+        return Vector3.zero;
     }
 
     public Transform getTileFromName(int valueX, int valueZ){
@@ -116,6 +116,7 @@ public class Board : MonoBehaviour
     private Vector3 SpecificPosition(GameObject tile){
         switch (nrOfCharactersInTile(tile)){
             case 1:
+               
                //all characters and the new one need to change position
             break;
             case 2:
@@ -138,7 +139,20 @@ public class Board : MonoBehaviour
     private int nrOfCharactersInTile(GameObject tile){
         return tile.transform.childCount;
     }
-        
+
+    public GameObject findCharacterInBoard(Unit unit){
+        foreach(GameObject tile in tilesGenerated){
+            foreach(Transform child in tile.transform){
+                Character character = child.GetComponent<Character>();
+                if(character != null && character.Role == unit.Role && character.Id == unit.Id && child.tag == unit.Type){
+                    //Debug.Log("Im found" + child.name);
+                    return child.gameObject;
+                }
+            }
+        }
+        //Debug.Log("not found");
+        return null;
+    }
 
 
     

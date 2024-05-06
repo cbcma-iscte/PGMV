@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 263150429121987180}
   m_Layer: 0
   m_Name: Soldier
-  m_TagString: Soldier
+  m_TagString: soldier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 7263681675090194781, guid: b467e825e9a5932429d2f3e0f1d53635, type: 3}
+  Id: 1
+  Role: player 1
   prefab: {fileID: 3976008685789294325}
   isDead: 0
   duration: 5

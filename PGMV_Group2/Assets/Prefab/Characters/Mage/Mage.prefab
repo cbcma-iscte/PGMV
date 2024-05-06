@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2888415000306349322}
   m_Layer: 0
   m_Name: Mage
-  m_TagString: Mage
+  m_TagString: mage
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,6 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 7880941052841579485, guid: 4df72fb8913ac1c40855a9adfd68f1f7, type: 3}
+  Id: 
+  Role: 
   prefab: {fileID: 5921420560980638146}
   isDead: 0
   duration: 5
