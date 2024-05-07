@@ -57,7 +57,8 @@ public class Board : MonoBehaviour
 
     private GameObject create1Tile(int x , int y,string type){ //question with teacher (nomenclature)
         GameObject tile_created = new GameObject(string.Format("X{0}Y{1}", x + 1, y + 1)); //X1.
-        tile_created.transform.parent = baseBoard.transform; 
+        tile_created.transform.parent = baseBoard.transform;
+        // Debug.Log("base board transform do crete1tile : " + baseBoard.transform); 
 
         Mesh mesh = new Mesh();
         tile_created.AddComponent<MeshFilter>().mesh = mesh;
@@ -112,7 +113,9 @@ public class Board : MonoBehaviour
         return null;
     }
     
-
+    public Transform getBoardByName(){
+        return baseBoard.transform;
+    }
     private Vector3 SpecificPosition(GameObject tile){
         switch (nrOfCharactersInTile(tile)){
             case 1:
@@ -141,14 +144,12 @@ public class Board : MonoBehaviour
     }
 
     public GameObject findCharacterInBoard(Unit unit){
-        foreach(GameObject tile in tilesGenerated){
-            foreach(Transform child in tile.transform){
-                Character character = child.GetComponent<Character>();
-                if(character != null && character.Role == unit.Role && character.Id == unit.Id && child.tag == unit.Type){
-                    //Debug.Log("Im found" + child.name);
-                    return child.gameObject;
+            foreach(Transform child in baseBoard.transform){
+                if(child.GetComponent<Character>() != null){
+                    Character character = child.GetComponent<Character>();
+                    if(character.Role == unit.Role && character.Id == unit.Id && child.tag == unit.Type)
+                        return child.gameObject;
                 }
-            }
         }
         //Debug.Log("not found");
         return null;

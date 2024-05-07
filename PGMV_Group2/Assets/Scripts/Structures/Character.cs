@@ -18,18 +18,18 @@ public class Character : MonoBehaviour
     private float timer = 0f;
 
     public class IntPair{
-    public int First { get; set; }
-    public int Second { get; set; }
+    public int coordX { get; set; }
+    public int coordY { get; set; }
 
-    public IntPair(int first, int second)
+    public IntPair(int x, int y)
     {
-        First = first;
-        Second = second;
+        coordX = x;
+        coordY = y;
     }
+
     }
 
     public List<IntPair> trail = new List<IntPair>();
-    
     public void Initialize(string id, string role)
     {
         Id = id;
@@ -38,84 +38,66 @@ public class Character : MonoBehaviour
     }
 
 
-    public void Hold(){
-    // Play Hold Animation
-    }
+    public void Hold(){}
 
+
+    
+    public GameObject Spawn(GameObject prefab,Board board, int x, int y,string role,string id)
+    {   
+        this.prefab = prefab;
+        
+        GameObject newObject = Instantiate(prefab, new Vector3(board.getBoardByName().position.x, board.getBoardByName().position.y+0.5f, board.getBoardByName().position.z), Quaternion.identity);
+        string uniqueName = prefab.name + "-" + id;
+        newObject.transform.SetParent(board.getBoardByName());
+        
+        newObject.name = uniqueName;
+        //IntPair newPair = new IntPair(x, y); 
+        //trail.Add(newPair);
+        Initialize(id,role);
+        return newObject;
+
+    }
+    
     public void MoveTo(Board board,int x, int y)
     {
-        transform.parent = board.getTileFromName(x,y);
+        Transform boardOfCharacter = board.getBoardByName();
         /*soldier and archer move throught ground, mage flies, catapult doesnt move*/
         if(this.tag=="catapult"){
             Hold(); 
         }else if(this.tag=="mage"){
         //needs to go up  
         }else{
-            transform.position = Vector3.MoveTowards(transform.position,board.FindPositionOfTile(x,y), speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position,new Vector3(transform.position.x+x,transform.position.y,transform.position.z+y), speed * Time.deltaTime);     
             IntPair newPair = new IntPair(x, y); // Example values
             trail.Add(newPair);
-        }// Moving Logic and Animation
+        }
     }
     
-    public GameObject Spawn(GameObject prefab,Board board, int x, int y,string role,string id)
-    {   
-        this.prefab = prefab;
-        GameObject newObject = Instantiate(prefab, board.FindPositionOfTile(x,y), Quaternion.identity);
-        
-        string uniqueName = prefab.name + "-" + id;
-
-        newObject.name = uniqueName;
-        IntPair newPair = new IntPair(x, y); // Example values
-        trail.Add(newPair);
-        newObject.transform.parent = board.getTileFromName(x,y);
-        Initialize(id,role);
-        return newObject;
-
-    }
-
     public void Attack(Board board,int x, int y)
     {
         switch(this.tag){
             case "catapult": 
-                catapultAttacks(board,x, y);
+                defaultAttacks(board,x, y);
             break;
             case "mage":
-                mageAttacks(board,x, y);
+                defaultAttacks(board,x, y);
             break;
             case "soldier":
                 soldierAttacks(board,x, y);
             break;
             case "archer":
-                archerAttacks(board,x, y);
+                defaultAttacks(board,x, y);
             break;
             default:
             break;
         }
-        // Attack Logic and Animation
-        //Debug.Log("Attacking");
+        // Attack Logic and Animation (PART2 for SOLDIER ONLY)
     }
-    private void catapultAttacks(Board b, int x, int y){
-        //throw rock;
-        GameObject rock = Instantiate(this.weapon, this.transform.position,Quaternion.identity );//position needs to be seen and stuff
-        rock.transform.position = Vector3.MoveTowards(rock.transform.position,b.FindPositionOfTile(x,y), 1f * Time.deltaTime );
-        Destroy(rock);
-        attackCharactersAt(b,x,y);
-        //the catapult throws rocks to its tile or other
-    }
-    private void mageAttacks(Board b, int x, int y){
-        // mage throws fireballs to its tile or others
-        GameObject fireball = Instantiate(this.weapon, this.transform.position,Quaternion.identity );
-        fireball.transform.position = Vector3.MoveTowards(fireball.transform.position,b.FindPositionOfTile(x,y), 1f * Time.deltaTime );
-        Destroy(fireball);
-        attackCharactersAt(b,x,y);
-    }
-
-    private void archerAttacks(Board b, int x, int y){
-        GameObject arrow = Instantiate(this.weapon, this.transform.position,Quaternion.identity );
-        arrow.transform.position = Vector3.MoveTowards(arrow.transform.position,b.FindPositionOfTile(x,y), 1f * Time.deltaTime );
-        Destroy(arrow);
-        //the archer throws arrows to its tile or other
-         //throw arrow;
+    private void defaultAttacks(Board b, int x, int y){
+        GameObject charactersWeapon = Instantiate(this.weapon, this.transform.position,Quaternion.identity );
+        charactersWeapon.transform.position = Vector3.MoveTowards(charactersWeapon.transform.position,b.FindPositionOfTile(x,y), 1f * Time.deltaTime );
+        Destroy(charactersWeapon);
+        //the archer throws arrows to its tile or other and the mage the fireball
         attackCharactersAt(b,x,y);
     }
     private void soldierAttacks(Board b, int x, int y){
@@ -138,7 +120,8 @@ public class Character : MonoBehaviour
         }
         foreach(GameObject enemy in enemies){
             enemy.GetComponent<Character>().Die();
-        } //need pontuation
+        } //need pontuation and verify end of turn doesnt have a character left in that spot
+
     }
 
     

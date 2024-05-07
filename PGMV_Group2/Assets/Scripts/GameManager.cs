@@ -197,7 +197,7 @@ public class GameManager : MonoBehaviour
                 break;
             case "attack":
                 Debug.Log("attacking");
-                Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
+                //Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
                 Debug.Log("moving");
