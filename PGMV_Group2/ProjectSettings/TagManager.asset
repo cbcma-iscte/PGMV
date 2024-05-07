@@ -7,10 +7,11 @@ TagManager:
   - Table
   - Lamp
   - Board
+  - archer
+  - catapult
+  - soldier
+  - mage
   - Archer
-  - Catapult
-  - Soldier
-  - Mage
   layers:
   - Default
   - TransparentFX

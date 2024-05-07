@@ -6,8 +6,9 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject Table;
     public List<Role> Roles { get; private set; }
+    
+    public List<Turn> Turns {get; set;} = new List<Turn>();
     public Board Board { get; private set; }
-    public List<GameObject> UnitHandler { get; private set; }
     [SerializeField] public Material[] tiles_materials;
     
     [SerializeField] private string xmlResourcePath;
@@ -17,6 +18,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject magePrefab;
     [SerializeField] private GameObject soldierPrefab;
     [SerializeField] private GameObject catapultPrefab;
+
+    [SerializeField] 
+    public int currentTurn = 1;
+
+    public bool isAutomatic = false;
     
     private void Awake()
     {
@@ -44,7 +50,6 @@ public class GameManager : MonoBehaviour
         // Load turns
         LoadTurns(turnsNode);
 
-        Debug.Log("Game loaded successfully!");
     }
 
     private void TextToXml(TextAsset xmlTextAsset)
@@ -84,33 +89,26 @@ public class GameManager : MonoBehaviour
             {
                 case "village":
                     tiles.Add(new Tile("village"));
-                    Debug.Log("Loaded tile: village");
                     break;
                 case "forest":
                     tiles.Add(new Tile("forest"));
-                    Debug.Log("Loaded tile: forest");
                     break;
                 case "plain":
                     tiles.Add(new Tile("plain"));
-                    Debug.Log("Loaded tile: plain");
                     break;
                 case "desert":
                     tiles.Add(new Tile("desert"));
-                    Debug.Log("Loaded tile: desert");
                     break;
                 case "sea":
                     tiles.Add(new Tile("sea"));
-                    Debug.Log("Loaded tile: sea");
                     break;
                 case "mountain":
                     tiles.Add(new Tile("mountain"));
-                    Debug.Log("Loaded tile: mountain");
                     break;
             }
         }
         Board = new Board();
         
-        // Initialize the board with the provided width and height
         int board_width = int.Parse(boardNode.Attributes["width"].Value);
         int board_height = int.Parse(boardNode.Attributes["height"].Value);
         Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table);
@@ -122,10 +120,10 @@ public class GameManager : MonoBehaviour
 
     private void LoadTurns(XmlNode turnNodes)
     {
-        UnitHandler = new List<GameObject>();
-
+        int turnId = 1;
         foreach (XmlNode turnNode in turnNodes)
         {
+            Turn newTurn = new(turnId);
             foreach (XmlNode unitNode in turnNode)
             {
 
@@ -136,36 +134,81 @@ public class GameManager : MonoBehaviour
                 int x = int.Parse(unitNode.Attributes["x"]?.Value);
                 int y = int.Parse(unitNode.Attributes["y"]?.Value);
 
-                GameObject prefab = GetPrefabByType(type);
-                if (prefab == null) continue;
 
-                Unit unitComponent = prefab.GetComponent<Unit>();
-                unitComponent.Initialize(id, role, type, action, x, y);
-                UnitHandler.Add(prefab);
-            
-                ManageActions(action, x, y, unitComponent, prefab);
 
+                Unit unitComponent = new Unit(id, role, type, x, y, action);
+                newTurn.Units.Add(unitComponent);
             }
+            turnId++;
+            Turns.Add(newTurn);
+        }
+      
+        PlayGame();
+    }
+
+    public void PlayGame(){
+        foreach(Turn turn in Turns)
+        {
+            if(turn.Id == currentTurn)
+            {
+                foreach(Unit unit in turn.Units)
+                {
+                    ManageActions(unit);
+                }
+            }
+        }
+        if (isAutomatic) currentTurn++;
+        if (currentTurn > Turns.Count) isAutomatic = !isAutomatic;
+    }
+
+    public void GoForward()
+    {
+        currentTurn++;
+        PlayGame();
+    }
+
+    public void GoBack()
+    {
+        currentTurn--;
+        PlayGame();
+    }
+
+    public void RestartGame()
+    {
+        currentTurn = 0;
+        // And Destroy all characters that have to make list and add them before.
+    }
+    
+    public void Update()
+    {
+        while(isAutomatic)
+        {
+            PlayGame();
         }
     }
 
-    private void ManageActions(string action, int x, int y, Unit unit, GameObject prefab)
-    {
-        switch (action)
+    private void ManageActions(Unit unit)
+    {      
+        switch (unit.Action)
         {
             case "hold":
-                unit.Hold();
+                Debug.Log("holding");
+                Board.findCharacterInBoard(unit).GetComponent<Character>().Hold();
                 break;
             case "attack":
-                unit.Attack();
+                Debug.Log("attacking");
+                //Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
-                unit.MoveTo(Board,x, y);
+                Debug.Log("moving");
+                Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,unit.X,unit.Y);
                 break;
             case "spawn":
-                unit.Spawn(prefab,Board, x, y);
+                GameObject prefab = GetPrefabByType(unit.Type);
+                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id);
                 break;
         }
+        return;
     }
 
     private GameObject GetPrefabByType(string type)

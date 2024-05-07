@@ -8,13 +8,11 @@ public class Board : MonoBehaviour
     public int Width { get; private set; }
     public int Height { get; private set; }
     private GameObject baseBoard;
-    //private List<Tile> Tiles;
     Dictionary<string,Material> TileAndMaterial = new Dictionary<string, Material>();
     private GameObject[,] tilesGenerated; 
-    private List<Tile> tiles;
+    
 
     public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table ){
-        Debug.Log("Board Board Board is creating!!!");
         Width = width;
         Height = height;
         Table = table;
@@ -46,10 +44,6 @@ public class Board : MonoBehaviour
         }
 
     private void createTiles(){
-        foreach (var kvp in TileAndMaterial)
-    {
-        Debug.Log("Key: " + kvp.Key + ", Value: " + kvp.Value);
-    }
     int i=0;
     tilesGenerated = new GameObject[Width,Height];
         for(int y = Height - 1; y >= 0; y--){
@@ -61,9 +55,10 @@ public class Board : MonoBehaviour
             }
         }
 
-    private GameObject create1Tile(int x , int y,string type){
-        GameObject tile_created = new GameObject(string.Format("X{0},Y{1}",x,y)); //X0Y0, X1Y0, X2Y0, X0Y1, X1Y1, X2Y1...
-        tile_created.transform.parent = baseBoard.transform; 
+    private GameObject create1Tile(int x , int y,string type){ //question with teacher (nomenclature)
+        GameObject tile_created = new GameObject(string.Format("X{0}Y{1}", x + 1, y + 1)); //X1.
+        tile_created.transform.parent = baseBoard.transform;
+        // Debug.Log("base board transform do crete1tile : " + baseBoard.transform); 
 
         Mesh mesh = new Mesh();
         tile_created.AddComponent<MeshFilter>().mesh = mesh;
@@ -96,18 +91,69 @@ public class Board : MonoBehaviour
         return tile_created; 
 
     }
-    public Vector3 FindPositionOfTile(string tipo,int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
-        string tileName = ("X"+valueX+",Y"+valueZ);
+    public Vector3 FindPositionOfTile(int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
+        Transform tile = getTileFromName(valueX,valueZ);
+        Debug.Log("X: " + tile.transform.position.x + " Z: " +tile.transform.position.z );
+        if(tile!=null)
+            return tile.position;
+            //new Vector3(tile.transform.position.x + (tile.transform.localScale.x/2f) , 1.91f, tile.transform.position.z + (tile.transform.localScale.z/2f) );
+    
+    //CHANGE TO THE FUNCTION BELOW WHEN ITS DONE
+        //SpecificPosition(tile);
+        return Vector3.zero;
+    }
 
+    public Transform getTileFromName(int valueX, int valueZ){
+        string tileName = ("X"+ valueX +"Y" + valueZ);
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
-                Debug.Log("Estamos aqui:"+ new Vector3(tile.transform.position.x+valueX, 1.872f, tile.transform.position.z+valueZ)+"Eu sou: "+tipo);
-                return new Vector3(tile.transform.position.x+valueX, 1.872f, tile.transform.position.z+valueZ);
+                return tile.transform;
             }
         }
-    return Vector3.zero;
+        return null;
     }
-        
+    
+    public Transform getBoardByName(){
+        return baseBoard.transform;
+    }
+    private Vector3 SpecificPosition(GameObject tile){
+        switch (nrOfCharactersInTile(tile)){
+            case 1:
+               
+               //all characters and the new one need to change position
+            break;
+            case 2:
+                //all characters and the new one need to change position
+            break;
+            case 3:
+                 //all characters and the new one need to change position
+            break;
+            case 4:
+                throw new UnityException("Error: Too many characters in the tile.");
+            break;
+            default:
+                return new Vector3(tile.transform.position.x + (tile.transform.localScale.x/2f) , 1.91f, tile.transform.position.z + (tile.transform.localScale.z/2f) );
+            break;
+        }
+
+            return Vector3.zero;
+    }
+
+    private int nrOfCharactersInTile(GameObject tile){
+        return tile.transform.childCount;
+    }
+
+    public GameObject findCharacterInBoard(Unit unit){
+            foreach(Transform child in baseBoard.transform){
+                if(child.GetComponent<Character>() != null){
+                    Character character = child.GetComponent<Character>();
+                    if(character.Role == unit.Role && character.Id == unit.Id && child.tag == unit.Type)
+                        return child.gameObject;
+                }
+        }
+        //Debug.Log("not found");
+        return null;
+    }
 
 
     
