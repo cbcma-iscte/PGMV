@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 2553060034277268786}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 7909116329055765543, guid: 19c467f3816f597419cc4d18dfdc755c, type: 3}
-  Id: 
-  Role: 
+  Id: 2
+  Role: player 1
   prefab: {fileID: 2553060034277268786}
   isDead: 0
   duration: 5

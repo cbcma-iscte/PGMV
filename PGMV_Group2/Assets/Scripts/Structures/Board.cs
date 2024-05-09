@@ -41,7 +41,12 @@ public class Board : MonoBehaviour
         baseBoard.transform.localRotation = Quaternion.Euler(new Vector3(0f,0f, Table.transform.localRotation.z));
         
         baseBoard.transform.localPosition = new Vector3(0- (boardWidth / 2),1.415f,0-(boardHeight / 2));
+        
         }
+    
+    public Transform getBoardByName(){
+        return baseBoard.transform;
+    }
 
     private void createTiles(){
     int i=0;
@@ -91,6 +96,7 @@ public class Board : MonoBehaviour
         return tile_created; 
 
     }
+
     public Vector3 FindPositionOfTile(int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
         Transform tile = getTileFromName(valueX,valueZ);
         Debug.Log("X: " + tile.transform.position.x + " Z: " +tile.transform.position.z );
@@ -113,10 +119,8 @@ public class Board : MonoBehaviour
         return null;
     }
     
-    public Transform getBoardByName(){
-        return baseBoard.transform;
-    }
-    private Vector3 SpecificPosition(GameObject tile){
+    
+    /*private Vector3 SpecificPosition(GameObject tile){
         switch (nrOfCharactersInTile(tile)){
             case 1:
                
@@ -138,23 +142,22 @@ public class Board : MonoBehaviour
 
             return Vector3.zero;
     }
-
-    private int nrOfCharactersInTile(GameObject tile){
-        return tile.transform.childCount;
-    }
+    */
+    
 
     public GameObject findCharacterInBoard(Unit unit){
-            foreach(Transform child in baseBoard.transform){
-                if(child.GetComponent<Character>() != null){
-                    Character character = child.GetComponent<Character>();
-                    if(character.Role == unit.Role && character.Id == unit.Id && child.tag == unit.Type)
-                        return child.gameObject;
-                }
+        foreach(Transform child in baseBoard.transform){
+            if(child.GetComponent<Character>() != null){
+                Character character = child.GetComponent<Character>();
+                if(character.Role == unit.Role && character.Id == unit.Id && child.tag == unit.Type)
+                    return child.gameObject;
+            }
         }
-        //Debug.Log("not found");
+        Debug.Log("not found");
         return null;
     }
 
+    
 
     
 }
