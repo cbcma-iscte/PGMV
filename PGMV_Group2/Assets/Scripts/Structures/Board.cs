@@ -119,32 +119,6 @@ public class Board : MonoBehaviour
         return null;
     }
     
-    
-    /*private Vector3 SpecificPosition(GameObject tile){
-        switch (nrOfCharactersInTile(tile)){
-            case 1:
-               
-               //all characters and the new one need to change position
-            break;
-            case 2:
-                //all characters and the new one need to change position
-            break;
-            case 3:
-                 //all characters and the new one need to change position
-            break;
-            case 4:
-                throw new UnityException("Error: Too many characters in the tile.");
-            break;
-            default:
-                return new Vector3(tile.transform.position.x + (tile.transform.localScale.x/2f) , 1.91f, tile.transform.position.z + (tile.transform.localScale.z/2f) );
-            break;
-        }
-
-            return Vector3.zero;
-    }
-    */
-    
-
     public GameObject findCharacterInBoard(Unit unit){
         foreach(Transform child in baseBoard.transform){
             if(child.GetComponent<Character>() != null){

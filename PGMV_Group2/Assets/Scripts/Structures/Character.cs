@@ -6,6 +6,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     public GameObject weapon;
 
+    public IntPair lastPosition;
     private Vector3 finalPosition;
     public string Id;
     public string Role;
@@ -13,6 +14,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     public GameObject prefab;
     public bool isDead;
+    public bool canMove = false;
     public float duration = 5f;
     private float timer = 0f;
 
@@ -45,17 +47,14 @@ public class Character : MonoBehaviour
     public GameObject Spawn(GameObject prefab,Board board, int x, int y,string role,string id)
     {   
         Initialize(id,role);
-        this.prefab = prefab;
-
-        GameObject newObject = Instantiate(prefab, new Vector3(board.getBoardByName().position.x, board.getBoardByName().position.y , board.getBoardByName().position.z), Quaternion.identity);
+        Debug.Log("x : " + x);
+        GameObject newObject = Instantiate(prefab, new Vector3(board.getBoardByName().position.x+x, board.getBoardByName().position.y , board.getBoardByName().position.z+y), Quaternion.identity);
         string uniqueName = prefab.name + "-" + id;
         newObject.transform.SetParent(board.getBoardByName(),true);
-
         finalPosition = transform.position;
         newObject.name = uniqueName;
         IntPair newPair = new IntPair(x, y); 
         trail.Add(newPair);
-        
         return newObject;
 
     }
@@ -71,6 +70,7 @@ public class Character : MonoBehaviour
         }else{        
             IntPair newPair = new IntPair(x, y); // Example values
             finalPosition = new Vector3(transform.localPosition.x+x,transform.localPosition.y,transform.localPosition.z+y);
+            canMove = true;
             trail.Add(newPair);
         }
     }
@@ -112,19 +112,45 @@ public class Character : MonoBehaviour
         //Soldier attacks with the sword in its own tile
     }
 
+    private List<GameObject> GetCharactersAt(Board b, int x, int y)
+    {
+        List<GameObject> characters = new List<GameObject>();
+        foreach(Transform child in b.getBoardByName()){
+            if(child.GetComponent<Character>() != null && child.GetComponent<Character>().trail.Count > 0){
+                List<IntPair> charTrail = child.GetComponent<Character>().trail;
+                IntPair lastTrail = charTrail[charTrail.Count - 1];
+                if(child.GetComponent<Character>().Role != this.Role && lastTrail.coordX == x && lastTrail.coordY == y){
+                    characters.Add(child.gameObject);
+                }
+            }
+        }
+        return characters;
+    }
+
+    private int GetNrCharacters(Board b, int x, int y)
+    {
+        if ( GetCharactersAt(b, x, y).Count < 1)
+            return 1;
+        else 
+            return GetCharactersAt(b, x, y).Count;
+    }
+
     private void attackCharactersAt(Board b, int x, int y){
         List<GameObject> enemies = new List<GameObject>();
         foreach(Transform child in b.getBoardByName()){
-            if(child.GetComponent<Character>() != null){
-                /*if(child.GetComponent<Character>().Role != this.Role && child.GetComponent<Character>().trail[0].coordX == x && child.GetComponent<Character>().trail[trail.Count-1].coordY == y){
+            if(child.GetComponent<Character>() != null && child.GetComponent<Character>().trail.Count > 0){
+                List<IntPair> charTrail = child.GetComponent<Character>().trail;
+                IntPair lastTrail = charTrail[charTrail.Count - 1];
+                if(child.GetComponent<Character>().Role != this.Role && lastTrail.coordX == x && lastTrail.coordY == y){
                     enemies.Add(child.gameObject);
-                    foreach(IntPair element in child.GetComponent<Character>().trail)
-                        Debug.Log("Trail"+ element.coordX +","+element.coordY);
-                }*/
+                    Debug.Log( "added enemy " + child.GetComponent<Character>().Id);
+                    Debug.Log( "x,y : " + lastTrail.coordX + ", " + lastTrail.coordY);
+                }
             }
         }
         if(enemies.Count!=0){
             foreach(GameObject enemy in enemies){
+                Debug.Log(" dying");
                 enemy.GetComponent<Character>().Die();
             } //need pontuation and verify end of turn doesnt have a character left in that spot
         }
@@ -139,7 +165,7 @@ public class Character : MonoBehaviour
         //logic
         isDead = true;
         //Destroy
-        Destroy(gameObject);
+        Destroy(this.gameObject);
     }
     private IEnumerator GetScaleAndOpacityToZero(){
     while (timer < duration)
@@ -164,9 +190,10 @@ public class Character : MonoBehaviour
     }
 
     public void Update(){
-        if(transform.position!=finalPosition){
+        if(transform.position!=finalPosition && canMove){
+            Debug.Log("final position : " + finalPosition);
             transform.localPosition = Vector3.MoveTowards(transform.localPosition,finalPosition, speed * Time.deltaTime);     
         }
-        
+        canMove = false;
     }
 }
