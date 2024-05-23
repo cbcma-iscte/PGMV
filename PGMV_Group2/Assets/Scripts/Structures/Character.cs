@@ -48,13 +48,16 @@ public class Character : MonoBehaviour
     {   
         Initialize(id,role);
         Debug.Log("x : " + x);
-        GameObject newObject = Instantiate(prefab, new Vector3(board.getBoardByName().position.x+x, board.getBoardByName().position.y + 0.5f , board.getBoardByName().position.z+y), Quaternion.identity);
+        GameObject newObject = Instantiate(prefab, board.getBoardByName());
+        newObject.transform.localPosition = new Vector3(x - 0.5f, 0.5f,y - 0.5f );
+        Debug.Log("Position before : " + newObject.transform.position);
         string uniqueName = prefab.name + "-" + id;
-        newObject.transform.SetParent(board.getBoardByName(),true);
+    
         finalPosition = transform.position;
         newObject.name = uniqueName;
         IntPair newPair = new IntPair(x, y); 
         trail.Add(newPair);
+        Debug.Log("Position after : " + newObject.transform.position);
         return newObject;
 
     }
