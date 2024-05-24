@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &8174044968585015126
+--- !u!1001 &8798451698741286829
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
       propertyPath: m_Name
-      value: Soldier
+      value: Soldier 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -74,23 +74,23 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4214544614980664396}
+      addedObject: {fileID: 4007982857510521166}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5674640439321522806}
+      addedObject: {fileID: 5019652275684352914}
   m_SourcePrefab: {fileID: 100100000, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
---- !u!1 &9057129480846905863 stripped
+--- !u!1 &8564448899386125052 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
-  m_PrefabInstance: {fileID: 8174044968585015126}
+  m_PrefabInstance: {fileID: 8798451698741286829}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4214544614980664396
+--- !u!114 &4007982857510521166
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9057129480846905863}
+  m_GameObject: {fileID: 8564448899386125052}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b371162c3c6fb70459c4e6423b338b35, type: 3}
@@ -99,17 +99,17 @@ MonoBehaviour:
   weapon: {fileID: 1051571768989249988, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
   Id: 
   Role: 
-  prefab: {fileID: 9057129480846905863}
+  prefab: {fileID: 8564448899386125052}
   isDead: 0
   duration: 5
---- !u!95 &-5674640439321522806
+--- !u!95 &5019652275684352914
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9057129480846905863}
+  m_GameObject: {fileID: 8564448899386125052}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 699dba5cdae758d40843c92134025907, type: 2}
