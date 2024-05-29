@@ -53,13 +53,14 @@ public class TerrainGenerator : MonoBehaviour
 
                 // Scale to maximum elevation
                 float height = elevation * maxElevation;
+                // THIS DATA ARE OK BASED ON HIGH MAX ELEVATION
                 Debug.Log("Elevation at " + x + ", " + y + ": " + height);
 
                 heights[x, y] = height;
 
             }
         }
-        // Debugging
+        // Debugging WHY NOT SETTING HEIGHTS properly??? TODO
         terrain.terrainData.SetHeights(0, 0, heights);
         Debug.Log("Terrain generated");
     }
@@ -67,6 +68,7 @@ public class TerrainGenerator : MonoBehaviour
 
     void ScatterObjects(SquareData squareData)
     {
+        // IF HEIGH ARE CORRECT, THEN THIS SHOULD WORK.
         foreach (ObjectData objData in squareData.Objects)
         {
             GameObject prefab = GetPrefabByType(objData.Type);
