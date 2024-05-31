@@ -11,7 +11,7 @@ TagManager:
   - catapult
   - soldier
   - mage
-  - Archer
+  - Tile
   layers:
   - Default
   - TransparentFX

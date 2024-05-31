@@ -65,10 +65,13 @@ public class GameManager : MonoBehaviour
     private void LoadRoles(XmlNode rolesNode)
     {
         Roles = new List<Role>();
+        
         foreach (XmlNode roleNode in rolesNode)
         {
-            Roles.Add(new Role { Name = roleNode.Attributes["name"].Value });
+            Roles.Add(new Role { Name = roleNode.Attributes["name"].Value});
+            
         }
+
     }
 
     private void LoadBoard(XmlNode boardNode){
@@ -133,7 +136,6 @@ public class GameManager : MonoBehaviour
                 string action = unitNode.Attributes["action"]?.Value;
                 int x = int.Parse(unitNode.Attributes["x"]?.Value);
                 int y = int.Parse(unitNode.Attributes["y"]?.Value);
-
 
 
                 Unit unitComponent = new Unit(id, role, type, x, y, action);
@@ -205,7 +207,9 @@ public class GameManager : MonoBehaviour
                 break;
             case "spawn":
                 GameObject prefab = GetPrefabByType(unit.Type);
+                
                 prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id);
+                
                 break;
         }
         return;

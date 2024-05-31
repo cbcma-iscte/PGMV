@@ -53,15 +53,15 @@ public class Board : MonoBehaviour
     tilesGenerated = new GameObject[Width,Height];
         for(int y = Height - 1; y >= 0; y--){
             for(int x=0; x<Width; x++){
-                tilesGenerated[x,y] = create1Tile(x,y,Tiles[i].Type);
+                tilesGenerated[x,y] = create1Tile(x,y,Height - y,Tiles[i].Type);
                 i++;
                 }
                     
             }
         }
 
-    private GameObject create1Tile(int x , int y,string type){ //question with teacher (nomenclature)
-        GameObject tile_created = new GameObject(string.Format("X{0}Y{1}", x + 1, y + 1)); //X1.
+    private GameObject create1Tile(int x , int y,int place,string type){ //question with teacher (nomenclature)
+        GameObject tile_created = new GameObject(string.Format("X{0}Y{1}", x + 1, place)); //X1.
         tile_created.transform.parent = baseBoard.transform;
         // Debug.Log("base board transform do crete1tile : " + baseBoard.transform); 
 
@@ -92,27 +92,16 @@ public class Board : MonoBehaviour
         mesh.RecalculateNormals();
         tile_created.AddComponent<BoxCollider>();
         
-
+        tile_created.tag = "Tile";
         return tile_created; 
 
     }
 
-    public Vector3 FindPositionOfTile(int valueX, int valueZ) { //right board, gets the tile correct but i find the spot but, the character doesnt show there.
-        Transform tile = getTileFromName(valueX,valueZ);
-        Debug.Log("X: " + tile.transform.position.x + " Z: " +tile.transform.position.z );
-        if(tile!=null)
-            return tile.position;
-            //new Vector3(tile.transform.position.x + (tile.transform.localScale.x/2f) , 1.91f, tile.transform.position.z + (tile.transform.localScale.z/2f) );
-    
-    //CHANGE TO THE FUNCTION BELOW WHEN ITS DONE
-        //SpecificPosition(tile);
-        return Vector3.zero;
-    }
-
-    public Transform getTileFromName(int valueX, int valueZ){
+    public Transform getTileFromName(float valueX, float valueZ){
         string tileName = ("X"+ valueX +"Y" + valueZ);
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
+                Debug.Log("Name looking: " + tileName + "I am here:" + tile.transform.position);
                 return tile.transform;
             }
         }
@@ -132,6 +121,29 @@ public class Board : MonoBehaviour
     }
 
     
+    void Update()
+    {
+
+        if (Input.GetMouseButtonDown(0)){
+            Ray raycast = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Debug.Log("I hit");
+            if (Physics.Raycast(raycast, out hit,Mathf.Infinity) && hit.collider!=null)
+            {                
+                foreach (GameObject obj in transform){
+                    Debug.Log("Im hitting tag " + hit.collider.gameObject.tag );
+                    if (hit.collider.gameObject.tag != "Tile"){
+                        if(obj.GetComponent<Character>()!=null){
+                            Debug.Log("Im hitting character tag " + obj.tag );    
+                            obj.GetComponent<Character>().viewTrail();
+                        }
+                            
+                    }
+                }
+                
+            }
+        }
+    }
 
     
 }
