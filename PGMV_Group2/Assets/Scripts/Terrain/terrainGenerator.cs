@@ -1,8 +1,11 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class TerrainGenerator : MonoBehaviour
 {
+
+    static public int _TERRAIN_SCALE = 100;
     public Terrain terrain;
     public TextAsset xmlFile;
     public List<GameObject> treePrefabs;
@@ -22,7 +25,7 @@ public class TerrainGenerator : MonoBehaviour
         SquareData currentSquareData = squareDataDict[currentSquareType];
 
         GenerateTerrain(currentSquareData);
-        ScatterObjects(currentSquareData);
+        //ScatterObjects(currentSquareData);
     }
 
     void GenerateTerrain(SquareData squareData)
@@ -30,7 +33,9 @@ public class TerrainGenerator : MonoBehaviour
         terrainData = terrain.terrainData;
         float[,] heights = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
         float maxElevation = squareData.MaximumElevation;
-        terrainData.size = new Vector3(terrainData.size.x, maxElevation, terrainData.size.z);
+
+        // Set the maximum elevation
+        terrainData.size = new Vector3(terrainData.size.x, maxElevation * _TERRAIN_SCALE, terrainData.size.z);
         Debug.Log("Generating terrain with maximum elevation: " + maxElevation);
 
         for (int x = 0; x < terrainData.heightmapResolution; x++)
@@ -52,11 +57,7 @@ public class TerrainGenerator : MonoBehaviour
                                   (amplitude1 + amplitude2);
 
                 // Scale to maximum elevation
-                float height = elevation * maxElevation;
-                // THIS DATA ARE OK BASED ON HIGH MAX ELEVATION
-                Debug.Log("Elevation at " + x + ", " + y + ": " + height);
-
-                heights[x, y] = height;
+                heights[x, y] = elevation;
 
             }
         }
@@ -82,7 +83,8 @@ public class TerrainGenerator : MonoBehaviour
             {
                 for (int y = 0; y < terrainData.heightmapResolution; y++)
                 {
-                    float height = terrainData.GetHeight(x, y) / squareData.MaximumElevation;
+                    // Percentage of height
+                    float height = terrainData.GetHeight(x, y) / (squareData.MaximumElevation * _TERRAIN_SCALE);
                     Debug.Log("Height at " + x + ", " + y + ": " + height);
                     if (height < 0.2f && Random.value < densityLow)
                     {
@@ -91,7 +93,7 @@ public class TerrainGenerator : MonoBehaviour
                     }
                     else if (height > 0.8f && Random.value < densityHigh)
                     {
-                        //PlaceObject(prefab, x, y);
+                        PlaceObject(prefab, x, y);
                     }
                 }
             }
