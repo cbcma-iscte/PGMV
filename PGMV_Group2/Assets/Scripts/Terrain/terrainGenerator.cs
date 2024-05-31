@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 public class TerrainGenerator : MonoBehaviour
 {
 
-    static public int _TERRAIN_SCALE = 100;
+    static public int _TERRAIN_SCALE = 10;
     public Terrain terrain;
     public TextAsset xmlFile;
     public List<GameObject> treePrefabs;
@@ -19,13 +19,13 @@ public class TerrainGenerator : MonoBehaviour
     {
         TerrainParser parser = new TerrainParser { xmlFile = xmlFile };
         squareDataDict = parser.ParseXML();
-        
+
         // Assuming you have a way to determine the current square type
-        string currentSquareType = "forest"; // Example
+        string currentSquareType = "forest"; // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
         SquareData currentSquareData = squareDataDict[currentSquareType];
 
         GenerateTerrain(currentSquareData);
-        //ScatterObjects(currentSquareData);
+        ScatterObjects(currentSquareData);
     }
 
     void GenerateTerrain(SquareData squareData)
@@ -38,6 +38,18 @@ public class TerrainGenerator : MonoBehaviour
         terrainData.size = new Vector3(terrainData.size.x, maxElevation * _TERRAIN_SCALE, terrainData.size.z);
         Debug.Log("Generating terrain with maximum elevation: " + maxElevation);
 
+        // Using multiple frequencies of Perlin Noise
+        // Frequency determines hills and valleys. 
+        // For not random terrain, you can set the frequency to a fixed value (e.g. 2 or 3 is a good start)
+        // If you want to have more hills and valleys, increase the number of frequencies
+        float frequency1 = Random.Range(2f, 4f);
+        Debug.Log("Frequency 1: " + frequency1);
+        float frequency2 = Random.Range(2f, 6f);
+        Debug.Log("Frequency 2: " + frequency2);
+        // Amplitude determines the weight of each frequency
+        float amplitude1 = 0.5f;
+        float amplitude2 = 0.5f;
+
         for (int x = 0; x < terrainData.heightmapResolution; x++)
         {
             for (int y = 0; y < terrainData.heightmapResolution; y++)
@@ -45,15 +57,10 @@ public class TerrainGenerator : MonoBehaviour
                 float xCoord = (float)x / terrainData.heightmapResolution;
                 float yCoord = (float)y / terrainData.heightmapResolution;
 
-                // Using multiple frequencies of Perlin Noise
-                float frequency1 = 3f;
-                float frequency2 = 6f;
-                float amplitude1 = 0.5f;
-                float amplitude2 = 0.5f;
 
                 // Compute the noise value
                 float elevation = (Mathf.PerlinNoise(xCoord * frequency1, yCoord * frequency1) * amplitude1 +
-                                   Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) / 
+                                   Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) /
                                   (amplitude1 + amplitude2);
 
                 // Scale to maximum elevation
@@ -69,33 +76,29 @@ public class TerrainGenerator : MonoBehaviour
 
     void ScatterObjects(SquareData squareData)
     {
-        // IF HEIGH ARE CORRECT, THEN THIS SHOULD WORK.
-        foreach (ObjectData objData in squareData.Objects)
-        {
-            GameObject prefab = GetPrefabByType(objData.Type);
-            float densityLow = objData.DensityLowAltitude;
-            float densityHigh = objData.DensityHighAltitude;
-            Debug.Log("Scattering objects of type: " + objData.Type);
-            Debug.Log("Density low: " + densityLow);
-            Debug.Log("Density high: " + densityHigh);
+        int _EXPANSION_RANGE = 5;
 
-            for (int x = 0; x < terrainData.heightmapResolution; x++)
+        for (int x = _EXPANSION_RANGE; x < terrainData.heightmapResolution; x += _EXPANSION_RANGE)
+        {
+            for (int y = _EXPANSION_RANGE; y < terrainData.heightmapResolution; y += _EXPANSION_RANGE)
             {
-                for (int y = 0; y < terrainData.heightmapResolution; y++)
+                float height = terrainData.GetHeight(x, y) * _TERRAIN_SCALE / squareData.MaximumElevation;
+                ObjectData objData = squareData.Objects[Random.Range(0, squareData.Objects.Count)];
+                GameObject prefab = GetPrefabByType(objData.Type);
+                float densityLow = objData.DensityLowAltitude;
+                float densityHigh = objData.DensityHighAltitude;
+
+                if (height < 0.2f && Random.value < densityLow)
                 {
-                    // Percentage of height
-                    float height = terrainData.GetHeight(x, y) / (squareData.MaximumElevation * _TERRAIN_SCALE);
-                    Debug.Log("Height at " + x + ", " + y + ": " + height);
-                    if (height < 0.2f && Random.value < densityLow)
-                    {
-                        Debug.Log("Placing object at: " + x + ", " + y);
-                        PlaceObject(prefab, x, y);
-                    }
-                    else if (height > 0.8f && Random.value < densityHigh)
-                    {
-                        PlaceObject(prefab, x, y);
-                    }
+                    //Debug.Log("Placing object at: " + x + ", " + y);
+                    PlaceObject(prefab, x, y);
                 }
+                else if (height > 0.8f && Random.value < densityHigh)
+                {
+                    PlaceObject(prefab, x, y);
+                }
+                // Percentage of height
+                //Debug.Log("Height at " + x + ", " + y + ": " + height);
             }
         }
     }
