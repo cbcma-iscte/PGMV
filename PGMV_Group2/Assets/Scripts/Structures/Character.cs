@@ -26,10 +26,11 @@ public class Character : MonoBehaviour
 
     private bool TrailPainted = false;
     public bool canMove = false;
+    private bool isMoving = false;
     public bool isDead;
     public float duration = 5f;
     private float timer = 0f;
-    private float speed = 1.5f;
+    private float speed = 0.25f;
     public string Id;
     public string Role;
     [SerializeField]
@@ -37,6 +38,7 @@ public class Character : MonoBehaviour
     
     [SerializeField]
     public GameObject prefab;
+
     
     
     public class IntPair{
@@ -120,7 +122,7 @@ public class Character : MonoBehaviour
         }
 
         
-        newObject.transform.localPosition = new Vector3(x - 0.5f, positionY,(board.Height-y+1) - 0.5f );
+        newObject.transform.localPosition = findPosition(board,positionY,x,y);
        
         string uniqueName = prefab.name + "-" + id;
         
@@ -149,9 +151,13 @@ public class Character : MonoBehaviour
             Hold(); 
             canMove = false;
         }else if(this.tag=="mage"){
-        //needs to go up  
+            canMove = true;  
+            isMoving = true;
+            finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),(transform.localPosition.y + 0.5f), transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
+            lastPosition = new IntPair(x, y); 
         }else{     
             canMove = true;  
+            isMoving = true;
             finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),transform.localPosition.y, transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
             lastPosition = new IntPair(x, y); 
         }
@@ -161,23 +167,23 @@ public class Character : MonoBehaviour
     
  
 
-    public void Attack(Board board,int x, int y)
+    public void Attack(Board board, int x, int y)
     { 
 
         switch(this.tag){
             case "catapult": 
-                Debug.Log("catapult attacks");
+               // Debug.Log("catapult attacks");
                 defaultAttacks(board,x, y);
             break;
             case "mage":
-                Debug.Log("mage attacks");
+               // Debug.Log("mage attacks");
                 defaultAttacks(board,x, y);
             break;
             case "soldier":
                 soldierAttacks(board,x, y);
             break;
             case "archer":
-                Debug.Log("archer attacks");
+                // Debug.Log("archer attacks");
                 defaultAttacks(board,x, y);
             break;
             default:
@@ -202,6 +208,37 @@ public class Character : MonoBehaviour
          //change scene to animation (PART2 for SOLDIER ONLY if hold still needs to do)
     }
 
+
+    private Vector3 findPosition(Board board,float positionY, int x, int y){
+        int i = 0;
+        Vector3 position = new Vector3();
+        foreach(Transform child in board.getBoardByName()){
+            if(child.GetComponent<Character>()!=null){              
+                if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , board.Height)){
+                    i++;
+                }
+            }
+        }
+        switch (i){
+            case 0:
+            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f);
+            break;
+
+            case 1:
+            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.25f) ;
+            break;
+
+            case 2: 
+            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.75f) ;
+            break;  
+
+            case 3:
+            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.25f) ;
+            break;
+        }
+        return position;
+    }
+
     
 
     
@@ -211,29 +248,20 @@ public class Character : MonoBehaviour
         List<GameObject> enemies = new List<GameObject>();
         foreach(Transform child in b.getBoardByName()){
             if(child.tag!="Tile" && child.GetComponent<Character>()!=null){    
-                Debug.Log("child " + child.name + "pos " + child.localPosition);          
                 if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , b.Height)){
                     enemies.Add(child.gameObject);
                 }
             }     
         }
-        Debug.Log(enemies.Count);
         if(enemies.Count!=0){
             foreach(GameObject enemy in enemies){
-                Debug.Log("enemy " + enemy.name);
+                
                 enemy.GetComponent<Character>().isDead = true;
             } //need pontuation 
         }
     }
 
     private bool isChildInTile(float posX ,  int x , float posY , int y, int height){
-       /* Debug.Log("x-1 : " + (x-1));
-        Debug.Log("pos : " + posX);
-        Debug.Log("x : " + x);
-        Debug.Log("h-y : " + (height-y));
-        Debug.Log("pos : " + posY);
-        Debug.Log("h-y+1 : " + (height-y+1));
-        */
         if((x-1)<posX && posX<x && (height-y)<posY && posY<(height-y+1)){
             return true;
         }
@@ -278,12 +306,29 @@ public class Character : MonoBehaviour
             }
         }
 
-        if(Vector3.Distance(transform.localPosition,finalPosition)>0.1f && canMove){
-            transform.localPosition = Vector3.MoveTowards(transform.localPosition,finalPosition, speed * Time.deltaTime);     
+        if(Vector3.Distance(transform.localPosition,finalPosition)>0.1f && canMove && isMoving){
+            if(tag == "mage" && transform.localPosition.y<0.5f){
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition,new Vector3(transform.localPosition.x,0.5f,transform.localPosition.z), speed * Time.deltaTime); 
+            }else{
+               transform.localPosition = Vector3.MoveTowards(transform.localPosition,finalPosition, speed * Time.deltaTime);     
+            }
         }
 
-        if(Vector3.Distance(transform.localPosition,finalPosition)<=0.1f && canMove){
-            canMove = false;
+        if(Vector3.Distance(transform.localPosition,finalPosition)<=0.1f && canMove && isMoving){
+            isMoving = false;
+            if(tag!="mage"){
+                canMove = false;
+            }
+        }
+        
+        if( canMove && !isMoving ){
+            if(transform.localPosition.y>0.25f){
+                transform.localPosition = Vector3.MoveTowards(transform.localPosition,new Vector3(transform.localPosition.x,0.25f,transform.localPosition.z), speed * Time.deltaTime);     
+            }
+            else{
+                canMove = false;
+            }
+           
         }
 
         if(isDead && !canMove ){
