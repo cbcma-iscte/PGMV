@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
-
+using System.Collections;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject Table;
@@ -116,7 +116,7 @@ public class GameManager : MonoBehaviour
         int board_height = int.Parse(boardNode.Attributes["height"].Value);
         Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table);
 
-        Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
+        //Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
 
     }
 
@@ -148,25 +148,48 @@ public class GameManager : MonoBehaviour
         PlayGame();
     }
 
-    public void PlayGame(){
+    public IEnumerator PlayGame(){
+        
         foreach(Turn turn in Turns)
         {
             if(turn.Id == currentTurn)
             {
                 foreach(Unit unit in turn.Units)
                 {
-                    ManageActions(unit);
+                    if(unit.Action == "spawn" || unit.Action == "move_to" || unit.Action == "hold"){
+                        ManageActions(unit);
+                        if(Board.findCharacterInBoard(unit).GetComponent<Character>().canMove){
+                            yield return StartCoroutine(WaitMovement(Board.findCharacterInBoard(unit).GetComponent<Character>()));
+                        }
+                    }
+                   
+                }
+                foreach(Unit unit in turn.Units)
+                {
+                    if(unit.Action == "attack"){
+                        ManageActions(unit);
+                    }
+                    
                 }
             }
         }
+
+
         if (isAutomatic) currentTurn++;
         if (currentTurn > Turns.Count) isAutomatic = !isAutomatic;
+    }
+
+    public IEnumerator WaitMovement(Character character){
+        while(character.canMove){
+            yield return null; 
+        }
+       
     }
 
     public void GoForward()
     {
         currentTurn++;
-        PlayGame();
+        StartCoroutine(PlayGame());
     }
 
     public void GoBack()
@@ -194,25 +217,21 @@ public class GameManager : MonoBehaviour
         switch (unit.Action)
         {
             case "hold":
-                Debug.Log("holding");
                 Board.findCharacterInBoard(unit).GetComponent<Character>().Hold();
                 break;
             case "attack":
-                Debug.Log("attacking");
+                
                 Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
-                Debug.Log("moving");
                 Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,unit.X,unit.Y);
                 break;
             case "spawn":
                 GameObject prefab = GetPrefabByType(unit.Type);
-                
-                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id);
-                
+                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id,Roles);
                 break;
         }
-        return;
+        
     }
 
     private GameObject GetPrefabByType(string type)

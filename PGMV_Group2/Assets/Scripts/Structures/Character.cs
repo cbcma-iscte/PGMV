@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
+using Unity.VisualScripting;
 public class Character : MonoBehaviour
 {
 
@@ -19,22 +20,25 @@ public class Character : MonoBehaviour
     [SerializeField]
     public TrailRenderer trailRenderer;    
     
-    [SerializeField]
-    public IntPair lastPosition = null;
+    
+    public IntPair lastPosition;
     private Vector3 finalPosition;
-    private bool canMove = false;
+
+    private bool TrailPainted = false;
+    public bool canMove = false;
     public bool isDead;
     public float duration = 5f;
     private float timer = 0f;
     private float speed = 1.5f;
-
     public string Id;
     public string Role;
+    [SerializeField]
+    public string Roles_Names;
     
     [SerializeField]
     public GameObject prefab;
     
-
+    
     public class IntPair{
     public int coordX { get; set; }
     public int coordY { get; set; }
@@ -47,8 +51,13 @@ public class Character : MonoBehaviour
 
     }
 
+    private void Awake(){
+        lastPosition = new IntPair(0,0);
+    }
+
     private void Start()
-    {
+    { 
+        lastPosition = new IntPair(0,0);
         trailRenderer = GetComponent<TrailRenderer>();
         
         if (trailRenderer != null)
@@ -70,16 +79,10 @@ public class Character : MonoBehaviour
             trailMaterial.renderQueue = 3000;
             
             trailRenderer.material = trailMaterial;
-
-            if( Role== "player 1"){
-                Color c = Color.blue;
-                c.a = alpha;
-            trailRenderer.material.SetColor("_Color", c);
-            }else{
-               Color c = Color.red;
-                c.a = alpha;
-               trailRenderer.material.SetColor("_Color", c);
-            }
+            Color c = Color.white;
+            c.a = alpha;
+            trailRenderer.material.SetColor("_Color",c);
+            
             
             trailRenderer.enabled = true;
         }
@@ -89,11 +92,13 @@ public class Character : MonoBehaviour
         }
     }
     
-    public void Initialize(string id, string role)
+    public void Initialize(string id, string role,List<Role> roles)
     {
         Id = id;
         Role = role;
         isDead = false;
+        Roles_Names = roles[0].Name;
+        
         
     }
 
@@ -102,11 +107,11 @@ public class Character : MonoBehaviour
 
      
     
-    public GameObject Spawn(GameObject prefab,Board board, int x, int y,string role,string id)
+    public GameObject Spawn(GameObject prefab,Board board, int x, int y,string role,string id, List<Role> roles)
     {   
         
         lastPosition = new IntPair(x, y); 
-        Initialize(id,role);
+        Initialize(id,role,roles);
         GameObject newObject = Instantiate(prefab, board.getBoardByName());
         float positionY = 0.25f;
 
@@ -118,38 +123,39 @@ public class Character : MonoBehaviour
         newObject.transform.localPosition = new Vector3(x - 0.5f, positionY,(board.Height-y+1) - 0.5f );
        
         string uniqueName = prefab.name + "-" + id;
-    
+        
         finalPosition = transform.position;
         newObject.name = uniqueName;
         
         
-        //Debug.Log("this " + this.name + " " + this.lastPosition.coordX + " "+this.lastPosition.coordY);
         Color c = Color.white;
-        if(role == "player 1"){
+        if(role == roles[0].Name){
             c = Color.blue;
         }else{
             c= Color.red;
         }
         newObject.transform.Find("base").GetComponent<Renderer>().material.color = c;
-        //trailStart();
         
         return newObject;
 
     }
     
     public void MoveTo(Board board,int x, int y)
-    {
+    {   
+
         Transform boardOfCharacter = board.getBoardByName();
         /*soldier and archer move throught ground, mage flies, catapult doesnt move*/
         if(this.tag=="catapult"){
             Hold(); 
+            canMove = false;
         }else if(this.tag=="mage"){
         //needs to go up  
-        }else{       
+        }else{     
+            canMove = true;  
             finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),transform.localPosition.y, transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
-            canMove = true;
             lastPosition = new IntPair(x, y); 
         }
+        
     }
     
     
@@ -157,6 +163,7 @@ public class Character : MonoBehaviour
 
     public void Attack(Board board,int x, int y)
     { 
+
         switch(this.tag){
             case "catapult": 
                 Debug.Log("catapult attacks");
@@ -200,46 +207,76 @@ public class Character : MonoBehaviour
     
 
     private void attackCharactersAt(Board b, int x, int y){
-        Debug.Log("im here");
+       
         List<GameObject> enemies = new List<GameObject>();
-        
         foreach(Transform child in b.getBoardByName()){
-            if(child.GetComponent<Character>()!=null && lastPosition!=null){
-                 Debug.Log("character position: " + child.name + " " + child.GetComponent<Character>().lastPosition.coordX + child.GetComponent<Character>().lastPosition.coordY + "THE X AND Y" + x + y);
-                 if(child.GetComponent<Character>().lastPosition.coordX == x && child.GetComponent<Character>().lastPosition.coordY == y){
-                    Debug.Log("Child to attack " + child.name);
+            if(child.tag!="Tile" && child.GetComponent<Character>()!=null){    
+                Debug.Log("child " + child.name + "pos " + child.localPosition);          
+                if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , b.Height)){
                     enemies.Add(child.gameObject);
                 }
-            }
+            }     
         }
+        Debug.Log(enemies.Count);
         if(enemies.Count!=0){
             foreach(GameObject enemy in enemies){
+                Debug.Log("enemy " + enemy.name);
                 enemy.GetComponent<Character>().isDead = true;
             } //need pontuation 
         }
     }
 
-    public void viewTrail(){
+    private bool isChildInTile(float posX ,  int x , float posY , int y, int height){
+       /* Debug.Log("x-1 : " + (x-1));
+        Debug.Log("pos : " + posX);
+        Debug.Log("x : " + x);
+        Debug.Log("h-y : " + (height-y));
+        Debug.Log("pos : " + posY);
+        Debug.Log("h-y+1 : " + (height-y+1));
+        */
+        if((x-1)<posX && posX<x && (height-y)<posY && posY<(height-y+1)){
+            return true;
+        }
+            
+        return false;
+    }
+
+    private void viewTrail(){
             if(alpha > 0f){
                 alpha = 0f;
             }else{
                 alpha = 1f;
             }
-
-            if(Role == "player 1"){
+            
+            if(Role == Roles_Names){
                Color c = Color.blue;
                 c.a = alpha; 
-               trailRenderer.material.SetColor("_Color", c);
+            this.trailRenderer.material.SetColor("_Color", c);
             }else{  
                 Color c = Color.red;
                 c.a = alpha; 
                trailRenderer.material.SetColor("_Color", c);
             }
             Debug.Log("my alpha " + alpha);
-
+            
     }
 
     void Update(){
+        
+      
+        if (Input.GetMouseButtonDown(0)) {
+            Ray raycast = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(raycast, out hit,Mathf.Infinity) && hit.collider!=null)
+            {
+                if(hit.collider.gameObject.GetComponent<Character>()!=null){         
+                    if (hit.collider.gameObject.GetComponent<Character>().Id == this.Id){
+                        viewTrail();
+                    }
+                }       
+            }
+        }
 
         if(Vector3.Distance(transform.localPosition,finalPosition)>0.1f && canMove){
             transform.localPosition = Vector3.MoveTowards(transform.localPosition,finalPosition, speed * Time.deltaTime);     
@@ -250,10 +287,9 @@ public class Character : MonoBehaviour
         }
 
         if(isDead && !canMove ){
-
             if(!smoking){
                 smoking = true;
-                if(Role == "player 1"){
+                if(Role == Roles_Names){
                     theSmoke = Instantiate(smokeDeath_blue, transform.position, transform.rotation);
                 }else{
                     theSmoke = Instantiate(smokeDeath_red, transform.position, transform.rotation);

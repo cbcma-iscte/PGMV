@@ -121,29 +121,6 @@ public class Board : MonoBehaviour
     }
 
     
-    void Update()
-    {
-
-        if (Input.GetMouseButtonDown(0)){
-            Ray raycast = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            Debug.Log("I hit");
-            if (Physics.Raycast(raycast, out hit,Mathf.Infinity) && hit.collider!=null)
-            {                
-                foreach (GameObject obj in transform){
-                    Debug.Log("Im hitting tag " + hit.collider.gameObject.tag );
-                    if (hit.collider.gameObject.tag != "Tile"){
-                        if(obj.GetComponent<Character>()!=null){
-                            Debug.Log("Im hitting character tag " + obj.tag );    
-                            obj.GetComponent<Character>().viewTrail();
-                        }
-                            
-                    }
-                }
-                
-            }
-        }
-    }
 
     
 }
