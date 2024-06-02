@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.17331204, g: 0.21663477, b: 0.2986891, a: 1}
+  m_IndirectSpecularColor: {r: 0.17331189, g: 0.2166344, b: 0.29868826, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6040,63 +6040,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}
---- !u!1001 &8099746207681275786
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.23298764
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.00000047683716
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -2.0990124
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8573362659132000445, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9057129480846905863, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
-      propertyPath: m_Name
-      value: Soldier
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6111,4 +6054,3 @@ SceneRoots:
   - {fileID: 264453732}
   - {fileID: 1754980351}
   - {fileID: 855725823}
-  - {fileID: 8099746207681275786}

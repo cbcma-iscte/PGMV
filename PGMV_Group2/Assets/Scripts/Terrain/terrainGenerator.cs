@@ -12,8 +12,13 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> rockPrefabs;
     public List<GameObject> housePrefabs;
 
-    private TerrainData terrainData;
+    public Battle battleScript;
+
+    public TerrainData terrainData;
     private Dictionary<string, SquareData> squareDataDict;
+
+    // GameManager will change this value when changing scene and invoking this script
+    public string tileType;
 
     void Start()
     {
@@ -21,7 +26,7 @@ public class TerrainGenerator : MonoBehaviour
         squareDataDict = parser.ParseXML();
 
         // Assuming you have a way to determine the current square type
-        string currentSquareType = "forest"; // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
+        string currentSquareType = "village"; // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
         SquareData currentSquareData = squareDataDict[currentSquareType];
 
         GenerateTerrain(currentSquareData);
@@ -33,6 +38,15 @@ public class TerrainGenerator : MonoBehaviour
         terrainData = terrain.terrainData;
         float[,] heights = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
         float maxElevation = squareData.MaximumElevation;
+        int spawnPointAttackerX = Random.Range(1, terrainData.heightmapResolution);
+        int spawnPointAttackerY = Random.Range(1, terrainData.heightmapResolution);
+
+        int spawnPointDefenderX = Random.Range(1, terrainData.heightmapResolution);
+        int spawnPointDefenderY = Random.Range(1, terrainData.heightmapResolution);
+
+        int saveX = 0;
+        int saveY = 0;
+
 
         // Set the maximum elevation
         terrainData.size = new Vector3(terrainData.size.x, maxElevation * _TERRAIN_SCALE, terrainData.size.z);
@@ -65,14 +79,28 @@ public class TerrainGenerator : MonoBehaviour
 
                 // Scale to maximum elevation
                 heights[x, y] = elevation;
+                if (spawnPointAttackerX == x && spawnPointAttackerY == y)
+                {
+                    Debug.Log("x : " + x + ", y : " + y);
+                    saveX = (int)xCoord;
+                    saveY = (int)yCoord;
+                }
 
             }
         }
         // Debugging WHY NOT SETTING HEIGHTS properly??? TODO
         terrain.terrainData.SetHeights(0, 0, heights);
         Debug.Log("Terrain generated");
+
+         battleScript.SpawnAttackingSoldier(spawnPointAttackerX, terrainData.GetHeight(saveX, saveY), spawnPointAttackerY);
+         battleScript.SpawnDefendingSoldier(spawnPointDefenderX, terrainData.GetHeight(spawnPointDefenderX, spawnPointDefenderY), spawnPointDefenderY);
+
     }
 
+    public TerrainData GetTerraintData()
+    {
+        return terrainData;
+    }
 
     void ScatterObjects(SquareData squareData)
     {
