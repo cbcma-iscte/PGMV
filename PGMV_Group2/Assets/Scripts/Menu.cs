@@ -22,10 +22,10 @@ public class Menu : MonoBehaviour
         foreach(GameObject game in Games)
         {
             if(isPlayingAutomatic){
-                game.GetComponent<GameManager>().isAutomatic = false;
+                game.GetComponent<GameManager>().PauseResumeGame();
         
             }else{
-                game.GetComponent<GameManager>().isAutomatic = true; 
+                game.GetComponent<GameManager>().PauseResumeGame(); 
             }
             isPlayingAutomatic=!isPlayingAutomatic;
         }
@@ -68,5 +68,12 @@ public class Menu : MonoBehaviour
         }
     }
 
+    void Update(){
+        
+         if (Input.GetKeyDown(KeyCode.P))
+        {
+            start_pause_Game();
+        }
+    }
     
 }

@@ -18,6 +18,7 @@ public class Projectile : MonoBehaviour
     public void AttackPosition(Vector3 attackPos){
         finalPosition = attackPos;
         transform.localPosition = myPosition;
+        transform.LookAt(finalPosition);
         isAttacking = true;
        
     }

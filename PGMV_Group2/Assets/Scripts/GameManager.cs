@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public int currentTurn = 1;
 
     public bool isAutomatic = false;
+    public bool isPaused = false;
     
     private void Awake()
     {
@@ -148,6 +149,14 @@ public class GameManager : MonoBehaviour
         PlayGame();
     }
 
+    public void PauseResumeGame(){
+        if(isPaused){
+            Time.timeScale = 1f;
+        }else{
+            Time.timeScale = 0f;
+        }
+        isPaused = !isPaused;
+    }
     public IEnumerator PlayGame(){
         
         foreach(Turn turn in Turns)
@@ -175,8 +184,9 @@ public class GameManager : MonoBehaviour
         }
 
 
-        if (isAutomatic) currentTurn++;
-        if (currentTurn > Turns.Count) isAutomatic = !isAutomatic;
+        
+        if (currentTurn > Turns.Count)Application.Quit();
+
     }
 
     public IEnumerator WaitMovement(Character character){
@@ -189,13 +199,18 @@ public class GameManager : MonoBehaviour
     public void GoForward()
     {
         currentTurn++;
-        StartCoroutine(PlayGame());
+        if(currentTurn<Turns.Count){
+            StartCoroutine(PlayGame());
+        }
     }
 
     public void GoBack()
     {
         currentTurn--;
-        PlayGame();
+        if(currentTurn>0){
+            StartCoroutine(PlayGame());
+        }
+        
     }
 
     public void RestartGame()
@@ -220,7 +235,6 @@ public class GameManager : MonoBehaviour
                 Board.findCharacterInBoard(unit).GetComponent<Character>().Hold();
                 break;
             case "attack":
-                
                 Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
@@ -251,4 +265,8 @@ public class GameManager : MonoBehaviour
                 return null;
         }
     }
+
+
+
+    
 }

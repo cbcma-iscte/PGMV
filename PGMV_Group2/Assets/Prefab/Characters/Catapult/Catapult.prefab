@@ -49,13 +49,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 1319038183929158516, guid: 795f2213a75ed904dba14a4425d621e5, type: 3}
+  characterTransparent: {fileID: 7245828039110839015, guid: 13e1b648eb6dbb64cb8a4bcea3ce1648, type: 3}
   smokeDeath_blue: {fileID: 3037947499009059709, guid: a56041f4974fbd940af5ee8aa6c2c082, type: 3}
   smokeDeath_red: {fileID: 131114246137923863, guid: a278f9f61f0996240b895adc206f76f0, type: 3}
   trailRenderer: {fileID: 0}
+  canMove: 0
   isDead: 0
   duration: 5
-  Id: 
-  Role: 
+  Id: 4
+  Role: player 1
+  Roles_Names: player 1
   prefab: {fileID: 4111593646660320200}
 --- !u!96 &-8482114148356894871
 TrailRenderer:

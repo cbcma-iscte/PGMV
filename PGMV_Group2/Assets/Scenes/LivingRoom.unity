@@ -860,6 +860,7 @@ MonoBehaviour:
   catapultPrefab: {fileID: 4111593646660320200, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
   currentTurn: 0
   isAutomatic: 0
+  isPaused: 0
 --- !u!4 &264453732
 Transform:
   m_ObjectHideFlags: 0
@@ -4201,8 +4202,9 @@ MonoBehaviour:
   magePrefab: {fileID: 5921420560980638146, guid: 8f2bbf00f39750b47abf9377422786f1, type: 3}
   soldierPrefab: {fileID: 3976008685789294325, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
   catapultPrefab: {fileID: 4111593646660320200, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
-  currentTurn: -5
+  currentTurn: 0
   isAutomatic: 0
+  isPaused: 0
 --- !u!4 &1754980351
 Transform:
   m_ObjectHideFlags: 0

@@ -7,7 +7,8 @@ public class Character : MonoBehaviour
 
     [SerializeField]
     public GameObject weapon;
-
+    [SerializeField]
+    public GameObject characterTransparent;
     private GameObject theSmoke;
 
     [SerializeField]
@@ -16,6 +17,7 @@ public class Character : MonoBehaviour
     public GameObject smokeDeath_red;
     private float alpha = 0f;
     private bool smoking = false;
+    private string looksSide = "";
 
     [SerializeField]
     public TrailRenderer trailRenderer;    
@@ -27,10 +29,11 @@ public class Character : MonoBehaviour
     private bool TrailPainted = false;
     public bool canMove = false;
     private bool isMoving = false;
+    public bool isHolding = false;
     public bool isDead;
     public float duration = 5f;
     private float timer = 0f;
-    private float speed = 0.25f;
+    private float speed = 0.5f;
     public string Id;
     public string Role;
     [SerializeField]
@@ -105,7 +108,9 @@ public class Character : MonoBehaviour
     }
 
 
-    public void Hold(){}
+    public void Hold(){
+        isHolding = true;
+    }
 
      
     
@@ -137,6 +142,7 @@ public class Character : MonoBehaviour
             c= Color.red;
         }
         newObject.transform.Find("base").GetComponent<Renderer>().material.color = c;
+        isHolding = false;
         
         return newObject;
 
@@ -146,7 +152,6 @@ public class Character : MonoBehaviour
     {   
 
         Transform boardOfCharacter = board.getBoardByName();
-        /*soldier and archer move throught ground, mage flies, catapult doesnt move*/
         if(this.tag=="catapult"){
             Hold(); 
             canMove = false;
@@ -155,7 +160,8 @@ public class Character : MonoBehaviour
             isMoving = true;
             finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),(transform.localPosition.y + 0.5f), transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
             lastPosition = new IntPair(x, y); 
-        }else{     
+        }else{    
+            isHolding = false; 
             canMove = true;  
             isMoving = true;
             finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),transform.localPosition.y, transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
@@ -169,21 +175,18 @@ public class Character : MonoBehaviour
 
     public void Attack(Board board, int x, int y)
     { 
-
+        isHolding = false;
         switch(this.tag){
             case "catapult": 
-               // Debug.Log("catapult attacks");
                 defaultAttacks(board,x, y);
             break;
             case "mage":
-               // Debug.Log("mage attacks");
                 defaultAttacks(board,x, y);
             break;
             case "soldier":
                 soldierAttacks(board,x, y);
             break;
             case "archer":
-                // Debug.Log("archer attacks");
                 defaultAttacks(board,x, y);
             break;
             default:
@@ -204,8 +207,11 @@ public class Character : MonoBehaviour
         Destroy(attackingPosition.gameObject);
         attackCharactersAt(board,x,y);
     }
-    private void soldierAttacks(Board b, int x, int y){
-         //change scene to animation (PART2 for SOLDIER ONLY if hold still needs to do)
+    private void soldierAttacks(Board board, int x, int y){
+        GameObject charactersWeapon = Instantiate(weapon, transform.localPosition,Quaternion.identity );
+        charactersWeapon.transform.SetParent(board.getBoardByName());
+
+        attackCharactersAt(board,x,y);
     }
 
 
@@ -222,18 +228,22 @@ public class Character : MonoBehaviour
         switch (i){
             case 0:
             position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f);
+            looksSide = "left";
             break;
 
             case 1:
-            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.25f) ;
+            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.75f) ;
+            looksSide = "right";
             break;
 
             case 2: 
-            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.75f) ;
+            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f) ;
+            looksSide = "left";
             break;  
 
             case 3:
             position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.25f) ;
+            looksSide = "left";
             break;
         }
         return position;
@@ -247,7 +257,7 @@ public class Character : MonoBehaviour
        
         List<GameObject> enemies = new List<GameObject>();
         foreach(Transform child in b.getBoardByName()){
-            if(child.tag!="Tile" && child.GetComponent<Character>()!=null){    
+            if(child.tag!="Tile" && child.GetComponent<Character>()!=null && child.gameObject.GetComponent<Character>().Role != this.Role){    
                 if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , b.Height)){
                     enemies.Add(child.gameObject);
                 }
@@ -255,7 +265,10 @@ public class Character : MonoBehaviour
         }
         if(enemies.Count!=0){
             foreach(GameObject enemy in enemies){
-                
+                if(enemy.transform.tag == tag && tag == "soldier" && enemy.GetComponent<Character>().isHolding){
+                    Debug.Log("Is holding So I enter scene!");
+                    //enter scene
+                }
                 enemy.GetComponent<Character>().isDead = true;
             } //need pontuation 
         }
@@ -288,6 +301,25 @@ public class Character : MonoBehaviour
             Debug.Log("my alpha " + alpha);
             
     }
+
+    private IEnumerator createTransparent(){
+
+        Color c = Color.white;
+         if(Role == Roles_Names){
+            c = Color.blue;
+            c.a = 0.5f;
+        }else{
+            c= Color.red;
+            c.a = 0.5f;
+        }   
+        
+        GameObject itTransparent = Instantiate(characterTransparent, transform.position, transform.rotation);
+        itTransparent.transform.Find("base").GetComponent<Renderer>().material.color = c;
+        
+        yield return new WaitForSeconds(5f);
+        Destroy(itTransparent);
+    }
+    
 
     void Update(){
         
@@ -345,16 +377,14 @@ public class Character : MonoBehaviour
             
             
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 1f * Time.deltaTime);
-            /*alpha = alpha - 0.2f;
-            Color color = transform.GetComponent<Renderer>().material.color;
-            color.a = alpha;
-            transform.GetComponent<Renderer>().material.color = color;
-            */
 
             if (Vector3.Distance(transform.localScale, Vector3.zero) < 0.2f){
                 Destroy(this.gameObject);
                 Destroy(theSmoke);
+                StartCoroutine(createTransparent());
                 isDead = false;
+                Debug.Log("HEHEHEH");
+
             }
         }
         
