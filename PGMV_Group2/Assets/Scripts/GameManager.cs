@@ -219,13 +219,6 @@ public class GameManager : MonoBehaviour
         // And Destroy all characters that have to make list and add them before.
     }
     
-    public void Update()
-    {
-        while(isAutomatic)
-        {
-            PlayGame();
-        }
-    }
 
     private void ManageActions(Unit unit)
     {      
@@ -265,6 +258,7 @@ public class GameManager : MonoBehaviour
                 return null;
         }
     }
+
 
 
 

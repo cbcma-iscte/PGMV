@@ -9,13 +9,17 @@ public class Menu : MonoBehaviour
     // we give option for automatic game or manual game -> play goes automatic, pause goes manual with the forward and back Turns
     public GameObject[] Games;
     private int currentValuePlayer1 = 0;
+    private int i;
     private int currentValuePlayer2 = 0;
 
     [SerializeField] public TextMeshProUGUI player1Points;
     
     [SerializeField] public TextMeshProUGUI player2Points;
+
+    [SerializeField] public TextMeshProUGUI Turns;
     
     public void Start(){
+        i = 0;
        Games = GameObject.FindGameObjectsWithTag("GameController");
     }
     public void start_pause_Game(){
@@ -42,6 +46,8 @@ public class Menu : MonoBehaviour
     public void back1play(){
 
         //see the previous play
+        i--;
+        Turns.text = "Turns: " + i;
         foreach(GameObject game in Games)
         {
             game.GetComponent<GameManager>().GoBack();
@@ -50,7 +56,8 @@ public class Menu : MonoBehaviour
     }
 
     public void forward1play(){
-        //see the next turn
+        i++;
+        Turns.text = "Turns: " + i;
         foreach(GameObject game in Games)
         {
             game.GetComponent<GameManager>().GoForward();
@@ -70,10 +77,12 @@ public class Menu : MonoBehaviour
 
     void Update(){
         
-         if (Input.GetKeyDown(KeyCode.P))
-        {
-            start_pause_Game();
-        }
+        if (Input.GetKeyDown(KeyCode.P)){start_pause_Game();}
+        if(Input.GetKeyDown(KeyCode.RightArrow)){forward1play();}
+        if(Input.GetKeyDown(KeyCode.LeftArrow)){back1play();}
+        if(Input.GetKeyDown(KeyCode.R)){restart();}
+        if(Input.GetKeyDown(KeyCode.Escape)){//showMenu
+        ;}
     }
     
 }

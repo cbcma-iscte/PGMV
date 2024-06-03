@@ -126,7 +126,6 @@ public class Character : MonoBehaviour
             positionY = 0.112f;
         }
 
-        
         newObject.transform.localPosition = findPosition(board,positionY,x,y);
        
         string uniqueName = prefab.name + "-" + id;
@@ -152,25 +151,70 @@ public class Character : MonoBehaviour
     {   
 
         Transform boardOfCharacter = board.getBoardByName();
+        float[] positions = movePositionFloat(board,x,y);
+        float posX = positions[0];
+        float posZ = positions[1];
         if(this.tag=="catapult"){
             Hold(); 
             canMove = false;
         }else if(this.tag=="mage"){
             canMove = true;  
             isMoving = true;
-            finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),(transform.localPosition.y + 0.5f), transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
+            finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + posX)),(transform.localPosition.y + 0.5f), transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+posZ)));
             lastPosition = new IntPair(x, y); 
         }else{    
             isHolding = false; 
             canMove = true;  
             isMoving = true;
-            finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + 0.5f)),transform.localPosition.y, transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+0.5f)));
+
+            finalPosition = new Vector3( transform.localPosition.x + (x - (transform.localPosition.x + posX)),transform.localPosition.y, transform.localPosition.z + (board.Height - y + 1 - (transform.localPosition.z+posZ)));
             lastPosition = new IntPair(x, y); 
         }
         
     }
     
-    
+    private float[] movePositionFloat(Board board,int x,int y){
+        int i = 0;
+        foreach(Transform child in board.getBoardByName()){
+            if(child.GetComponent<Character>()!=null){              
+                if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , board.Height)){
+                    i++;
+                }
+            }
+        }
+        float posX = 0f;
+        float posZ = 0f;
+        switch (i){
+            case 0:
+            posX = 0.25f;
+            posZ = 0.75f;
+            break;
+
+            case 1:
+            posX = 0.75f;
+            posZ = 0.75f;
+            break;
+
+            case 2: 
+            posX = 0.25f;
+            posZ = 0.25f;
+            break;  
+
+            case 3:
+            posX = 0.75f;
+            posZ = 0.75f;
+            break;
+
+            default:
+            Debug.LogError("Too Many Characters in Tile");
+            break;
+        }
+
+        float[] positions = new float[2];
+        positions[0] = posX;
+        positions[1] = posZ;
+        return  positions;
+    }
  
 
     public void Attack(Board board, int x, int y)
@@ -209,7 +253,9 @@ public class Character : MonoBehaviour
     }
     private void soldierAttacks(Board board, int x, int y){
         GameObject charactersWeapon = Instantiate(weapon, transform.localPosition,Quaternion.identity );
-        charactersWeapon.transform.SetParent(board.getBoardByName());
+        charactersWeapon.transform.SetParent(this.transform);
+        charactersWeapon.transform.localPosition = this.transform.localPosition;
+        charactersWeapon.GetComponent<Sword>().attack();
 
         attackCharactersAt(board,x,y);
     }
@@ -237,13 +283,17 @@ public class Character : MonoBehaviour
             break;
 
             case 2: 
-            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f) ;
+            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.25f) ;
             looksSide = "left";
             break;  
 
             case 3:
             position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.25f) ;
             looksSide = "left";
+            break;
+
+            default:
+            Debug.LogError("Too Many Characters in Tile");
             break;
         }
         return position;
@@ -377,13 +427,13 @@ public class Character : MonoBehaviour
             
             
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 1f * Time.deltaTime);
-
+            
             if (Vector3.Distance(transform.localScale, Vector3.zero) < 0.2f){
                 Destroy(this.gameObject);
                 Destroy(theSmoke);
                 StartCoroutine(createTransparent());
                 isDead = false;
-                Debug.Log("HEHEHEH");
+                
 
             }
         }

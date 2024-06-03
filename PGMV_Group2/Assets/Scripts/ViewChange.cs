@@ -72,7 +72,7 @@ public class ViewChange : MonoBehaviour{
                 foreach (GameObject table_board in Tables_Boards_ToLook)
                 {
                     if (hit.collider.gameObject == table_board){
-                        trackedObject = table_board;
+                        trackedObject = table_board;     
                         view_change=!view_change;
                         changeView(view_change);
                         
