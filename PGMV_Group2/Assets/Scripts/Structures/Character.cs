@@ -30,7 +30,7 @@ public class Character : MonoBehaviour
     public bool canMove = false;
     private bool isMoving = false;
     public bool isHolding = false;
-    public bool isDead;
+    public bool isDead = false;
     public float duration = 5f;
     private float timer = 0f;
     private float speed = 0.5f;
@@ -253,8 +253,8 @@ public class Character : MonoBehaviour
     }
     private void soldierAttacks(Board board, int x, int y){
         GameObject charactersWeapon = Instantiate(weapon, transform.localPosition,Quaternion.identity );
-        charactersWeapon.transform.SetParent(this.transform);
-        charactersWeapon.transform.localPosition = this.transform.localPosition;
+        charactersWeapon.transform.SetParent(transform);
+        charactersWeapon.transform.localPosition = Vector3.zero;
         charactersWeapon.GetComponent<Sword>().attack();
 
         attackCharactersAt(board,x,y);
@@ -315,11 +315,11 @@ public class Character : MonoBehaviour
         }
         if(enemies.Count!=0){
             foreach(GameObject enemy in enemies){
+                enemy.GetComponent<Character>().isDead = true;
                 if(enemy.transform.tag == tag && tag == "soldier" && enemy.GetComponent<Character>().isHolding){
                     Debug.Log("Is holding So I enter scene!");
-                    //enter scene
+                    //LoadScene("Terrain");
                 }
-                enemy.GetComponent<Character>().isDead = true;
             } //need pontuation 
         }
     }
@@ -357,17 +357,22 @@ public class Character : MonoBehaviour
         Color c = Color.white;
          if(Role == Roles_Names){
             c = Color.blue;
-            c.a = 0.5f;
+            c.a = 0.35f;
         }else{
             c= Color.red;
-            c.a = 0.5f;
+            c.a = 0.35f;
         }   
         
         GameObject itTransparent = Instantiate(characterTransparent, transform.position, transform.rotation);
+        if(tag!="catapult"){
+            itTransparent.transform.position = new Vector3(itTransparent.transform.position.x,1.674f,itTransparent.transform.position.z);
+        }
         itTransparent.transform.Find("base").GetComponent<Renderer>().material.color = c;
-        
-        yield return new WaitForSeconds(5f);
+        //por embaixo
+        yield return new WaitForSeconds(2f);
+        Debug.Log("370");
         Destroy(itTransparent);
+
     }
     
 
@@ -429,10 +434,11 @@ public class Character : MonoBehaviour
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 1f * Time.deltaTime);
             
             if (Vector3.Distance(transform.localScale, Vector3.zero) < 0.2f){
-                Destroy(this.gameObject);
+                isDead = true;
+                Destroy(gameObject);
                 Destroy(theSmoke);
                 StartCoroutine(createTransparent());
-                isDead = false;
+                
                 
 
             }

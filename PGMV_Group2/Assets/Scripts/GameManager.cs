@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     public bool isAutomatic = false;
     public bool isPaused = false;
+    public bool isPlaying = false;
     
     private void Awake()
     {
@@ -158,7 +159,7 @@ public class GameManager : MonoBehaviour
         isPaused = !isPaused;
     }
     public IEnumerator PlayGame(){
-        
+        isPlaying=true;
         foreach(Turn turn in Turns)
         {
             if(turn.Id == currentTurn)
@@ -184,7 +185,7 @@ public class GameManager : MonoBehaviour
         }
 
 
-        
+        isPlaying=false;
         if (currentTurn > Turns.Count)Application.Quit();
 
     }
@@ -198,19 +199,21 @@ public class GameManager : MonoBehaviour
 
     public void GoForward()
     {
-        currentTurn++;
+        if(isPlaying==false){currentTurn++;
         if(currentTurn<Turns.Count){
             StartCoroutine(PlayGame());
+        }
         }
     }
 
     public void GoBack()
     {
+        if(isPlaying==false){
         currentTurn--;
         if(currentTurn>0){
             StartCoroutine(PlayGame());
         }
-        
+        }
     }
 
     public void RestartGame()

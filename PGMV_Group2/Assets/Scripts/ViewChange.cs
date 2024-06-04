@@ -35,20 +35,16 @@ public class ViewChange : MonoBehaviour{
             // Activate the minimap camera
             miniMapCamera.SetActive(true);
 
-            // Chamge the view of main camera to the view of the object that is being tracked
             transform.parent = trackedObject.transform;
 
-            // Set position of the camera to the top of the object that is being tracked
             transform.position = new Vector3(trackedObject.transform.position.x,(float)3.5,trackedObject.transform.position.z);
-            //Debug.Log(transform.position);
+            transform.localPosition = new Vector3(0,3.31999993f,-0.410000012f);
 
-            //transform.rotation = Quaternion.Euler(0, trackedObject.transform.rotation.y, 0);
-            // Calculate the target rotation to center the object
             transform.LookAt(trackedObject.transform);
             Quaternion targetRotation = Quaternion.Euler(transform.eulerAngles.x, trackedObject.transform.eulerAngles.y, transform.eulerAngles.z);
-
-            // Rotate the camera to center the object
+            
             transform.rotation = targetRotation;
+            
         }  
     }
 

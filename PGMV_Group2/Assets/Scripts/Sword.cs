@@ -10,7 +10,7 @@ public class Sword : MonoBehaviour
     private float speed = 0.5f;
     public Vector3 rotationAxis = Vector3.down; 
    
-
+    //POS Vector3(-0.137999997,0.143999994,0.151999995)
     public void attack(){
         isAttacking = true;
     }
