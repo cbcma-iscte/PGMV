@@ -423,13 +423,14 @@ public class Character : MonoBehaviour
                 smoking = true;
                 if(Role == Roles_Names){
                     theSmoke = Instantiate(smokeDeath_blue, transform.position, transform.rotation);
+                    theSmoke.transform.parent=transform;
                 }else{
                     theSmoke = Instantiate(smokeDeath_red, transform.position, transform.rotation);
+                    theSmoke.transform.parent=transform;
                 }
                 theSmoke.SetActive(true);
                 
             }
-            
             
             transform.localScale = Vector3.Lerp(transform.localScale, Vector3.zero, 1f * Time.deltaTime);
             
@@ -438,8 +439,6 @@ public class Character : MonoBehaviour
                 Destroy(gameObject);
                 Destroy(theSmoke);
                 StartCoroutine(createTransparent());
-                
-                
 
             }
         }

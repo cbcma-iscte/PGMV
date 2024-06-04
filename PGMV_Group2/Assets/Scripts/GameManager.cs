@@ -219,7 +219,15 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         currentTurn = 0;
-        // And Destroy all characters that have to make list and add them before.
+        //clearAllPontuations();
+        GameObject[] boards = GameObject.FindGameObjectsWithTag("Board");
+        foreach(GameObject board in boards){
+            foreach(Transform child in board.transform)
+            {
+                    if(child.tag!="Tile")
+                        Destroy(child.gameObject);
+            }
+        }
     }
     
 

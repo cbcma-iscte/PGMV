@@ -12,6 +12,7 @@ TagManager:
   - soldier
   - mage
   - Tile
+  - MenuInformation
   layers:
   - Default
   - TransparentFX
