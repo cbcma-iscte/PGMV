@@ -77,6 +77,8 @@ public class TerrainGenerator : MonoBehaviour
                                    Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) /
                                   (amplitude1 + amplitude2);
 
+                elevation = Mathf.Lerp(0, maxElevation, Mathf.InverseLerp(0.25f, 0.65f, elevation));
+
                 // Scale to maximum elevation
                 heights[x, y] = elevation;
                 if (spawnPointAttackerX == x && spawnPointAttackerY == y)
@@ -151,6 +153,9 @@ public class TerrainGenerator : MonoBehaviour
         float worldX = x / (float)terrainData.heightmapResolution * terrainData.size.x;
         float worldZ = y / (float)terrainData.heightmapResolution * terrainData.size.z;
         float worldY = terrainData.GetHeight(x, y);
+
+        float prefabHeight = prefab.transform.position.y;
+        worldY = worldY + prefabHeight;
 
         Vector3 position = new Vector3(worldX, worldY, worldZ);
         GameObject obj = Instantiate(prefab, position, Quaternion.identity);
