@@ -22,13 +22,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] 
     public int currentTurn = 1;
 
+    private bool isKillingGhosts = false;
     public bool isAutomatic = false;
     public bool isPaused = false;
     public bool isPlaying = false;
     
     private void Awake()
     {
-        
+        isKillingGhosts = false;
         InitializeGame();
     }
 
@@ -270,6 +271,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private IEnumerator timeTodestroy(GameObject child){
+        yield return new WaitForSeconds(5f);
+        Destroy(child);
+        //Debug.Log("I killed a ghost");
+        isKillingGhosts=false;
+    }
+    
+        
+    
+    void Update(){
+        if(isKillingGhosts == false){
+            GameObject[] Ghosts = GameObject.FindGameObjectsWithTag("ghost");
+            if(Ghosts.Length>0){
+                //Debug.Log("I'll start killing ghosts!");
+                isKillingGhosts =true;
+                foreach(GameObject ghost in Ghosts){
+                    StartCoroutine(timeTodestroy(ghost));
+                }
+            }
+        }
+    }
 
 
 

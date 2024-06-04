@@ -352,7 +352,7 @@ public class Character : MonoBehaviour
             
     }
 
-    private IEnumerator createTransparent(){
+    private void createTransparent(){
 
         Color c = Color.white;
          if(Role == Roles_Names){
@@ -368,13 +368,11 @@ public class Character : MonoBehaviour
             itTransparent.transform.position = new Vector3(itTransparent.transform.position.x,1.674f,itTransparent.transform.position.z);
         }
         itTransparent.transform.Find("base").GetComponent<Renderer>().material.color = c;
-        //por embaixo
-        yield return new WaitForSeconds(2f);
-        Debug.Log("370");
-        Destroy(itTransparent);
+        itTransparent.transform.parent= transform.parent;
+        itTransparent.tag ="ghost";
+       
 
     }
-    
 
     void Update(){
         
@@ -438,7 +436,7 @@ public class Character : MonoBehaviour
                 isDead = true;
                 Destroy(gameObject);
                 Destroy(theSmoke);
-                StartCoroutine(createTransparent());
+                createTransparent();
 
             }
         }

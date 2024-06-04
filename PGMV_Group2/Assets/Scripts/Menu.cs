@@ -14,9 +14,16 @@ public class Menu : MonoBehaviour
     public GameObject[] Games;
     public string[] players;
     private int i;
+    [SerializeField]
+    public GameObject allButtons;
     
     [SerializeField]
     public GameObject play_button;
+    [SerializeField]
+    public GameObject forward_button;
+
+    [SerializeField]
+    public GameObject back_button;
     
     [SerializeField]
     public GameObject pause_button;
@@ -29,6 +36,10 @@ public class Menu : MonoBehaviour
     
     public void Start(){
         i = 0;
+        allButtons.SetActive(true);
+        back_button.SetActive(!isPlayingAutomatic);
+        forward_button.SetActive(!isPlayingAutomatic);
+        
         if(isPaused) isPaused = false;
         if(isMenuOpen) isMenuOpen = false;
         PauseScreen.SetActive(false);
@@ -36,10 +47,11 @@ public class Menu : MonoBehaviour
         Games = GameObject.FindGameObjectsWithTag("GameController");
     }
     public void start_pause_Game(){
-        
         if(isMenuOpen) isMenuOpen = false;
         isPaused = !isPaused;
         PauseScreen.SetActive(isPaused);
+        pause_button.SetActive(!isPaused);
+        play_button.SetActive(isPaused);
         foreach(GameObject game in Games)
         {   
 
@@ -59,6 +71,7 @@ public class Menu : MonoBehaviour
         MenuScreen.SetActive(isMenuOpen);
         if(isPaused) isPaused = false;
         PauseScreen.SetActive(isPaused);
+        allButtons.SetActive(true);
         i=0;
         Turns.text = "Turns: " + i;
         foreach(GameObject game in Games)
@@ -112,6 +125,7 @@ public class Menu : MonoBehaviour
     public void showMenu(){
        
         isMenuOpen = !isMenuOpen;
+        allButtons.SetActive(!isMenuOpen);
         MenuScreen.SetActive(isMenuOpen);
         
         isPaused = !isPaused;
@@ -131,6 +145,8 @@ public class Menu : MonoBehaviour
 
     public void isAutomaticToggle(){
         isPlayingAutomatic = !isPlayingAutomatic;
+        back_button.SetActive(!isPlayingAutomatic);
+        forward_button.SetActive(!isPlayingAutomatic);
     }
 
     public void isLoadingBattles(){
@@ -148,7 +164,9 @@ public class Menu : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.LeftArrow) && !isPlayingAutomatic){back1play();}
         if(Input.GetKeyDown(KeyCode.R)){restart();}
         if(Input.GetKeyDown(KeyCode.Escape)){showMenu();}
-        if(isPlayingAutomatic && isPaused == false){forward1play();}
+        if(isPlayingAutomatic && isPaused == false){
+       // forward1play();
+       }
     }
     
 }
