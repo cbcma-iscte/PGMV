@@ -7,6 +7,7 @@ public class ViewChange : MonoBehaviour{
     public GameObject[] Tables_Boards_ToLook;
     private GameObject trackedObject;
     public GameObject miniMapCamera;
+    private GameObject gamePlaying;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class ViewChange : MonoBehaviour{
 
     void changeView(bool view_change){
         if (!view_change){
+            if(gamePlaying!=null)gamePlaying.GetComponent<GameManager>().showPontuations(false);
             miniMapCamera.SetActive(false);
             
             transform.parent = null;
@@ -35,31 +37,33 @@ public class ViewChange : MonoBehaviour{
             // Activate the minimap camera
             miniMapCamera.SetActive(true);
 
-            // Chamge the view of main camera to the view of the object that is being tracked
             transform.parent = trackedObject.transform;
 
-            // Set position of the camera to the top of the object that is being tracked
             transform.position = new Vector3(trackedObject.transform.position.x,(float)3.5,trackedObject.transform.position.z);
-            //Debug.Log(transform.position);
+            transform.localPosition = new Vector3(0,3.31999993f,-0.410000012f);
 
-            //transform.rotation = Quaternion.Euler(0, trackedObject.transform.rotation.y, 0);
-            // Calculate the target rotation to center the object
             transform.LookAt(trackedObject.transform);
             Quaternion targetRotation = Quaternion.Euler(transform.eulerAngles.x, trackedObject.transform.eulerAngles.y, transform.eulerAngles.z);
-
-            // Rotate the camera to center the object
+            
             transform.rotation = targetRotation;
+
+            GameObject[] gamesPlaying = GameObject.FindGameObjectsWithTag("GameController");
+            if(gamesPlaying.Length!=0){
+                gamePlaying = gamesPlaying[0];
+                gamePlaying.GetComponent<GameManager>().showPontuations(true);
+            }else{
+                gamePlaying=null;
+            }
+
+
+                
+            
         }  
     }
 
     // Update is called once per frame
     void Update()
     {
-         if(Input.GetKeyDown(KeyCode.Escape) ){ //when the Minimap is done we can get back to the normal view by clicking it as well
-            view_change=false;
-            changeView(view_change);
-            
-        }
 
         if (Input.GetMouseButtonDown(0)) //left-size of the mouse
         {
@@ -72,7 +76,7 @@ public class ViewChange : MonoBehaviour{
                 foreach (GameObject table_board in Tables_Boards_ToLook)
                 {
                     if (hit.collider.gameObject == table_board){
-                        trackedObject = table_board;
+                        trackedObject = table_board;     
                         view_change=!view_change;
                         changeView(view_change);
                         
