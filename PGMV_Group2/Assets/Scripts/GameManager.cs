@@ -170,6 +170,7 @@ public class GameManager : MonoBehaviour
         }else{
             Time.timeScale = 0f;
         }
+        
         isPaused = !isPaused;
     }
     public IEnumerator PlayGame(){
@@ -196,9 +197,11 @@ public class GameManager : MonoBehaviour
                     
                 }
             }
+            
         }
-
-
+        if(isAutomatic){
+            yield return StartCoroutine(waitForTurn());
+        }
         isPlaying=false;
         if (currentTurn > Turns.Count)Application.Quit();
 
@@ -210,12 +213,17 @@ public class GameManager : MonoBehaviour
         }
        
     }
+    private IEnumerator waitForTurn(){
+        yield return new WaitForSeconds(1f);
+    }
 
     public void GoForward()
     {
         if(isPlaying==false){currentTurn++;
         if(currentTurn<Turns.Count){
             StartCoroutine(PlayGame());
+        }else{
+
         }
         }
     }

@@ -315,6 +315,7 @@ public class Character : MonoBehaviour
             }     
         }
         if(enemies.Count!=0){
+           
             b.addPointTo(Role);
             foreach(GameObject enemy in enemies){
                 enemy.GetComponent<Character>().isDead = true;

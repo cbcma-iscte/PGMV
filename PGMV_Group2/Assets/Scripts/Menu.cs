@@ -104,6 +104,9 @@ public class Menu : MonoBehaviour
         Turns.text = "Turns: " + i;
         foreach(GameObject game in Games)
         {
+            if(i>game.GetComponent<GameManager>().Turns.Count){
+                isAutomaticToggle();    
+            }
             game.GetComponent<GameManager>().GoForward();
             
         }
@@ -132,20 +135,20 @@ public class Menu : MonoBehaviour
         isPaused = !isPaused;
         foreach(GameObject game in Games)
         {   
-
-            if(isPlayingAutomatic){
-                game.GetComponent<GameManager>().PauseResumeGame();
-        
-            }else{
-                game.GetComponent<GameManager>().PauseResumeGame(); 
-            }
-            
+            game.GetComponent<GameManager>().PauseResumeGame(); 
         }
+     
+
     }
 
 
     public void isAutomaticToggle(){
         isPlayingAutomatic = !isPlayingAutomatic;
+        foreach(GameObject game in Games)
+        {
+            game.GetComponent<GameManager>().isAutomatic = isPlayingAutomatic;
+            
+        }
         back_button.SetActive(!isPlayingAutomatic);
         forward_button.SetActive(!isPlayingAutomatic);
     }
@@ -158,6 +161,7 @@ public class Menu : MonoBehaviour
           SceneManager.LoadScene("MainMenu");
     }
 
+    
     void Update(){
         
         if(Input.GetKeyDown(KeyCode.P)){start_pause_Game();}
@@ -165,7 +169,9 @@ public class Menu : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.LeftArrow) && isPlayingAutomatic == false){back1play();}
         if(Input.GetKeyDown(KeyCode.R)){restart();}
         if(Input.GetKeyDown(KeyCode.Escape)){showMenu();}
-        if(isPlayingAutomatic && isPaused == false && isPlayingAutomatic == false){ forward1play();}
+        if(isPlayingAutomatic && isPaused == false){ 
+            forward1play();
+        }
     }
     
 }
