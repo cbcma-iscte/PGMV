@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float jumpSpeed;
     [SerializeField]float gravity;
 
+    [SerializeField] AudioSource walk;
+    [SerializeField] AudioSource jump;
+
 
     // Update is called once per frame
     void FixedUpdate()
@@ -47,6 +50,8 @@ public class PlayerController : MonoBehaviour
                 float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * runMultiplier : speed;
                 direction *= currentSpeed;
 
+                if (!walk.isPlaying)
+                    walk.Play();
 
                 // Definindo o parâmetro de movimento do animator
                 ccAnimator.SetBool("isIdle",false);
@@ -66,6 +71,7 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Space))
             {
+                jump.Play();
                 direction.y = jumpSpeed;
                 direction.x = 0;
                 direction.z = 0;

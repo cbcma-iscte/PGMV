@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.Rendering.LookDev;
 using UnityEngine.SceneManagement;
 
 public class BattleAnimation : MonoBehaviour
@@ -16,6 +17,12 @@ public class BattleAnimation : MonoBehaviour
     
     [SerializeField] float speedWalking;
     [SerializeField] float speedRunning;
+
+    [SerializeField] AudioSource slash;
+    [SerializeField] AudioSource enemyDie;
+    [SerializeField] AudioSource block;
+    [SerializeField] AudioSource dodge;
+
 
     string[] allAnimationDefender = { "isDodging", "isBlocking", "isDying" };
     string[] allAnimationAttacker = { "isDodging", "isBlocking" };
@@ -116,14 +123,17 @@ public class BattleAnimation : MonoBehaviour
         // Attacker attacks
         attackerAnimator.SetBool("isIdle", false);
         attackerAnimator.SetBool("isSlashing", true);
+        CheckSound("isSlashing");
 
         // Defender Reacts
         string chosenAnimationDefender = AnimationDecidingDefender();
         defenderAnimator.SetBool(chosenAnimationDefender, true);
         defenderAnimator.SetBool("isIdle", false);
+        CheckSound(chosenAnimationDefender);
 
         if (chosenAnimationDefender == "isDying")
         {
+            CheckSound(chosenAnimationDefender);
             attackerAnimator.SetBool("isCelebrating",true);
 
             isBattleActive = false;
@@ -147,6 +157,25 @@ public class BattleAnimation : MonoBehaviour
 
     }
 
+    private void CheckSound(string chosenAnimationAttacker)
+    {
+        switch (chosenAnimationAttacker)
+        {
+            case "isDying" :
+                enemyDie.Play();
+                break;
+            case "isSlashing" :
+                slash.Play();
+                break;
+            case "isBlocking" :
+                block.Play();
+                break;
+            case "isDodging" :
+                dodge.Play();
+                break;
+        }
+    }
+
     void HandleDefenderTurn()
     {
 
@@ -155,11 +184,13 @@ public class BattleAnimation : MonoBehaviour
         string chosenAnimationDefender = "isSlashing";
         defenderAnimator.SetBool(chosenAnimationDefender, true);
         defenderAnimator.SetBool("isIdle", false);
+        CheckSound(chosenAnimationDefender);
 
         // Attacker reacts
         string chosenAnimationAttacker = AnimationDecidingAttackerResponse();
         attackerAnimator.SetBool(chosenAnimationAttacker, true);
         attackerAnimator.SetBool("isIdle", false);
+        CheckSound(chosenAnimationAttacker);
 
         stateTimer = 2f;
         lastState = BattleState.DefenderTurn;
