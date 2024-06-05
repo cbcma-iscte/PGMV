@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(Table);
         isKillingGhosts = false;
         Player1.SetActive(false);
         Player2.SetActive(false);

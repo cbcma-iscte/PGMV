@@ -97,8 +97,8 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
-  m_LightingSettings: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 1dc345797c614f8438591d1f4ae25cf2, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 33b6fd57a8dc67d4689ff4c627e05be0, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2049,8 +2049,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -654, y: 413}
-  m_SizeDelta: {x: -1626.2292, y: -1008.9399}
+  m_AnchoredPosition: {x: -640.1233, y: 413}
+  m_SizeDelta: {x: -1598.4758, y: -1008.9399}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &662406005
 MonoBehaviour:
@@ -2280,6 +2280,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1136756222505758215, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598194678609738159, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}
+      propertyPath: m_Intensity
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2220044307141438576, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}
@@ -4553,8 +4557,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7.3274, y: 0}
-  m_SizeDelta: {x: 279.119, y: 71.0601}
+  m_AnchoredPosition: {x: 5.5504, y: 0}
+  m_SizeDelta: {x: 310.4186, y: 71.0601}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &1357087353
 PrefabInstance:
@@ -7403,6 +7407,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1136756222505758215, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598194678609738159, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}
+      propertyPath: m_Intensity
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2220044307141438576, guid: 221aaa7330b412b449cca6ee6c04944d, type: 3}

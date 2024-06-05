@@ -113,14 +113,15 @@ public class Menu : MonoBehaviour
 
     public void forward1play(){
         
-        
+        if(verifyTurns()){
         int playing = 0;
+        
         foreach(GameObject game in Games){
             if(game.GetComponent<GameManager>().isPlaying==true){
                 playing = playing +1;
             }
         }
-        if(playing == 0 ){i++;
+        if(playing == 0){i++;
         Turns.text = "Turns: " + i;
         foreach(GameObject game in Games)
         {
@@ -131,10 +132,25 @@ public class Menu : MonoBehaviour
             
         }
         }
+        }else{
+            restart();
+            SceneManager.LoadScene("MainMenu");
+        
+        }
         
         
     }
 
+    private bool verifyTurns(){
+        bool canContinue = false;
+        foreach(GameObject game in Games)
+        {
+            if(i+1<game.GetComponent<GameManager>().Turns.Count){
+                canContinue = true;
+            } 
+        }
+        return canContinue;
+    }
 
     public void showMenu(){
         automaticCheck.isOn = isPlayingAutomatic;
