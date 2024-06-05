@@ -11,6 +11,9 @@ public class CameraController : MonoBehaviour
     public float xSensitivity = 30f;
     public float ySensitivity = 30f;
 
+    public float maxVerticalAngle = 80f;
+    public float minVerticalAngle = -80f;
+
 
     void Start()
     {
@@ -21,11 +24,10 @@ public class CameraController : MonoBehaviour
     {
 
         xRotation -= (mouseY * Time.deltaTime) * ySensitivity;
-        xRotation = math.clamp(xRotation, -80f, 80f);
+        xRotation = Mathf.Clamp(xRotation, minVerticalAngle, maxVerticalAngle);
+        cam.transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
 
-        cam.transform.localRotation = quaternion.Euler(xRotation,0,0);
-
-        transform.Rotate(Vector3.up * (mouseX *Time.deltaTime) * xSensitivity);
+        transform.Rotate(Vector3.up * mouseX *Time.deltaTime * xSensitivity);
     }
 
 }

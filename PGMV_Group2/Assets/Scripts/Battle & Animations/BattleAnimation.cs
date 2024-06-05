@@ -80,9 +80,12 @@ public class BattleAnimation : MonoBehaviour
     {
         float distance = Vector3.Distance(attacker.transform.localPosition, defender.transform.localPosition);
 
+        attacker.transform.LookAt(defender.transform);
+
         if (distance > 20f)
         {
             attacker.transform.localPosition = Vector3.MoveTowards(attacker.transform.localPosition, defender.transform.localPosition, speedRunning * Time.deltaTime);
+
             attackerAnimator.SetBool("isRunning", true);
             attackerAnimator.SetBool("isWalking", false);
         }
@@ -100,6 +103,8 @@ public class BattleAnimation : MonoBehaviour
             currentState = BattleState.AttackerTurn;
         }
     }
+
+
 
     void HandleAttackerTurn()
     {
