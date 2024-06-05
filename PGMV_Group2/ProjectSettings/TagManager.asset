@@ -12,6 +12,7 @@ TagManager:
   - soldier
   - mage
   - Archer
+  - enemy
   layers:
   - Default
   - TransparentFX
