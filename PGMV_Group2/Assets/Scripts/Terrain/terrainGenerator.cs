@@ -26,7 +26,8 @@ public class TerrainGenerator : MonoBehaviour
         squareDataDict = parser.ParseXML();
 
         // Assuming you have a way to determine the current square type
-        string currentSquareType = "plain"; // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
+        string currentSquareType = Staticdata.typeToCreateBattle;
+        // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
         SquareData currentSquareData = squareDataDict[currentSquareType];
 
         GenerateTerrain(currentSquareData);
