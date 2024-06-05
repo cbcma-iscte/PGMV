@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
@@ -154,19 +155,17 @@ public class Menu : MonoBehaviour
     }
 
     public void QuitGame(){
-        Application.Quit();
+          SceneManager.LoadScene("MainMenu");
     }
 
     void Update(){
         
         if(Input.GetKeyDown(KeyCode.P)){start_pause_Game();}
-        if(Input.GetKeyDown(KeyCode.RightArrow) && !isPlayingAutomatic){forward1play();}
-        if(Input.GetKeyDown(KeyCode.LeftArrow) && !isPlayingAutomatic){back1play();}
+        if(Input.GetKeyDown(KeyCode.RightArrow) && isPlayingAutomatic == false){forward1play();}
+        if(Input.GetKeyDown(KeyCode.LeftArrow) && isPlayingAutomatic == false){back1play();}
         if(Input.GetKeyDown(KeyCode.R)){restart();}
         if(Input.GetKeyDown(KeyCode.Escape)){showMenu();}
-        if(isPlayingAutomatic && isPaused == false){
-       // forward1play();
-       }
+        if(isPlayingAutomatic && isPaused == false && isPlayingAutomatic == false){ forward1play();}
     }
     
 }

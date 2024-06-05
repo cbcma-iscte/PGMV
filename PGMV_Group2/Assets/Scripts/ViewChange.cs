@@ -7,6 +7,7 @@ public class ViewChange : MonoBehaviour{
     public GameObject[] Tables_Boards_ToLook;
     private GameObject trackedObject;
     public GameObject miniMapCamera;
+    private GameObject gamePlaying;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class ViewChange : MonoBehaviour{
 
     void changeView(bool view_change){
         if (!view_change){
+            if(gamePlaying!=null)gamePlaying.GetComponent<GameManager>().showPontuations(false);
             miniMapCamera.SetActive(false);
             
             transform.parent = null;
@@ -44,6 +46,17 @@ public class ViewChange : MonoBehaviour{
             Quaternion targetRotation = Quaternion.Euler(transform.eulerAngles.x, trackedObject.transform.eulerAngles.y, transform.eulerAngles.z);
             
             transform.rotation = targetRotation;
+
+            GameObject[] gamesPlaying = GameObject.FindGameObjectsWithTag("GameController");
+            if(gamesPlaying.Length!=0){
+                gamePlaying = gamesPlaying[0];
+                gamePlaying.GetComponent<GameManager>().showPontuations(true);
+            }else{
+                gamePlaying=null;
+            }
+
+
+                
             
         }  
     }
@@ -51,11 +64,6 @@ public class ViewChange : MonoBehaviour{
     // Update is called once per frame
     void Update()
     {
-         if(Input.GetKeyDown(KeyCode.Escape) ){ //when the Minimap is done we can get back to the normal view by clicking it as well
-            view_change=false;
-            changeView(view_change);
-            
-        }
 
         if (Input.GetMouseButtonDown(0)) //left-size of the mouse
         {

@@ -254,9 +254,10 @@ public class Character : MonoBehaviour
     private void soldierAttacks(Board board, int x, int y){
         GameObject charactersWeapon = Instantiate(weapon, transform.localPosition,Quaternion.identity );
         charactersWeapon.transform.SetParent(transform);
-        charactersWeapon.transform.localPosition = Vector3.zero;
-        charactersWeapon.GetComponent<Sword>().attack();
-
+       // charactersWeapon.transform.localPosition =new Vector3(-0.200000003f,0.170000002f,0.279000014f);
+        //charactersWeapon.transform.rotation = Quaternion.Euler(3.96178436f,291.384033f,17.5526829f);
+        //charactersWeapon.GetComponent<Sword>().attack();
+        // Quaternion.Euler(54.1186333,252.660828,312.482086);
         attackCharactersAt(board,x,y);
     }
 
@@ -314,13 +315,14 @@ public class Character : MonoBehaviour
             }     
         }
         if(enemies.Count!=0){
+            b.addPointTo(Role);
             foreach(GameObject enemy in enemies){
                 enemy.GetComponent<Character>().isDead = true;
                 if(enemy.transform.tag == tag && tag == "soldier" && enemy.GetComponent<Character>().isHolding){
-                    Debug.Log("Is holding So I enter scene!");
+                    //Debug.Log("Is holding So I enter scene!");
                     //LoadScene("Terrain");
                 }
-            } //need pontuation 
+            } 
         }
     }
 
@@ -373,7 +375,7 @@ public class Character : MonoBehaviour
        
 
     }
-
+ 
     void Update(){
         
       

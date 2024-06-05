@@ -4,8 +4,13 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {   
+
+    public int pontuationPlayer1 = 0;
+    public int pontuationPlayer2 = 0;
     public List<Tile> Tiles;
     private GameObject Table;
+
+    public List<Role> Roles;
     public int Width { get; private set; }
     public int Height { get; private set; }
     private GameObject baseBoard;
@@ -13,12 +18,13 @@ public class Board : MonoBehaviour
     private GameObject[,] tilesGenerated; 
     
 
-    public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table ){
+    public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table, List<Role> roles ){
         Width = width;
         Height = height;
         Table = table;
         TileAndMaterial = tile_material;
         Tiles = tiles;
+        Roles = roles;
         createBoard();
         
     }
@@ -102,7 +108,7 @@ public class Board : MonoBehaviour
         string tileName = ("X"+ valueX +"Y" + valueZ);
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
-                Debug.Log("Name looking: " + tileName + "I am here:" + tile.transform.position);
+                //Debug.Log("Name looking: " + tileName + "I am here:" + tile.transform.position);
                 return tile.transform;
             }
         }
@@ -121,7 +127,23 @@ public class Board : MonoBehaviour
         return null;
     }
 
-    
+    public void addPointTo(string nameOfPlayer){
+        if(nameOfPlayer==Roles[0].Name){
+            pontuationPlayer1 ++;
+            
+        }else{
+             pontuationPlayer2 ++;
+            
+        }
+
+        
+       
+    }
+
+    public void restartPontuation(){
+        pontuationPlayer1 =0;
+        pontuationPlayer2 =0;
+    }
 
     
 

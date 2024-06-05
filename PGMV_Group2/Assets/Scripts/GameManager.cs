@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
 using System.Collections;
+using System;
+using TMPro;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject Table;
@@ -14,6 +16,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string xmlResourcePath;
     private XmlDocument xmlDoc = new XmlDocument();
 
+    [SerializeField] public GameObject Player1;
+    [SerializeField] public GameObject Player2;
     [SerializeField] private GameObject archerPrefab;
     [SerializeField] private GameObject magePrefab;
     [SerializeField] private GameObject soldierPrefab;
@@ -21,7 +25,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] 
     public int currentTurn = 1;
-
+    private int pointsPlayer1 = 0;
+    private int pointsPlayer2 = 0;
     private bool isKillingGhosts = false;
     public bool isAutomatic = false;
     public bool isPaused = false;
@@ -30,6 +35,9 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         isKillingGhosts = false;
+        Player1.SetActive(false);
+        Player2.SetActive(false);
+        
         InitializeGame();
     }
 
@@ -74,7 +82,12 @@ public class GameManager : MonoBehaviour
             Roles.Add(new Role { Name = roleNode.Attributes["name"].Value});
             
         }
+        changeInforPontuation();
+    }
 
+    private void changeInforPontuation(){
+        Player1.GetComponentInChildren<TextMeshProUGUI>().text = Roles[0].Name + ": " + pointsPlayer1;
+        Player2.GetComponentInChildren<TextMeshProUGUI>().text = Roles[1].Name + ": " + pointsPlayer2;
     }
 
     private void LoadBoard(XmlNode boardNode){
@@ -117,7 +130,7 @@ public class GameManager : MonoBehaviour
         
         int board_width = int.Parse(boardNode.Attributes["width"].Value);
         int board_height = int.Parse(boardNode.Attributes["height"].Value);
-        Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table);
+        Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table,Roles);
 
         //Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
 
@@ -220,15 +233,16 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         currentTurn = 0;
-        //clearAllPontuations();
-        GameObject[] boards = GameObject.FindGameObjectsWithTag("Board");
-        foreach(GameObject board in boards){
-            foreach(Transform child in board.transform)
-            {
-                    if(child.tag!="Tile")
-                        Destroy(child.gameObject);
-            }
+        pointsPlayer1 = 0;
+        pointsPlayer2 = 0;
+        Board.restartPontuation();
+        changeInforPontuation();
+        foreach(Transform child in Board.getBoardByName())
+        {
+                if(child.tag!="Tile")
+                    Destroy(child.gameObject);
         }
+        
     }
     
 
@@ -278,6 +292,22 @@ public class GameManager : MonoBehaviour
         isKillingGhosts=false;
     }
     
+    public void showPontuations(bool isToShow){
+        Player1.SetActive(isToShow);
+        Player2 .SetActive(isToShow);
+    }
+
+    public void addReducePoints(string nameOfPlayer, int point){
+        if(nameOfPlayer == Roles[0].Name){
+            pointsPlayer1 = pointsPlayer1 + point;
+            Player1.GetComponentInChildren<TextMeshProUGUI>().text = Roles[0].Name + ": " + pointsPlayer1;
+            
+        }else{
+            pointsPlayer2 = pointsPlayer2 + point;
+            Player2.GetComponentInChildren<TextMeshProUGUI>().text = Roles[1].Name + ": " + pointsPlayer2;
+            
+        }
+    }
         
     
     void Update(){
@@ -291,9 +321,14 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+
+        if(isPlaying==false){
+            pointsPlayer1 = Board.pontuationPlayer1;
+            pointsPlayer2 = Board.pontuationPlayer2;
+            changeInforPontuation();
+
+        }
     }
-
-
 
     
 }
