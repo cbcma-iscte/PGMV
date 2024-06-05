@@ -26,7 +26,7 @@ public class TerrainGenerator : MonoBehaviour
         squareDataDict = parser.ParseXML();
 
         // Assuming you have a way to determine the current square type
-        string currentSquareType = "village"; // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
+        string currentSquareType = "plain"; // Example: "forest", "desert", "mountain" for now only these 3 types are supported (Houses prefab missing)
         SquareData currentSquareData = squareDataDict[currentSquareType];
 
         GenerateTerrain(currentSquareData);
@@ -77,7 +77,7 @@ public class TerrainGenerator : MonoBehaviour
                                    Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) /
                                   (amplitude1 + amplitude2);
 
-                elevation = Mathf.Lerp(0, maxElevation, Mathf.InverseLerp(0.25f, 0.65f, elevation));
+                elevation = Mathf.Lerp(0, 1, Mathf.Clamp(elevation, 0.3f, 0.7f));
 
                 // Scale to maximum elevation
                 heights[x, y] = elevation;
@@ -106,7 +106,7 @@ public class TerrainGenerator : MonoBehaviour
 
     void ScatterObjects(SquareData squareData)
     {
-        int _EXPANSION_RANGE = 5;
+        int _EXPANSION_RANGE = 8;
 
         for (int x = _EXPANSION_RANGE; x < terrainData.heightmapResolution; x += _EXPANSION_RANGE)
         {
