@@ -49,11 +49,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weapon: {fileID: 7263681675090194781, guid: b467e825e9a5932429d2f3e0f1d53635, type: 3}
-  characterTransparent: {fileID: 6366494938970272171, guid: c1f482186bf7e534199f018de06e8291, type: 3}
+  characterTransparent: {fileID: 6366494938970272171, guid: c078d3799fea2334ab890a66afcc7c2b, type: 3}
   smokeDeath_blue: {fileID: 3037947499009059709, guid: a56041f4974fbd940af5ee8aa6c2c082, type: 3}
   smokeDeath_red: {fileID: 131114246137923863, guid: a278f9f61f0996240b895adc206f76f0, type: 3}
-  trailRenderer: {fileID: 0}
+  trailRenderer: {fileID: 2633428443364971553}
   canMove: 0
+  isHolding: 0
   isDead: 0
   duration: 5
   Id: 1

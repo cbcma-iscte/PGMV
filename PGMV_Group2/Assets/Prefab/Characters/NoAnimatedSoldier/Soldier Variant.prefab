@@ -11,7 +11,7 @@ PrefabInstance:
     - target: {fileID: 478039284070910709, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: ce9360e3fcd66a84fb8cd4826485a5ce, type: 2}
+      objectReference: {fileID: 2100000, guid: 2435dce0407b3844fb188257e522c85b, type: 2}
     - target: {fileID: 3976008685789294325, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
       propertyPath: m_Name
       value: Soldier Variant

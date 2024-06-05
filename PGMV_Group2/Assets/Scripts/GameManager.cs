@@ -213,12 +213,12 @@ public class GameManager : MonoBehaviour
 
     public void verifyBattles(){
        if(Board.battlesInTurn.Count>0){
-        foreach (string typeOfBattle in Board.battlesInTurn){
-            Staticdata.typeToCreateBattle = typeOfBattle;
-            SceneManager.LoadScene("MainMenu");
-           
-        }
-        Board.battlesDelivered();
+            foreach (string typeOfBattle in Board.battlesInTurn){
+                Staticdata.typeToCreateBattle = typeOfBattle.ToLower().Split(' ')[0];
+                SceneManager.LoadScene("TerrainScene");
+            
+            }
+            Board.battlesDelivered();
        }
 
     }

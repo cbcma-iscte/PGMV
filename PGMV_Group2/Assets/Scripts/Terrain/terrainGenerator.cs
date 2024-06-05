@@ -12,7 +12,7 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> rockPrefabs;
     public List<GameObject> housePrefabs;
 
-    public Battle battleScript;
+    //public Battle battleScript;
 
     public TerrainData terrainData;
     private Dictionary<string, SquareData> squareDataDict;
@@ -95,8 +95,8 @@ public class TerrainGenerator : MonoBehaviour
         terrain.terrainData.SetHeights(0, 0, heights);
         Debug.Log("Terrain generated");
 
-         battleScript.SpawnAttackingSoldier(spawnPointAttackerX, terrainData.GetHeight(saveX, saveY), spawnPointAttackerY);
-         battleScript.SpawnDefendingSoldier(spawnPointDefenderX, terrainData.GetHeight(spawnPointDefenderX, spawnPointDefenderY), spawnPointDefenderY);
+        //battleScript.SpawnAttackingSoldier(spawnPointAttackerX, terrainData.GetHeight(saveX, saveY), spawnPointAttackerY);
+        //battleScript.SpawnDefendingSoldier(spawnPointDefenderX, terrainData.GetHeight(spawnPointDefenderX, spawnPointDefenderY), spawnPointDefenderY);
 
     }
 
