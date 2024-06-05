@@ -20,6 +20,11 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    public void EnableCursor()
+    {
+         Cursor.lockState = CursorLockMode.None;
+    }
+
     public void ProcessLook(float mouseX, float mouseY)
     {
 

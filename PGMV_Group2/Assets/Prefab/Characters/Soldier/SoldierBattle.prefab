@@ -74,9 +74,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4007982857510521166}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 5019652275684352914}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
       insertIndex: -1
@@ -90,24 +87,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
   m_PrefabInstance: {fileID: 8798451698741286829}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4007982857510521166
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8564448899386125052}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b371162c3c6fb70459c4e6423b338b35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weapon: {fileID: 1051571768989249988, guid: 2def9fe330661764fbe19be3f94c3ace, type: 3}
-  Id: 
-  Role: 
-  prefab: {fileID: 8564448899386125052}
-  isDead: 0
-  duration: 5
 --- !u!95 &5019652275684352914
 Animator:
   serializedVersion: 5

@@ -1,9 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class BattleAnimation : MonoBehaviour
 {
+
+    [SerializeField] public CameraController look;
     [SerializeField] GameObject attacker;
     [SerializeField] GameObject defender;
 
@@ -120,18 +124,27 @@ public class BattleAnimation : MonoBehaviour
 
         if (chosenAnimationDefender == "isDying")
         {
-
-            attackerAnimator.SetBool("isJumping",true);
             attackerAnimator.SetBool("isCelebrating",true);
 
             isBattleActive = false;
             // Leaves Scene
-            return;
+            StartCoroutine(LeaveScene());
         }
 
         stateTimer = 2f;
         lastState = BattleState.AttackerTurn;
         currentState = BattleState.Wait;
+    }
+
+    IEnumerator LeaveScene()
+    {
+
+        yield return new WaitForSeconds(10f); 
+        Destroy(defender);
+        Destroy(attacker);
+        look.EnableCursor();
+        SceneManager.LoadScene("LivingRoom");
+
     }
 
     void HandleDefenderTurn()
