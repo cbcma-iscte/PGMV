@@ -7,8 +7,7 @@ public class Sword : MonoBehaviour
     
     private bool isMEPressed = false;
     private bool isAttacking = false;
-    private float speed = 1f;
-    
+    private float speed = 1.5f;    
     Transform target;
 
     private void Awake(){
@@ -23,7 +22,7 @@ public class Sword : MonoBehaviour
     }
 
     private IEnumerator goDestroy(){
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         Destroy(target.gameObject);
         Destroy(gameObject);
     }
@@ -32,7 +31,7 @@ public class Sword : MonoBehaviour
     {
         if(isAttacking && Vector3.Distance(transform.localPosition,target.localPosition)>0.05f){
             transform.rotation = Quaternion.Slerp(transform.rotation, target.rotation,  Time.deltaTime * speed);
-            transform.localPosition = Vector3.MoveTowards(transform.localPosition, target.localPosition, Time.deltaTime * 0.2f);
+            transform.localPosition = Vector3.MoveTowards(transform.localPosition, target.localPosition, Time.deltaTime * 0.5f);
             
         }else if(isAttacking && Vector3.Distance(transform.localPosition,target.localPosition)<=0.05f){
             StartCoroutine(goDestroy());

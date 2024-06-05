@@ -16,8 +16,12 @@ public class Board : MonoBehaviour
     private GameObject baseBoard;
     Dictionary<string,Material> TileAndMaterial = new Dictionary<string, Material>();
     private GameObject[,] tilesGenerated; 
-    
 
+    public List<string> battlesInTurn = new List<string>();
+    
+    public void Awake(){
+        DontDestroyOnLoad(gameObject);
+    }
     public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table, List<Role> roles ){
         Width = width;
         Height = height;
@@ -146,6 +150,20 @@ public class Board : MonoBehaviour
     }
 
     
+    public string getMaterial(int x, int y){
+        Transform tile = getTileFromName(x,y);
+        return tile.GetComponent<MeshRenderer>().material.name;
+    }
 
+    public void addBattle(int x,int y){
+        battlesInTurn.Add(getMaterial(x, y));
+    }
+
+    public void battlesDelivered(){
+        battlesInTurn.Clear();
+    }
+
+   
+    
     
 }

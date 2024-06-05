@@ -4,6 +4,7 @@ using System.Xml;
 using System.Collections;
 using System;
 using TMPro;
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject Table;
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     public bool isPlaying = false;
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         isKillingGhosts = false;
         Player1.SetActive(false);
         Player2.SetActive(false);
@@ -202,11 +204,24 @@ public class GameManager : MonoBehaviour
         if(isAutomatic){
             yield return StartCoroutine(waitForTurn());
         }
+
+        verifyBattles();
         isPlaying=false;
         
 
     }
 
+    public void verifyBattles(){
+       if(Board.battlesInTurn.Count>0){
+        foreach (string typeOfBattle in Board.battlesInTurn){
+            Staticdata.typeToCreateBattle = typeOfBattle;
+            SceneManager.LoadScene("MainMenu");
+           
+        }
+        Board.battlesDelivered();
+       }
+
+    }
     public IEnumerator WaitMovement(Character character){
         while(character.canMove){
             yield return null; 
@@ -228,6 +243,7 @@ public class GameManager : MonoBehaviour
         }
         }
     }
+
 
     public void GoBack()
     {

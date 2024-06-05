@@ -57,6 +57,7 @@ public class Character : MonoBehaviour
     }
 
     private void Awake(){
+        DontDestroyOnLoad(gameObject);
         lastPosition = new IntPair(0,0);
     }
 
@@ -174,14 +175,19 @@ public class Character : MonoBehaviour
     }
     
     private float[] movePositionFloat(Board board,int x,int y){
-        int i = 0;
+        List <Transform> childsInTile = new List<Transform>();
+
         foreach(Transform child in board.getBoardByName()){
             if(child.GetComponent<Character>()!=null){              
                 if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , board.Height)){
-                    i++;
+                    childsInTile.Add(child);
                 }
             }
         }
+        
+        int i = 0;
+        if(childsInTile.Count>0) i= findEmptyPosition(childsInTile,x,y);
+
         float posX = 0f;
         float posZ = 0f;
         switch (i){
@@ -216,7 +222,90 @@ public class Character : MonoBehaviour
         return  positions;
     }
  
+    private Vector3 findPosition(Board board,float positionY, int x, int y){
+        List <Transform> childsInTile = new List<Transform>();
+        Vector3 position = new Vector3();
+        foreach(Transform child in board.getBoardByName()){
+            if(child.GetComponent<Character>()!=null){              
+                if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , board.Height)){
+                    childsInTile.Add(child);
+                }
+            }
+        }
+        int i = 0;
+        if(childsInTile.Count>0) i= findEmptyPosition(childsInTile,x,y);
+        switch (i){
+            case 0:
+            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f);
+            
+            break;
 
+            case 1:
+            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.75f) ;
+            
+            break;
+
+            case 2: 
+            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.25f) ;
+            
+            break;  
+
+            case 3:
+            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.25f) ;
+            
+            break;
+
+            default:
+            Debug.LogError("Too Many Characters in Tile");
+            break;
+        }
+        return position;
+    }
+    private bool isChildInTile(float posX ,  int x , float posY , int y, int height){
+        if((x-1)<posX && posX<x && (height-y)<posY && posY<(height-y+1)){
+            return true;
+        }
+            
+        return false;
+    }
+
+    private int findEmptyPosition(List<Transform> childsInTile,int x, int y){
+        List<int> usedPositions = new List<int>(); //0 1 2 and 3 are the possible positions
+        int tileFull = -1;
+        foreach(Transform child in childsInTile){
+            Debug.Log("Character in my tile " + child.name);
+            Debug.Log("x : "+ child.localPosition.x + child.localPosition.z);
+
+            if(child.localPosition.x>(x/2) && child.localPosition.z>(y/2)){
+                usedPositions.Add(0);
+            }else if(child.localPosition.x<(x/2) && child.localPosition.z>(y/2)){
+                usedPositions.Add(1);
+            }else if(child.localPosition.x>(x/2) && child.localPosition.z<(y/2)){
+                usedPositions.Add(2);
+            }else{
+                usedPositions.Add(3);
+            }
+        }
+
+        for (int i = 0; i<usedPositions.Count; i++){
+            Debug.Log("usedPositions : "+ usedPositions[i]);
+        }
+        
+        
+        for (int i = 0; i < 4; i++){
+        if (!usedPositions.Contains(i)){
+            Debug.Log("Posicao minha: " + i);
+            return i;
+        }
+        }
+        
+        return tileFull;
+    }
+
+    private int verifyPosition(Transform child, int x, int y){
+        return 0;
+    }
+    
     public void Attack(Board board, int x, int y)
     { 
         isHolding = false;
@@ -254,55 +343,12 @@ public class Character : MonoBehaviour
     private void soldierAttacks(Board board, int x, int y){
         GameObject charactersWeapon = Instantiate(weapon, transform.localPosition,Quaternion.identity );
         charactersWeapon.transform.SetParent(transform);
-       // charactersWeapon.transform.localPosition =new Vector3(-0.200000003f,0.170000002f,0.279000014f);
-        //charactersWeapon.transform.rotation = Quaternion.Euler(3.96178436f,291.384033f,17.5526829f);
-        //charactersWeapon.GetComponent<Sword>().attack();
-        // Quaternion.Euler(54.1186333,252.660828,312.482086);
+
+        charactersWeapon.transform.localPosition =new Vector3(-0.200000003f,0.170000002f,0.279000014f);
+        charactersWeapon.transform.rotation =  Quaternion.Euler(305.502136f,207.265305f,252.824036f);
+        charactersWeapon.GetComponent<Sword>().attack();
         attackCharactersAt(board,x,y);
     }
-
-
-    private Vector3 findPosition(Board board,float positionY, int x, int y){
-        int i = 0;
-        Vector3 position = new Vector3();
-        foreach(Transform child in board.getBoardByName()){
-            if(child.GetComponent<Character>()!=null){              
-                if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , board.Height)){
-                    i++;
-                }
-            }
-        }
-        switch (i){
-            case 0:
-            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f);
-            looksSide = "left";
-            break;
-
-            case 1:
-            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.75f) ;
-            looksSide = "right";
-            break;
-
-            case 2: 
-            position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.25f) ;
-            looksSide = "left";
-            break;  
-
-            case 3:
-            position = new Vector3(x - 0.75f, positionY,(board.Height-y+1) - 0.25f) ;
-            looksSide = "left";
-            break;
-
-            default:
-            Debug.LogError("Too Many Characters in Tile");
-            break;
-        }
-        return position;
-    }
-
-    
-
-    
 
     private void attackCharactersAt(Board b, int x, int y){
        
@@ -321,18 +367,10 @@ public class Character : MonoBehaviour
                 enemy.GetComponent<Character>().isDead = true;
                 if(enemy.transform.tag == tag && tag == "soldier" && enemy.GetComponent<Character>().isHolding){
                     //Debug.Log("Is holding So I enter scene!");
-                    //LoadScene("Terrain");
+                    b.addBattle(x,y);
                 }
             } 
         }
-    }
-
-    private bool isChildInTile(float posX ,  int x , float posY , int y, int height){
-        if((x-1)<posX && posX<x && (height-y)<posY && posY<(height-y+1)){
-            return true;
-        }
-            
-        return false;
     }
 
     private void viewTrail(){

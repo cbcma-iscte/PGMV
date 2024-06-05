@@ -40,6 +40,9 @@ public class Menu : MonoBehaviour
 
     [SerializeField] public TextMeshProUGUI Turns;
     
+    public void Awake(){
+        DontDestroyOnLoad(gameObject);
+    }
     public void Start(){
         i = 0;
         allButtons.SetActive(true);
