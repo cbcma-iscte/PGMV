@@ -10,6 +10,10 @@ public class ViewChange : MonoBehaviour{
     private GameObject gamePlaying;
 
     // Start is called before the first frame update
+    void Awake(){
+        DontDestroyOnLoad(miniMapCamera);
+        DontDestroyOnLoad(Camera.main);
+    }
     void Start()
     {  
         //transform.position = new Vector3((float)-0.37,(float)3.64,(float)-8.16);

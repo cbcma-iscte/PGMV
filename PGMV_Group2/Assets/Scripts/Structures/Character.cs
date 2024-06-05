@@ -143,7 +143,7 @@ public class Character : MonoBehaviour
         }
         newObject.transform.Find("base").GetComponent<Renderer>().material.color = c;
         isHolding = false;
-        
+        //Debug.Log("Im here: " + transform.localPosition + " my name: " + name);
         return newObject;
 
     }
@@ -186,7 +186,7 @@ public class Character : MonoBehaviour
         }
         
         int i = 0;
-        if(childsInTile.Count>0) i= findEmptyPosition(childsInTile,x,y);
+        if(childsInTile.Count>0) i= findEmptyPosition(childsInTile,x,y,board);
 
         float posX = 0f;
         float posZ = 0f;
@@ -233,7 +233,7 @@ public class Character : MonoBehaviour
             }
         }
         int i = 0;
-        if(childsInTile.Count>0) i= findEmptyPosition(childsInTile,x,y);
+        if(childsInTile.Count>0) i= findEmptyPosition(childsInTile,x,y,board);
         switch (i){
             case 0:
             position = new Vector3(x - 0.25f, positionY,(board.Height-y+1) - 0.75f);
@@ -269,32 +269,25 @@ public class Character : MonoBehaviour
         return false;
     }
 
-    private int findEmptyPosition(List<Transform> childsInTile,int x, int y){
+    private int findEmptyPosition(List<Transform> childsInTile,int x, int y,Board board){
         List<int> usedPositions = new List<int>(); //0 1 2 and 3 are the possible positions
         int tileFull = -1;
         foreach(Transform child in childsInTile){
-            Debug.Log("Character in my tile " + child.name);
-            Debug.Log("x : "+ child.localPosition.x + child.localPosition.z);
-
-            if(child.localPosition.x>(x/2) && child.localPosition.z>(y/2)){
+            if(child.localPosition.x>(x-0.5f) && child.localPosition.z<((board.Height + 1 - y)-0.5f)){
                 usedPositions.Add(0);
-            }else if(child.localPosition.x<(x/2) && child.localPosition.z>(y/2)){
+            }else if(child.localPosition.x<(x-0.5f) && child.localPosition.z>((board.Height + 1 - y)-0.5f)){
                 usedPositions.Add(1);
-            }else if(child.localPosition.x>(x/2) && child.localPosition.z<(y/2)){
+            }else if(child.localPosition.x>(x-0.5f) && child.localPosition.z<((board.Height + 1 - y)-0.5f)){
                 usedPositions.Add(2);
             }else{
                 usedPositions.Add(3);
             }
         }
 
-        for (int i = 0; i<usedPositions.Count; i++){
-            Debug.Log("usedPositions : "+ usedPositions[i]);
-        }
-        
         
         for (int i = 0; i < 4; i++){
         if (!usedPositions.Contains(i)){
-            Debug.Log("Posicao minha: " + i);
+          //  Debug.Log("Posicao minha: " + i);
             return i;
         }
         }
