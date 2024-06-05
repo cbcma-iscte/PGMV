@@ -12,8 +12,6 @@ public class TerrainGenerator : MonoBehaviour
     public List<GameObject> rockPrefabs;
     public List<GameObject> housePrefabs;
 
-    //public Battle battleScript;
-
     public TerrainData terrainData;
     private Dictionary<string, SquareData> squareDataDict;
 
@@ -39,15 +37,6 @@ public class TerrainGenerator : MonoBehaviour
         terrainData = terrain.terrainData;
         float[,] heights = new float[terrainData.heightmapResolution, terrainData.heightmapResolution];
         float maxElevation = squareData.MaximumElevation;
-        int spawnPointAttackerX = Random.Range(1, terrainData.heightmapResolution);
-        int spawnPointAttackerY = Random.Range(1, terrainData.heightmapResolution);
-
-        int spawnPointDefenderX = Random.Range(1, terrainData.heightmapResolution);
-        int spawnPointDefenderY = Random.Range(1, terrainData.heightmapResolution);
-
-        int saveX = 0;
-        int saveY = 0;
-
 
         // Set the maximum elevation
         terrainData.size = new Vector3(terrainData.size.x, maxElevation * _TERRAIN_SCALE, terrainData.size.z);
@@ -82,21 +71,11 @@ public class TerrainGenerator : MonoBehaviour
 
                 // Scale to maximum elevation
                 heights[x, y] = elevation;
-                if (spawnPointAttackerX == x && spawnPointAttackerY == y)
-                {
-                    Debug.Log("x : " + x + ", y : " + y);
-                    saveX = (int)xCoord;
-                    saveY = (int)yCoord;
-                }
-
             }
         }
         // Debugging WHY NOT SETTING HEIGHTS properly??? TODO
         terrain.terrainData.SetHeights(0, 0, heights);
         Debug.Log("Terrain generated");
-
-        //battleScript.SpawnAttackingSoldier(spawnPointAttackerX, terrainData.GetHeight(saveX, saveY), spawnPointAttackerY);
-        //battleScript.SpawnDefendingSoldier(spawnPointDefenderX, terrainData.GetHeight(spawnPointDefenderX, spawnPointDefenderY), spawnPointDefenderY);
 
     }
 
@@ -113,6 +92,11 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int y = _EXPANSION_RANGE; y < terrainData.heightmapResolution; y += _EXPANSION_RANGE)
             {
+
+                 // 513 x 513
+                if ( x > (terrainData.heightmapResolution/2 - 50) && x < (terrainData.heightmapResolution/2 + 50) && y > (terrainData.heightmapResolution/2 - 50) && y < (terrainData.heightmapResolution/2 + 50))
+                    continue;
+
                 float height = terrainData.GetHeight(x, y) * _TERRAIN_SCALE / squareData.MaximumElevation;
                 ObjectData objData = squareData.Objects[Random.Range(0, squareData.Objects.Count)];
                 GameObject prefab = GetPrefabByType(objData.Type);
