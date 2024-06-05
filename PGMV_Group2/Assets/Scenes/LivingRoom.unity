@@ -967,6 +967,7 @@ MonoBehaviour:
   isAutomatic: 0
   isPaused: 0
   isPlaying: 0
+  isRestarting: 0
 --- !u!4 &264453732
 Transform:
   m_ObjectHideFlags: 0
@@ -2509,6 +2510,7 @@ MonoBehaviour:
   Games: []
   players: []
   allButtons: {fileID: 698336286}
+  automaticCheck: {fileID: 1010531354}
   play_button: {fileID: 20346642}
   forward_button: {fileID: 673606329}
   back_button: {fileID: 2070185920}
@@ -6081,6 +6083,7 @@ MonoBehaviour:
   isAutomatic: 0
   isPaused: 0
   isPlaying: 0
+  isRestarting: 0
 --- !u!4 &1754980351
 Transform:
   m_ObjectHideFlags: 0

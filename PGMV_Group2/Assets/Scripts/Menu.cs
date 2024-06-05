@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-
+using Unity.VisualScripting;
+//using UnityEngine.UIElements;
+using UnityEngine.UI;
 public class Menu : MonoBehaviour
 {
     public bool isPlayingAutomatic = false;
-
+    
     public bool isLoadingScenes = false;
+    private bool isRestarting = false;
 
     private bool isMenuOpen = false;
     private bool isPaused = false;
@@ -17,7 +20,9 @@ public class Menu : MonoBehaviour
     private int i;
     [SerializeField]
     public GameObject allButtons;
-    
+    [SerializeField]
+    public Toggle automaticCheck;
+
     [SerializeField]
     public GameObject play_button;
     [SerializeField]
@@ -68,17 +73,27 @@ public class Menu : MonoBehaviour
     }
 
     public void restart(){
+      
+        i = 0;
+        Turns.text = "Turns: " + i; 
+        isPlayingAutomatic =false;
+
+        back_button.SetActive(!isPlayingAutomatic);
+        forward_button.SetActive(!isPlayingAutomatic);
+        
+        foreach(GameObject game in Games)
+        {
+            game.GetComponent<GameManager>().isAutomatic = isPlayingAutomatic;
+            game.GetComponent<GameManager>().RestartGame();
+        }
         if(isMenuOpen) isMenuOpen = false;
         MenuScreen.SetActive(isMenuOpen);
         if(isPaused) isPaused = false;
         PauseScreen.SetActive(isPaused);
         allButtons.SetActive(true);
-        i=0;
-        Turns.text = "Turns: " + i;
-        foreach(GameObject game in Games)
-        {
-            game.GetComponent<GameManager>().RestartGame();
-        }
+        isRestarting = false;
+        
+        
     }
 
     public void back1play(){
@@ -94,13 +109,15 @@ public class Menu : MonoBehaviour
     }
 
     public void forward1play(){
+        
+        
         int playing = 0;
         foreach(GameObject game in Games){
             if(game.GetComponent<GameManager>().isPlaying==true){
                 playing = playing +1;
             }
         }
-        if(playing == 0){i++;
+        if(playing == 0 ){i++;
         Turns.text = "Turns: " + i;
         foreach(GameObject game in Games)
         {
@@ -115,19 +132,9 @@ public class Menu : MonoBehaviour
         
     }
 
-    public void killedEnemy(string player){
-        if(player.Equals("player1")){
-            //player1Points.text = " " +(currentValuePlayer1 + 1).ToString() +" points";
-            //currentValuePlayer1++;
-        }
-        else{
-           // player2Points.text = " "+(currentValuePlayer2 + 1).ToString() +" points";
-           // currentValuePlayer2++;
-        }
-    }
 
     public void showMenu(){
-       
+        automaticCheck.isOn = isPlayingAutomatic;
         isMenuOpen = !isMenuOpen;
         allButtons.SetActive(!isMenuOpen);
         MenuScreen.SetActive(isMenuOpen);
@@ -141,7 +148,15 @@ public class Menu : MonoBehaviour
 
     }
 
-
+    public void keepPlaying(){
+        foreach(GameObject game in Games)
+        {
+            game.GetComponent<GameManager>().isAutomatic = isPlayingAutomatic;
+            
+        }
+        back_button.SetActive(!isPlayingAutomatic);
+        forward_button.SetActive(!isPlayingAutomatic);
+    }
     public void isAutomaticToggle(){
         isPlayingAutomatic = !isPlayingAutomatic;
         foreach(GameObject game in Games)
@@ -161,13 +176,12 @@ public class Menu : MonoBehaviour
           SceneManager.LoadScene("MainMenu");
     }
 
-    
     void Update(){
         
         if(Input.GetKeyDown(KeyCode.P)){start_pause_Game();}
         if(Input.GetKeyDown(KeyCode.RightArrow) && isPlayingAutomatic == false){forward1play();}
         if(Input.GetKeyDown(KeyCode.LeftArrow) && isPlayingAutomatic == false){back1play();}
-        if(Input.GetKeyDown(KeyCode.R)){restart();}
+        if(Input.GetKeyDown(KeyCode.R)){isRestarting = true; restart();}
         if(Input.GetKeyDown(KeyCode.Escape)){showMenu();}
         if(isPlayingAutomatic && isPaused == false){ 
             forward1play();

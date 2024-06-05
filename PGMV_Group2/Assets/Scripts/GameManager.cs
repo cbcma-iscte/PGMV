@@ -24,14 +24,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject catapultPrefab;
 
     [SerializeField] 
-    public int currentTurn = 1;
+    public int currentTurn = 0;
+    private bool isRestarting = false;
     private int pointsPlayer1 = 0;
     private int pointsPlayer2 = 0;
     private bool isKillingGhosts = false;
     public bool isAutomatic = false;
     public bool isPaused = false;
     public bool isPlaying = false;
-    
     private void Awake()
     {
         isKillingGhosts = false;
@@ -160,7 +160,7 @@ public class GameManager : MonoBehaviour
             turnId++;
             Turns.Add(newTurn);
         }
-      
+
         PlayGame();
     }
 
@@ -203,7 +203,7 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(waitForTurn());
         }
         isPlaying=false;
-        if (currentTurn > Turns.Count)Application.Quit();
+        
 
     }
 
@@ -219,18 +219,19 @@ public class GameManager : MonoBehaviour
 
     public void GoForward()
     {
-        if(isPlaying==false){currentTurn++;
-        if(currentTurn<Turns.Count){
+        if(isPlaying==false && isRestarting==false){
+        if(currentTurn + 1<Turns.Count){
+            currentTurn++;
             StartCoroutine(PlayGame());
         }else{
-
+            
         }
         }
     }
 
     public void GoBack()
     {
-        if(isPlaying==false){
+        if(isPlaying==false && isRestarting==false){
         currentTurn--;
         if(currentTurn>0){
             StartCoroutine(PlayGame());
@@ -239,10 +240,13 @@ public class GameManager : MonoBehaviour
     }
 
     public void RestartGame()
-    {
+    {   
+        isRestarting = true;
         currentTurn = 0;
         pointsPlayer1 = 0;
         pointsPlayer2 = 0;
+        isPlaying = false;
+
         Board.restartPontuation();
         changeInforPontuation();
         foreach(Transform child in Board.getBoardByName())
@@ -250,8 +254,11 @@ public class GameManager : MonoBehaviour
                 if(child.tag!="Tile")
                     Destroy(child.gameObject);
         }
-        
+        isRestarting = false;
+       
+
     }
+    
     
 
     private void ManageActions(Unit unit)
@@ -296,7 +303,6 @@ public class GameManager : MonoBehaviour
     private IEnumerator timeTodestroy(GameObject child){
         yield return new WaitForSeconds(5f);
         Destroy(child);
-        //Debug.Log("I killed a ghost");
         isKillingGhosts=false;
     }
     
@@ -336,7 +342,10 @@ public class GameManager : MonoBehaviour
             changeInforPontuation();
 
         }
+        
     }
+
+    
 
     
 }
