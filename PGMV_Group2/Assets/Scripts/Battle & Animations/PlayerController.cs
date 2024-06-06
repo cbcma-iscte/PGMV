@@ -13,29 +13,29 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float speed;
     [SerializeField] float runMultiplier;
     [SerializeField] float jumpSpeed;
-    [SerializeField]float gravity;
+    [SerializeField] float gravity;
     [SerializeField] Terrain terrain;
     [SerializeField] AudioSource walk;
     [SerializeField] AudioSource jump;
 
-    static public int _TERRAIN_SCALE = 10;
+    static public int _TERRAIN_SCALE = 1;
 
     void Start()
     {
-        int heightMiddle = terrain.terrainData.heightmapResolution;
-        player.transform.position = new Vector3( player.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle)*_TERRAIN_SCALE , player.transform.position.z);
+        int heightMiddle = terrain.terrainData.heightmapResolution / 2;
+        player.transform.position = new Vector3(player.transform.position.x, terrain.terrainData.GetHeight(heightMiddle, heightMiddle) * _TERRAIN_SCALE + 20, player.transform.position.z);
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        
+
         if (cc.isGrounded)
         {
 
-            ccAnimator.SetBool("isJumping",false);
+            ccAnimator.SetBool("isJumping", false);
 
-             // Get the camera's forward and right vectors
+            // Get the camera's forward and right vectors
             Vector3 camForward = Camera.main.transform.forward;
             Vector3 camRight = Camera.main.transform.right;
             camForward.y = 0f;
@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
             if (direction.magnitude > 0.1f)
             {
-            
+
                 // Determina a velocidade do movimento
                 float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * runMultiplier : speed;
                 direction *= currentSpeed;
@@ -61,17 +61,17 @@ public class PlayerController : MonoBehaviour
                     walk.Play();
 
                 // Definindo o parâmetro de movimento do animator
-                ccAnimator.SetBool("isIdle",false);
+                ccAnimator.SetBool("isIdle", false);
                 ccAnimator.SetFloat("MoveX", moveHorizontal);
                 ccAnimator.SetFloat("MoveZ", moveVertical);
-                ccAnimator.SetBool("isWalking",true);
-                ccAnimator.SetBool("isRunning",Input.GetKey(KeyCode.LeftShift));
+                ccAnimator.SetBool("isWalking", true);
+                ccAnimator.SetBool("isRunning", Input.GetKey(KeyCode.LeftShift));
             }
             else
             {
-                ccAnimator.SetBool("isIdle",true);
-                ccAnimator.SetBool("isRunning",false);
-                ccAnimator.SetBool("isWalking",false);
+                ccAnimator.SetBool("isIdle", true);
+                ccAnimator.SetBool("isRunning", false);
+                ccAnimator.SetBool("isWalking", false);
                 ccAnimator.SetFloat("MoveX", 0);
                 ccAnimator.SetFloat("MoveZ", 0);
             }
@@ -82,8 +82,8 @@ public class PlayerController : MonoBehaviour
                 direction.y = jumpSpeed;
                 direction.x = 0;
                 direction.z = 0;
-                ccAnimator.SetBool("isJumping",true);
-                
+                ccAnimator.SetBool("isJumping", true);
+
             }
         }
         // Aplicar gravidade

@@ -18,8 +18,8 @@ public class TerrainGenerator : MonoBehaviour
     // GameManager will change this value when changing scene and invoking this script
     public string tileType;
 
-    static float _BATTLE_SPOT_RADIUS = 25f;
-    static float _BATTLE_SPOT_RADIUS_INTERPOLATION = 60f;
+    static float _BATTLE_SPOT_RADIUS = 30f;
+    static float _BATTLE_SPOT_RADIUS_INTERPOLATION = 75f;
 
     void Start()
     {
@@ -43,16 +43,16 @@ public class TerrainGenerator : MonoBehaviour
 
         // Set the maximum elevation
         terrainData.size = new Vector3(terrainData.size.x, maxElevation * _TERRAIN_SCALE, terrainData.size.z);
-        Debug.Log("Generating terrain with maximum elevation: " + maxElevation);
+        //Debug.Log("Generating terrain with maximum elevation: " + maxElevation);
 
         // Using multiple frequencies of Perlin Noise
         // Frequency determines hills and valleys. 
         // For not random terrain, you can set the frequency to a fixed value (e.g. 2 or 3 is a good start)
         // If you want to have more hills and valleys, increase the number of frequencies
         float frequency1 = Random.Range(2f, 4f);
-        Debug.Log("Frequency 1: " + frequency1);
+        //Debug.Log("Frequency 1: " + frequency1);
         float frequency2 = Random.Range(2f, 6f);
-        Debug.Log("Frequency 2: " + frequency2);
+        //Debug.Log("Frequency 2: " + frequency2);
         // Amplitude determines the weight of each frequency
         float amplitude1 = 0.5f;
         float amplitude2 = 0.5f;
@@ -103,7 +103,7 @@ public class TerrainGenerator : MonoBehaviour
         }
         // Debugging WHY NOT SETTING HEIGHTS properly??? TODO
         terrain.terrainData.SetHeights(0, 0, heights);
-        Debug.Log("Terrain generated");
+        //Debug.Log("Terrain generated");
 
     }
 
@@ -136,7 +136,7 @@ public class TerrainGenerator : MonoBehaviour
                 if ( distanceFromCenter <= _BATTLE_SPOT_RADIUS)
                     continue;
 
-                float height = terrainData.GetHeight(x, y) * _TERRAIN_SCALE / squareData.MaximumElevation;
+                float height = terrainData.GetHeight(x, y) / squareData.MaximumElevation;
                 ObjectData objData = squareData.Objects[Random.Range(0, squareData.Objects.Count)];
                 GameObject prefab = GetPrefabByType(objData.Type);
                 float densityLow = objData.DensityLowAltitude;

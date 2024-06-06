@@ -102,11 +102,13 @@ public class Menu : MonoBehaviour
     public void back1play(){
 
         //see the previous play
-        i--;
-        Turns.text = "Turns: " + i;
-        foreach(GameObject game in Games)
-        {
-            game.GetComponent<GameManager>().GoBack();
+        if (i > 0){
+            i--;
+            Turns.text = "Turns: " + i;
+            foreach(GameObject game in Games)
+            {
+                game.GetComponent<GameManager>().GoBack();
+            }
         }
 
     }
@@ -167,15 +169,6 @@ public class Menu : MonoBehaviour
 
     }
 
-    public void keepPlaying(){
-        foreach(GameObject game in Games)
-        {
-            game.GetComponent<GameManager>().isAutomatic = isPlayingAutomatic;
-            
-        }
-        back_button.SetActive(!isPlayingAutomatic);
-        forward_button.SetActive(!isPlayingAutomatic);
-    }
     public void isAutomaticToggle(){
         isPlayingAutomatic = !isPlayingAutomatic;
         foreach(GameObject game in Games)
@@ -185,10 +178,6 @@ public class Menu : MonoBehaviour
         }
         back_button.SetActive(!isPlayingAutomatic);
         forward_button.SetActive(!isPlayingAutomatic);
-    }
-
-    public void isLoadingBattles(){
-        isLoadingScenes = !isLoadingScenes;
     }
 
     public void QuitGame(){

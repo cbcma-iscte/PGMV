@@ -344,19 +344,19 @@ public class Character : MonoBehaviour
     }
 
     private void attackCharactersAt(Board b, int x, int y){
-       
+
         List<GameObject> enemies = new List<GameObject>();
         foreach(Transform child in b.getBoardByName()){
-            if(child.tag!="Tile" && child.GetComponent<Character>()!=null && child.gameObject.GetComponent<Character>().Role != this.Role){    
+            if(child.tag!="Tile" && child.GetComponent<Character>()!=null && child.gameObject.GetComponent<Character>().Role != this.Role){
                 if(isChildInTile(child.localPosition.x , x , child.localPosition.z , y , b.Height)){
                     enemies.Add(child.gameObject);
                 }
-            }     
+            }
         }
-        if(enemies.Count!=0){
-           
-            b.addPointTo(Role);
+        enemies = makeSureNoRepete(enemies);
+            if(enemies.Count>0){
             foreach(GameObject enemy in enemies){
+                b.addPointTo(Role);
                 enemy.GetComponent<Character>().isDead = true;
                 if(enemy.transform.tag == tag && tag == "soldier" && enemy.GetComponent<Character>().isHolding){
                     //Debug.Log("Is holding So I enter scene!");
@@ -364,6 +364,25 @@ public class Character : MonoBehaviour
                 }
             } 
         }
+
+    }
+
+    private List<GameObject> makeSureNoRepete(List<GameObject> enemies){
+         HashSet<string> uniqueIds = new HashSet<string>();
+        List<GameObject> uniqueEnemies = new List<GameObject>();
+
+        foreach (GameObject enemy in enemies)
+        {
+            Character characterComponent = enemy.GetComponent<Character>();
+            if (characterComponent != null && uniqueIds.Add(characterComponent.Id ))
+            {
+                uniqueEnemies.Add(enemy);
+            }else{
+                Destroy(enemy);
+            }
+        }
+
+        return uniqueEnemies;
     }
 
     private void viewTrail(){
@@ -382,7 +401,7 @@ public class Character : MonoBehaviour
                 c.a = alpha; 
                trailRenderer.material.SetColor("_Color", c);
             }
-            Debug.Log("my alpha " + alpha);
+            //Debug.Log("my alpha " + alpha);
             
     }
 

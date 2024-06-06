@@ -33,15 +33,14 @@ public class BattleAnimation : MonoBehaviour
     BattleState currentState = BattleState.Moving;
     BattleState lastState;
 
-    static public int _TERRAIN_SCALE = 10;
+    static public int _TERRAIN_SCALE = 1;
 
     // Start is called before the first frame update
     void Start()
     {
-        int heightMiddle = terrain.terrainData.heightmapResolution;
-        attacker.transform.position = new Vector3(attacker.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle)*_TERRAIN_SCALE ,attacker.transform.position.z);
-        defender.transform.position = new Vector3(defender.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle)*_TERRAIN_SCALE,defender.transform.position.z);
-
+        int heightMiddle = terrain.terrainData.heightmapResolution / 2;
+        attacker.transform.position = new Vector3(attacker.transform.position.x, terrain.terrainData.GetHeight(heightMiddle, heightMiddle) * _TERRAIN_SCALE + 20 , attacker.transform.position.z);
+        defender.transform.position = new Vector3(defender.transform.position.x ,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) * _TERRAIN_SCALE + 20 , defender.transform.position.z);
         attackerAnimator = attacker.GetComponent<Animator>();
         defenderAnimator = defender.GetComponent<Animator>();
     }
@@ -164,7 +163,9 @@ public class BattleAnimation : MonoBehaviour
         Destroy(defender);
         Destroy(attacker);
         look.EnableCursor();
-        SceneManager.LoadScene("LivingRoom");
+        //GameObject menu = GameObject.FindGameObjectsWithTag("MenuInformation")[0];
+        //menu.SetActive(true);
+        SceneManager.LoadScene("MainMenu");
 
     }
 

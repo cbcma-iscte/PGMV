@@ -127,7 +127,7 @@ public class Board : MonoBehaviour
                     return child.gameObject;
             }
         }
-        Debug.Log("not found");
+        //Debug.Log("not found");
         return null;
     }
 
@@ -153,6 +153,11 @@ public class Board : MonoBehaviour
     public string getMaterial(int x, int y){
         Transform tile = getTileFromName(x,y);
         return tile.GetComponent<MeshRenderer>().material.name;
+    }
+
+    public void changePontuation(int p1, int p2){
+        pontuationPlayer1 =p1;
+        pontuationPlayer2 =p2;
     }
 
     public void addBattle(int x,int y){

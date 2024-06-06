@@ -31,13 +31,13 @@ public class TerrainParser : MonoBehaviour
                 objectData.DensityLowAltitude = float.Parse(obj.Attributes["density_low_altitute"].Value, CultureInfo.InvariantCulture);
                 objectData.DensityHighAltitude = float.Parse(obj.Attributes["density_high_altitute"].Value, CultureInfo.InvariantCulture);
                 squareData.Objects.Add(objectData);
-                Debug.Log("Parsed object: " + objectData.Type);
-                Debug.Log("Density low: " + objectData.DensityLowAltitude);
-                Debug.Log("Density high: " + objectData.DensityHighAltitude);
+                //Debug.Log("Parsed object: " + objectData.Type);
+                //Debug.Log("Density low: " + objectData.DensityLowAltitude);
+                //Debug.Log("Density high: " + objectData.DensityHighAltitude);
             }
             
             squareDataDict.Add(squareData.Type, squareData);
-            Debug.Log("Parsed square: " + squareData.Type);
+            //Debug.Log("Parsed square: " + squareData.Type);
         }
 
         return squareDataDict;

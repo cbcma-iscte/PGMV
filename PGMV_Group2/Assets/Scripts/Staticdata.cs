@@ -5,5 +5,4 @@ using UnityEngine;
 public class Staticdata : MonoBehaviour
 {
    public static string typeToCreateBattle;
-
 }

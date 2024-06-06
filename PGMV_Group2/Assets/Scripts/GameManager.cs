@@ -33,6 +33,8 @@ public class GameManager : MonoBehaviour
     public bool isAutomatic = false;
     public bool isPaused = false;
     public bool isPlaying = false;
+    public List<int> allPointsP1 = new List<int>();
+    public List<int> allPointsP2 = new List<int>();
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -207,6 +209,8 @@ public class GameManager : MonoBehaviour
         }
 
         verifyBattles();
+        allPointsP1.Add(pointsPlayer1);
+        allPointsP2.Add(pointsPlayer2);
         isPlaying=false;
         
 
@@ -214,9 +218,10 @@ public class GameManager : MonoBehaviour
 
     public void verifyBattles(){
        if(Board.battlesInTurn.Count>0){
-            foreach (string typeOfBattle in Board.battlesInTurn){   
-                Debug.Log("Battle of type: " + typeOfBattle);
+            foreach (string typeOfBattle in Board.battlesInTurn){
                 Staticdata.typeToCreateBattle = typeOfBattle.ToLower().Split(' ')[0];
+                //GameObject menu = GameObject.FindGameObjectsWithTag("MenuInformation")[0];
+                //menu.SetActive(false);
                 SceneManager.LoadScene("TerrainScene");
             }
             Board.battlesDelivered();
@@ -245,15 +250,91 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
     public void GoBack()
     {
-        if(isPlaying==false && isRestarting==false){
-        currentTurn--;
         if(currentTurn>0){
-            StartCoroutine(PlayGame());
+            if(isPlaying==false && isRestarting==false){
+                currentTurn--;
+                Redo(currentTurn+1);
+            }
         }
+    }
+
+    public void Redo(int id){
+        foreach(Turn turn in Turns){
+            if(turn.Id == id-1){
+                
+            }
+            if(turn.Id == id){
+                goBackOnce(turn);
+            }
         }
+    }
+
+    private void goBackOnce(Turn turn){
+        foreach (Unit unit in turn.Units){//Debug.Log("Unit" + unit.Action + unit.Id);
+            if(Board.findCharacterInBoard(unit) == null){
+                unit.Action = "spawn"; 
+                ManageActions(unit);
+            }else{
+                if(unit.Action == "spawn"){
+                    foreach(Transform child in Board.getBoardByName()){
+                        if(child.GetComponent<Character>() != null && child.tag!="Tile"){
+                        if(child.GetComponent<Character>().Id==unit.Id){
+                            Destroy(child.gameObject);
+                        }
+                        }
+                    }
+                }else if(unit.Action == "attack"){
+                        allPointsP1.RemoveAt(allPointsP1.Count - 1);
+                        allPointsP2.RemoveAt(allPointsP2.Count - 1);
+                        Board.changePontuation(allPointsP1[allPointsP1.Count-1],allPointsP2[allPointsP2.Count-1]);    
+                        changeInforPontuation();
+                }else if(unit.Action == "move_to"){
+                    Unit previousPosition = find_previousUnit(turn.Id,unit);
+                    Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,previousPosition.X,previousPosition.Y);
+                }else{
+                    if(verifyMovement(turn.Id,unit)){
+                        Unit previousPosition = find_previousUnit(turn.Id,unit);
+                        Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,previousPosition.X,previousPosition.Y);
+                
+                    }else{
+                    ManageActions(unit);  
+                    }
+                }
+                
+            }
+            
+        }
+    }
+
+    private bool verifyMovement(int id, Unit unit ){
+        
+        foreach(Turn turn in Turns){
+            if(turn.Id == id){
+                Unit unitNew = findUnit(turn, unit);
+                if(unitNew.Action == "move_to") return true;
+            }
+        }
+        
+        return false;
+    }
+    private Unit find_previousUnit(int id,Unit unit){
+        foreach(Turn turn in Turns){
+            if(turn.Id + 1 == id){
+                return findUnit(turn, unit);
+            }
+        }
+        return null;
+    }
+
+    private Unit findUnit(Turn turn, Unit unit){
+        foreach(Unit units in turn.Units){
+            if(units.Id==unit.Id){
+                return units;
+            }
+        }
+        return null;
     }
 
     public void RestartGame()
@@ -342,6 +423,7 @@ public class GameManager : MonoBehaviour
         
     
     void Update(){
+        
         if(isKillingGhosts == false){
             GameObject[] Ghosts = GameObject.FindGameObjectsWithTag("ghost");
             if(Ghosts.Length>0){
