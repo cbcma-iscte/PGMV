@@ -61,13 +61,40 @@ public class TerrainGenerator : MonoBehaviour
                 float xCoord = (float)x / terrainData.heightmapResolution;
                 float yCoord = (float)y / terrainData.heightmapResolution;
 
+                // Calcola le coordinate del centro dell'area
+                float centerX = terrainData.heightmapResolution / 2f; 
+                float centerY = terrainData.heightmapResolution / 2f;
 
-                // Compute the noise value
-                float elevation = (Mathf.PerlinNoise(xCoord * frequency1, yCoord * frequency1) * amplitude1 +
-                                   Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) /
-                                  (amplitude1 + amplitude2);
+                // Determina la distanza dal centro
+                float distanceFromCenter = Mathf.Sqrt(
+                    Mathf.Pow(xCoord * terrainData.heightmapResolution - centerX, 2) +
+                    Mathf.Pow(yCoord * terrainData.heightmapResolution - centerY, 2)
+                );
 
-                elevation = Mathf.Lerp(0, 1, Mathf.Clamp(elevation, 0.3f, 0.7f));
+                float elevation = 0f;
+                float _BATTLE_SPOT_RADIUS = 25f;
+                float _BATTLE_SPOT_RADIUS_INTERPOLATION = 60f;
+                // Calcola l'elevazione
+                if (distanceFromCenter <= _BATTLE_SPOT_RADIUS) { // Area piana centrale (15 pixel di raggio)
+                    elevation = 0.5f; // Valore costante nell'area piana
+                } else if (distanceFromCenter <= _BATTLE_SPOT_RADIUS_INTERPOLATION) { // Area di interpolazione (tra 15 e 45 pixel di raggio)
+                    float interpolationFactor = (distanceFromCenter - _BATTLE_SPOT_RADIUS) / (_BATTLE_SPOT_RADIUS_INTERPOLATION-_BATTLE_SPOT_RADIUS); // Normalizza la distanza tra 0 e 1
+                    elevation = Mathf.Lerp(
+                        0.5f, // Valore costante al centro
+                        (Mathf.PerlinNoise(xCoord * frequency1, yCoord * frequency1) * amplitude1 +
+                        Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) /
+                        (amplitude1 + amplitude2),
+                        interpolationFactor
+                    );
+                } else { // Area esterna (oltre 45 pixel di raggio)
+                    elevation = (Mathf.PerlinNoise(xCoord * frequency1, yCoord * frequency1) * amplitude1 +
+                                Mathf.PerlinNoise(xCoord * frequency2, yCoord * frequency2) * amplitude2) /
+                                (amplitude1 + amplitude2);
+                }
+
+                elevation = Mathf.Lerp(0, 1, Mathf.Clamp(elevation, 0.3f, 0.7f)); 
+
+
 
                 // Scale to maximum elevation
                 heights[x, y] = elevation;
