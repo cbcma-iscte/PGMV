@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
             // Obter direção do movimento
             direction = (camForward * moveVertical + camRight * moveHorizontal).normalized;
-            Debug.Log(direction.magnitude);
+
             if (direction.magnitude > 0.1f)
             {
             

@@ -14,7 +14,7 @@ public class BattleAnimation : MonoBehaviour
 
     [SerializeField] Animator attackerAnimator;
     [SerializeField] Animator defenderAnimator;
-    
+
     [SerializeField] float speedWalking;
     [SerializeField] float speedRunning;
 
@@ -22,8 +22,7 @@ public class BattleAnimation : MonoBehaviour
     [SerializeField] AudioSource enemyDie;
     [SerializeField] AudioSource block;
     [SerializeField] AudioSource dodge;
-
-
+    bool isGrounded = false;
     string[] allAnimationDefender = { "isDodging", "isBlocking", "isDying" };
     string[] allAnimationAttacker = { "isDodging", "isBlocking" };
 
@@ -51,9 +50,14 @@ public class BattleAnimation : MonoBehaviour
         defenderAnimator.SetBool("isDodging", false);
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        isGrounded = true;
+    }
+
     void Update()
     {
-        if (isBattleActive)
+        if (isBattleActive && isGrounded)
         {
             stateTimer -= Time.deltaTime;
 
