@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 186552420608272249}
   - component: {fileID: 2351072461732412322}
+  - component: {fileID: 4046964774211424}
   m_Layer: 0
   m_Name: Sword
   m_TagString: Untagged
@@ -25,14 +26,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7263681675090194781}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.71546113, z: 0, w: 0.6986526}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2678927709999692072}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -91.362, z: 0}
 --- !u!82 &2351072461732412322
 AudioSource:
   m_ObjectHideFlags: 0
@@ -129,6 +130,19 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &4046964774211424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263681675090194781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf1bd035f9bbb14aaad1846609be9f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetEulerAngles: {x: 90, y: 0, z: 0}
 --- !u!1001 &2497193158765846211
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -151,23 +165,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d054dacc3cd0d49b29c8de1e533022, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.58908385
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d054dacc3cd0d49b29c8de1e533022, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.808072
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d054dacc3cd0d49b29c8de1e533022, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -9.664338e-19
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d054dacc3cd0d49b29c8de1e533022, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0.00000009632967
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d054dacc3cd0d49b29c8de1e533022, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -107.816
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 50d054dacc3cd0d49b29c8de1e533022, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y

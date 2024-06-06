@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Xml;
-
+using System.Collections;
+using System;
+using TMPro;
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject Table;
@@ -14,18 +17,32 @@ public class GameManager : MonoBehaviour
     [SerializeField] private string xmlResourcePath;
     private XmlDocument xmlDoc = new XmlDocument();
 
+    [SerializeField] public GameObject Player1;
+    [SerializeField] public GameObject Player2;
     [SerializeField] private GameObject archerPrefab;
     [SerializeField] private GameObject magePrefab;
     [SerializeField] private GameObject soldierPrefab;
     [SerializeField] private GameObject catapultPrefab;
 
     [SerializeField] 
-    public int currentTurn = 1;
-
+    public int currentTurn = 0;
+    public bool isLoadingScenes = true;
+    private bool isRestarting = false;
+    private int pointsPlayer1 = 0;
+    private int pointsPlayer2 = 0;
+    private bool isKillingGhosts = false;
     public bool isAutomatic = false;
-    
+    public bool isPaused = false;
+    public bool isPlaying = false;
+    public List<int> allPointsP1 = new List<int>();
+    public List<int> allPointsP2 = new List<int>();
     private void Awake()
     {
+        DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(Table);
+        isKillingGhosts = false;
+        Player1.SetActive(false);
+        Player2.SetActive(false);
         
         InitializeGame();
     }
@@ -65,10 +82,18 @@ public class GameManager : MonoBehaviour
     private void LoadRoles(XmlNode rolesNode)
     {
         Roles = new List<Role>();
+        
         foreach (XmlNode roleNode in rolesNode)
         {
-            Roles.Add(new Role { Name = roleNode.Attributes["name"].Value });
+            Roles.Add(new Role { Name = roleNode.Attributes["name"].Value});
+            
         }
+        changeInforPontuation();
+    }
+
+    private void changeInforPontuation(){
+        Player1.GetComponentInChildren<TextMeshProUGUI>().text = Roles[0].Name + ": " + pointsPlayer1;
+        Player2.GetComponentInChildren<TextMeshProUGUI>().text = Roles[1].Name + ": " + pointsPlayer2;
     }
 
     private void LoadBoard(XmlNode boardNode){
@@ -111,9 +136,9 @@ public class GameManager : MonoBehaviour
         
         int board_width = int.Parse(boardNode.Attributes["width"].Value);
         int board_height = int.Parse(boardNode.Attributes["height"].Value);
-        Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table);
+        Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table,Roles);
 
-        Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
+        //Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
 
     }
 
@@ -135,80 +160,231 @@ public class GameManager : MonoBehaviour
                 int y = int.Parse(unitNode.Attributes["y"]?.Value);
 
 
-
                 Unit unitComponent = new Unit(id, role, type, x, y, action);
                 newTurn.Units.Add(unitComponent);
             }
             turnId++;
             Turns.Add(newTurn);
         }
-      
+
         PlayGame();
     }
 
-    public void PlayGame(){
+    public void PauseResumeGame(){
+        if(isPaused){
+            Time.timeScale = 1f;
+        }else{
+            Time.timeScale = 0f;
+        }
+        
+        isPaused = !isPaused;
+    }
+    public IEnumerator PlayGame(){
+        isPlaying=true;
         foreach(Turn turn in Turns)
         {
             if(turn.Id == currentTurn)
             {
                 foreach(Unit unit in turn.Units)
                 {
-                    ManageActions(unit);
+                    if(unit.Action == "spawn" || unit.Action == "move_to" || unit.Action == "hold"){
+                        ManageActions(unit);
+                        if(Board.findCharacterInBoard(unit).GetComponent<Character>().canMove){
+                            yield return StartCoroutine(WaitMovement(Board.findCharacterInBoard(unit).GetComponent<Character>()));
+                        }
+                    }
+                   
+                }
+                foreach(Unit unit in turn.Units)
+                {
+                    if(unit.Action == "attack"){
+                        ManageActions(unit);
+                    }
+                    
                 }
             }
+            
         }
-        if (isAutomatic) currentTurn++;
-        if (currentTurn > Turns.Count) isAutomatic = !isAutomatic;
+        if(isAutomatic){
+            yield return StartCoroutine(waitForTurn());
+        }
+
+        verifyBattles();
+        allPointsP1.Add(pointsPlayer1);
+        allPointsP2.Add(pointsPlayer2);
+        isPlaying=false;
+        
+
+    }
+
+    public void verifyBattles(){
+       if(Board.battlesInTurn.Count>0){
+            if (isLoadingScenes){
+                Debug.Log("Loading scenes" + isLoadingScenes);
+                foreach (string typeOfBattle in Board.battlesInTurn){
+                    Staticdata.typeToCreateBattle = typeOfBattle.ToLower().Split(' ')[0];
+                    GameObject[] menu = GameObject.FindGameObjectsWithTag("MenuInformation");
+                    if (menu.Length > 0)
+                    {
+                        menu[0].SetActive(false);
+                    }
+                    SceneManager.LoadScene("TerrainScene");
+                }
+            }
+            Board.battlesDelivered();
+       }
+
+    }
+    public IEnumerator WaitMovement(Character character){
+        while(character.canMove){
+            yield return null; 
+        }
+       
+    }
+    private IEnumerator waitForTurn(){
+        yield return new WaitForSeconds(1f);
     }
 
     public void GoForward()
     {
-        currentTurn++;
-        PlayGame();
+        if(isPlaying==false && isRestarting==false){
+        if(currentTurn + 1<Turns.Count){
+            currentTurn++;
+            StartCoroutine(PlayGame());
+        }else{
+            
+        }
+        }
     }
 
     public void GoBack()
     {
-        currentTurn--;
-        PlayGame();
+        if(currentTurn>0){
+            if(isPlaying==false && isRestarting==false){
+                currentTurn--;
+                Redo(currentTurn+1);
+            }
+        }
+    }
+
+    public void Redo(int id){
+        foreach(Turn turn in Turns){
+            if(turn.Id == id-1){
+                
+            }
+            if(turn.Id == id){
+                goBackOnce(turn);
+            }
+        }
+    }
+
+    private void goBackOnce(Turn turn){
+        foreach (Unit unit in turn.Units){//Debug.Log("Unit" + unit.Action + unit.Id);
+            if(Board.findCharacterInBoard(unit) == null){
+                unit.Action = "spawn"; 
+                ManageActions(unit);
+            }else{
+                if(unit.Action == "spawn"){
+                    foreach(Transform child in Board.getBoardByName()){
+                        if(child.GetComponent<Character>() != null && child.tag!="Tile"){
+                        if(child.GetComponent<Character>().Id==unit.Id){
+                            Destroy(child.gameObject);
+                        }
+                        }
+                    }
+                }else if(unit.Action == "attack"){
+                        allPointsP1.RemoveAt(allPointsP1.Count - 1);
+                        allPointsP2.RemoveAt(allPointsP2.Count - 1);
+                        Board.changePontuation(allPointsP1[allPointsP1.Count-1],allPointsP2[allPointsP2.Count-1]);    
+                        changeInforPontuation();
+                }else if(unit.Action == "move_to"){
+                    Unit previousPosition = find_previousUnit(turn.Id,unit);
+                    Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,previousPosition.X,previousPosition.Y);
+                }else{
+                    if(verifyMovement(turn.Id,unit)){
+                        Unit previousPosition = find_previousUnit(turn.Id,unit);
+                        Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,previousPosition.X,previousPosition.Y);
+                
+                    }else{
+                    ManageActions(unit);  
+                    }
+                }
+                
+            }
+            
+        }
+    }
+
+    private bool verifyMovement(int id, Unit unit ){
+        
+        foreach(Turn turn in Turns){
+            if(turn.Id == id){
+                Unit unitNew = findUnit(turn, unit);
+                if(unitNew.Action == "move_to") return true;
+            }
+        }
+        
+        return false;
+    }
+    private Unit find_previousUnit(int id,Unit unit){
+        foreach(Turn turn in Turns){
+            if(turn.Id + 1 == id){
+                return findUnit(turn, unit);
+            }
+        }
+        return null;
+    }
+
+    private Unit findUnit(Turn turn, Unit unit){
+        foreach(Unit units in turn.Units){
+            if(units.Id==unit.Id){
+                return units;
+            }
+        }
+        return null;
     }
 
     public void RestartGame()
-    {
+    {   
+        isRestarting = true;
         currentTurn = 0;
-        // And Destroy all characters that have to make list and add them before.
+        pointsPlayer1 = 0;
+        pointsPlayer2 = 0;
+        isPlaying = false;
+
+        Board.restartPontuation();
+        changeInforPontuation();
+        foreach(Transform child in Board.getBoardByName())
+        {
+                if(child.tag!="Tile")
+                    Destroy(child.gameObject);
+        }
+        isRestarting = false;
+       
+
     }
     
-    public void Update()
-    {
-        while(isAutomatic)
-        {
-            PlayGame();
-        }
-    }
+    
 
     private void ManageActions(Unit unit)
     {      
         switch (unit.Action)
         {
             case "hold":
-                Debug.Log("holding");
                 Board.findCharacterInBoard(unit).GetComponent<Character>().Hold();
                 break;
             case "attack":
-                Debug.Log("attacking");
-                //Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
+                Board.findCharacterInBoard(unit).GetComponent<Character>().Attack(Board,unit.X,unit.Y);
                 break;
             case "move_to":
-                Debug.Log("moving");
                 Board.findCharacterInBoard(unit).GetComponent<Character>().MoveTo(Board,unit.X,unit.Y);
                 break;
             case "spawn":
                 GameObject prefab = GetPrefabByType(unit.Type);
-                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id);
+                prefab.GetComponent<Character>().Spawn(prefab,Board, unit.X, unit.Y,unit.Role,unit.Id,Roles);
                 break;
         }
-        return;
+        
     }
 
     private GameObject GetPrefabByType(string type)
@@ -228,4 +404,54 @@ public class GameManager : MonoBehaviour
                 return null;
         }
     }
+
+    private IEnumerator timeTodestroy(GameObject child){
+        yield return new WaitForSeconds(5f);
+        Destroy(child);
+        isKillingGhosts=false;
+    }
+    
+    public void showPontuations(bool isToShow){
+        Player1.SetActive(isToShow);
+        Player2 .SetActive(isToShow);
+    }
+
+    public void addReducePoints(string nameOfPlayer, int point){
+        if(nameOfPlayer == Roles[0].Name){
+            pointsPlayer1 = pointsPlayer1 + point;
+            Player1.GetComponentInChildren<TextMeshProUGUI>().text = Roles[0].Name + ": " + pointsPlayer1;
+            
+        }else{
+            pointsPlayer2 = pointsPlayer2 + point;
+            Player2.GetComponentInChildren<TextMeshProUGUI>().text = Roles[1].Name + ": " + pointsPlayer2;
+            
+        }
+    }
+        
+    
+    void Update(){
+        
+        if(isKillingGhosts == false){
+            GameObject[] Ghosts = GameObject.FindGameObjectsWithTag("ghost");
+            if(Ghosts.Length>0){
+                //Debug.Log("I'll start killing ghosts!");
+                isKillingGhosts =true;
+                foreach(GameObject ghost in Ghosts){
+                    StartCoroutine(timeTodestroy(ghost));
+                }
+            }
+        }
+
+        if(isPlaying==false){
+            pointsPlayer1 = Board.pontuationPlayer1;
+            pointsPlayer2 = Board.pontuationPlayer2;
+            changeInforPontuation();
+
+        }
+        
+    }
+
+    
+
+    
 }
