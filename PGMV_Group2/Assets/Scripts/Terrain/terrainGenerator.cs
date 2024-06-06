@@ -18,6 +18,9 @@ public class TerrainGenerator : MonoBehaviour
     // GameManager will change this value when changing scene and invoking this script
     public string tileType;
 
+    static float _BATTLE_SPOT_RADIUS = 25f;
+    static float _BATTLE_SPOT_RADIUS_INTERPOLATION = 60f;
+
     void Start()
     {
         TerrainParser parser = new TerrainParser { xmlFile = xmlFile };
@@ -71,9 +74,7 @@ public class TerrainGenerator : MonoBehaviour
                     Mathf.Pow(yCoord * terrainData.heightmapResolution - centerY, 2)
                 );
 
-                float elevation = 0f;
-                float _BATTLE_SPOT_RADIUS = 25f;
-                float _BATTLE_SPOT_RADIUS_INTERPOLATION = 60f;
+                float elevation;
                 // Calcola l'elevazione
                 if (distanceFromCenter <= _BATTLE_SPOT_RADIUS) { // Area piana centrale (15 pixel di raggio)
                     elevation = 0.5f; // Valore costante nell'area piana
@@ -119,9 +120,20 @@ public class TerrainGenerator : MonoBehaviour
         {
             for (int y = _EXPANSION_RANGE; y < terrainData.heightmapResolution; y += _EXPANSION_RANGE)
             {
+                float xCoord = (float)x / terrainData.heightmapResolution;
+                float yCoord = (float)y / terrainData.heightmapResolution;
 
+                // Calcola le coordinate del centro dell'area
+                float centerX = terrainData.heightmapResolution / 2f; 
+                float centerY = terrainData.heightmapResolution / 2f;
+
+                // Determina la distanza dal centro
+                float distanceFromCenter = Mathf.Sqrt(
+                    Mathf.Pow(xCoord * terrainData.heightmapResolution - centerX, 2) +
+                    Mathf.Pow(yCoord * terrainData.heightmapResolution - centerY, 2)
+                );
                  // 513 x 513
-                if ( x > (terrainData.heightmapResolution/2 - 50) && x < (terrainData.heightmapResolution/2 + 50) && y > (terrainData.heightmapResolution/2 - 50) && y < (terrainData.heightmapResolution/2 + 50))
+                if ( distanceFromCenter <= _BATTLE_SPOT_RADIUS)
                     continue;
 
                 float height = terrainData.GetHeight(x, y) * _TERRAIN_SCALE / squareData.MaximumElevation;
