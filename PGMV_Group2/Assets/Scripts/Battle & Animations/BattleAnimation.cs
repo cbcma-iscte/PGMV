@@ -163,8 +163,11 @@ public class BattleAnimation : MonoBehaviour
         Destroy(defender);
         Destroy(attacker);
         look.EnableCursor();
-        //GameObject menu = GameObject.FindGameObjectsWithTag("MenuInformation")[0];
-        //menu.SetActive(true);
+        GameObject[] menu = GameObject.FindGameObjectsWithTag("MenuInformation");
+        if (menu.Length > 0)
+        {
+            menu[0].SetActive(true);
+        }
         SceneManager.LoadScene("MainMenu");
 
     }

@@ -964,9 +964,12 @@ MonoBehaviour:
   soldierPrefab: {fileID: 3976008685789294325, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
   catapultPrefab: {fileID: 4111593646660320200, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
   currentTurn: 0
+  isLoadingScenes: 0
   isAutomatic: 0
   isPaused: 0
   isPlaying: 0
+  allPointsP1: 
+  allPointsP2: 
 --- !u!4 &264453732
 Transform:
   m_ObjectHideFlags: 0
@@ -1825,7 +1828,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 855725819}
         m_TargetAssemblyTypeName: Menu, Assembly-CSharp
-        m_MethodName: isLoadingBattles
+        m_MethodName: isSceneToggle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1835,7 +1838,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1001 &610854470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6226,9 +6229,12 @@ MonoBehaviour:
   soldierPrefab: {fileID: 3976008685789294325, guid: 701f76db90f1c954cbd50deb231bd593, type: 3}
   catapultPrefab: {fileID: 4111593646660320200, guid: 2953d2e978ea7154a8970eab68204aa0, type: 3}
   currentTurn: 0
+  isLoadingScenes: 0
   isAutomatic: 0
   isPaused: 0
   isPlaying: 0
+  allPointsP1: 
+  allPointsP2: 
 --- !u!4 &1754980351
 Transform:
   m_ObjectHideFlags: 0

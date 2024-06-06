@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] 
     public int currentTurn = 0;
+    public bool isLoadingScenes = true;
     private bool isRestarting = false;
     private int pointsPlayer1 = 0;
     private int pointsPlayer2 = 0;
@@ -218,11 +219,17 @@ public class GameManager : MonoBehaviour
 
     public void verifyBattles(){
        if(Board.battlesInTurn.Count>0){
-            foreach (string typeOfBattle in Board.battlesInTurn){
-                Staticdata.typeToCreateBattle = typeOfBattle.ToLower().Split(' ')[0];
-                //GameObject menu = GameObject.FindGameObjectsWithTag("MenuInformation")[0];
-                //menu.SetActive(false);
-                SceneManager.LoadScene("TerrainScene");
+            if (isLoadingScenes){
+                Debug.Log("Loading scenes" + isLoadingScenes);
+                foreach (string typeOfBattle in Board.battlesInTurn){
+                    Staticdata.typeToCreateBattle = typeOfBattle.ToLower().Split(' ')[0];
+                    GameObject[] menu = GameObject.FindGameObjectsWithTag("MenuInformation");
+                    if (menu.Length > 0)
+                    {
+                        menu[0].SetActive(false);
+                    }
+                    SceneManager.LoadScene("TerrainScene");
+                }
             }
             Board.battlesDelivered();
        }

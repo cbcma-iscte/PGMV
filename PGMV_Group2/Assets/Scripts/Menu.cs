@@ -169,6 +169,15 @@ public class Menu : MonoBehaviour
 
     }
 
+    public void isSceneToggle(){
+        isLoadingScenes = !isLoadingScenes;
+        Debug.Log("Load scenes" + isLoadingScenes);
+        foreach(GameObject game in Games)
+        {
+            game.GetComponent<GameManager>().isLoadingScenes = isLoadingScenes;
+        }
+    }
+
     public void isAutomaticToggle(){
         isPlayingAutomatic = !isPlayingAutomatic;
         foreach(GameObject game in Games)
@@ -185,7 +194,7 @@ public class Menu : MonoBehaviour
     }
 
     void Update(){
-        
+
         if(Input.GetKeyDown(KeyCode.P)){start_pause_Game();}
         if(Input.GetKeyDown(KeyCode.RightArrow) && isPlayingAutomatic == false){forward1play();}
         if(Input.GetKeyDown(KeyCode.LeftArrow) && isPlayingAutomatic == false){back1play();}
