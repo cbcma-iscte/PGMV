@@ -18,6 +18,7 @@ public class BattleAnimation : MonoBehaviour
     [SerializeField] float speedWalking;
     [SerializeField] float speedRunning;
 
+    [SerializeField] Terrain terrain;
     [SerializeField] AudioSource slash;
     [SerializeField] AudioSource enemyDie;
     [SerializeField] AudioSource block;
@@ -35,6 +36,10 @@ public class BattleAnimation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        int heightMiddle = terrain.terrainData.heightmapResolution;
+        attacker.transform.position = new Vector3(attacker.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) ,attacker.transform.position.z);
+        defender.transform.position = new Vector3(defender.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) ,defender.transform.position.z);
+
         attackerAnimator = attacker.GetComponent<Animator>();
         defenderAnimator = defender.GetComponent<Animator>();
     }

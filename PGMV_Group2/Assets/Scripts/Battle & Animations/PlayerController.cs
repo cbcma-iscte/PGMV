@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-
+    [SerializeField] private GameObject player;
     [SerializeField] private CharacterController cc;
     [SerializeField] private Animator ccAnimator;
     [SerializeField] public CameraController look;
@@ -14,10 +14,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float runMultiplier;
     [SerializeField] float jumpSpeed;
     [SerializeField]float gravity;
-
+    [SerializeField] Terrain terrain;
     [SerializeField] AudioSource walk;
     [SerializeField] AudioSource jump;
 
+
+    void Start()
+    {
+        int heightMiddle = terrain.terrainData.heightmapResolution;
+        player.transform.position = new Vector3( player.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) , player.transform.position.z);
+    }
 
     // Update is called once per frame
     void FixedUpdate()
