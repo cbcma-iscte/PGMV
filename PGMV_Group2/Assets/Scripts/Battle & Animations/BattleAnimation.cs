@@ -33,12 +33,14 @@ public class BattleAnimation : MonoBehaviour
     BattleState currentState = BattleState.Moving;
     BattleState lastState;
 
+    static public int _TERRAIN_SCALE = 10;
+
     // Start is called before the first frame update
     void Start()
     {
         int heightMiddle = terrain.terrainData.heightmapResolution;
-        attacker.transform.position = new Vector3(attacker.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) ,attacker.transform.position.z);
-        defender.transform.position = new Vector3(defender.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) ,defender.transform.position.z);
+        attacker.transform.position = new Vector3(attacker.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle)*_TERRAIN_SCALE ,attacker.transform.position.z);
+        defender.transform.position = new Vector3(defender.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle)*_TERRAIN_SCALE,defender.transform.position.z);
 
         attackerAnimator = attacker.GetComponent<Animator>();
         defenderAnimator = defender.GetComponent<Animator>();

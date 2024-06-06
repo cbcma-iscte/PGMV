@@ -18,11 +18,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioSource walk;
     [SerializeField] AudioSource jump;
 
+    static public int _TERRAIN_SCALE = 10;
 
     void Start()
     {
         int heightMiddle = terrain.terrainData.heightmapResolution;
-        player.transform.position = new Vector3( player.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle) , player.transform.position.z);
+        player.transform.position = new Vector3( player.transform.position.x,terrain.terrainData.GetHeight(heightMiddle, heightMiddle)*_TERRAIN_SCALE , player.transform.position.z);
     }
 
     // Update is called once per frame
