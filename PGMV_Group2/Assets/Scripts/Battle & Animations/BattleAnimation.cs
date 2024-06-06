@@ -1,10 +1,12 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SearchService;
 using UnityEngine;
-using UnityEngine.Rendering.LookDev;
 using UnityEngine.SceneManagement;
 
+
+/// <summary>
+/// Handles the battle animation between the attacker and defender.
+/// Manages movement, attack, defense, and the state transitions between them.
+/// </summary>
 public class BattleAnimation : MonoBehaviour
 {
 
@@ -35,7 +37,9 @@ public class BattleAnimation : MonoBehaviour
 
     static public int _TERRAIN_SCALE = 1;
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Initializes the battle animation by setting the initial positions of the attacker and defender.
+    /// </summary>
     void Start()
     {
         int heightMiddle = terrain.terrainData.heightmapResolution / 2;
@@ -45,6 +49,9 @@ public class BattleAnimation : MonoBehaviour
         defenderAnimator = defender.GetComponent<Animator>();
     }
 
+    /// <summary>
+    /// Deactivates all animation booleans for both attacker and defender.
+    /// </summary>
     void DeactivateAllAnimations()
     {
         attackerAnimator.SetBool("isSlashing", false);
@@ -55,12 +62,19 @@ public class BattleAnimation : MonoBehaviour
         defenderAnimator.SetBool("isBlocking", false);
         defenderAnimator.SetBool("isDodging", false);
     }
-
-    private void OnCollisionEnter(Collision collision)
+ 
+    /// <summary>
+    /// Sets the isGrounded flag when the attacker collides with the ground.
+    /// </summary>
+    /// <param name="collision">The collision data associated with the ground collision.</param>
+   private void OnCollisionEnter(Collision collision)
     {
         isGrounded = true;
     }
 
+    /// <summary>
+    /// Handles the state transitions and updates based on the current state of the battle.
+    /// </summary>
     void Update()
     {
         if (isBattleActive && isGrounded)
@@ -97,6 +111,9 @@ public class BattleAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the movement of the attacker towards the defender.
+    /// </summary>
     void HandleMovement()
     {
         float distance = Vector3.Distance(attacker.transform.localPosition, defender.transform.localPosition);
@@ -125,8 +142,9 @@ public class BattleAnimation : MonoBehaviour
         }
     }
 
-
-
+    /// <summary>
+    /// Handles the attacker's turn, including its attack and the defender's reaction.
+    /// </summary>
     void HandleAttackerTurn()
     {
         // First time is slashing
@@ -156,6 +174,10 @@ public class BattleAnimation : MonoBehaviour
         currentState = BattleState.Wait;
     }
 
+    /// <summary>
+    /// Coroutine to leave the scene and return to the main menu.
+    /// </summary>
+    /// <returns>IEnumerator for the coroutine.</returns>
     IEnumerator LeaveScene()
     {
 
@@ -172,6 +194,10 @@ public class BattleAnimation : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Plays the appropriate sound effect based on the animation.
+    /// </summary>
+    /// <param name="chosenAnimation">The animation being played.</param>
     private void CheckSound(string chosenAnimationAttacker)
     {
         switch (chosenAnimationAttacker)
@@ -191,10 +217,11 @@ public class BattleAnimation : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles the defender's turn, including its attack and the attacker's reaction.
+    /// </summary>
     void HandleDefenderTurn()
     {
-
-
         // Defender attacks
         string chosenAnimationDefender = "isSlashing";
         defenderAnimator.SetBool(chosenAnimationDefender, true);
@@ -212,12 +239,20 @@ public class BattleAnimation : MonoBehaviour
         currentState = BattleState.Wait;
     }
 
+    /// <summary>
+    /// Randomly decides the defender's animation.
+    /// </summary>
+    /// <returns>The chosen defender animation.</returns>
     string AnimationDecidingDefender()
     {
         int rand = Random.Range(0, allAnimationDefender.Length);
         return allAnimationDefender[rand];
     }
 
+    /// <summary>
+    /// Randomly decides the attacker's response animation.
+    /// </summary>
+    /// <returns>The chosen attacker animation.</returns>
     string AnimationDecidingAttackerResponse()
     {
         int rand = Random.Range(0, allAnimationAttacker.Length);

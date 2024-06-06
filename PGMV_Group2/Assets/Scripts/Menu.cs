@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 //using UnityEngine.UIElements;
 using UnityEngine.UI;
+
+///<summary> 
+///The Menu class is a controller for managing game states and the user interactions in a game
+///</summary>
 public class Menu : MonoBehaviour
 {
     public bool isPlayingAutomatic = false;
@@ -55,6 +59,10 @@ public class Menu : MonoBehaviour
         MenuScreen.SetActive(false);
         Games = GameObject.FindGameObjectsWithTag("GameController");
     }
+
+    /// <summary>
+    /// Starts or pauses the game and updates the pause/play button states.
+    /// </summary>
     public void start_pause_Game(){
         if(isMenuOpen) isMenuOpen = false;
         isPaused = !isPaused;
@@ -75,6 +83,9 @@ public class Menu : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Restarts the game and resets all relevant variables and UI elements.
+    /// </summary>
     public void restart(){
       
         i = 0;
@@ -99,6 +110,9 @@ public class Menu : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Goes back one play in the game and updates the turn display.
+    /// </summary>
     public void back1play(){
 
         //see the previous play
@@ -113,6 +127,9 @@ public class Menu : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Goes forward one play in the game and updates the turn display.
+    /// </summary>
     public void forward1play(){
         
         if(verifyTurns()){
@@ -143,6 +160,10 @@ public class Menu : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Verifies if there are more turns available to play.
+    /// </summary>
+    /// <returns>True if there are more turns available, false otherwise.</returns>
     private bool verifyTurns(){
         bool canContinue = false;
         foreach(GameObject game in Games)
@@ -154,6 +175,9 @@ public class Menu : MonoBehaviour
         return canContinue;
     }
 
+    /// <summary>
+    /// Shows or hides the menu and pauses/resumes the game.
+    /// </summary>
     public void showMenu(){
         automaticCheck.isOn = isPlayingAutomatic;
         isMenuOpen = !isMenuOpen;
@@ -169,6 +193,9 @@ public class Menu : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Toggles the scene loading setting and updates the GameManager instances.
+    /// </summary>
     public void isSceneToggle(){
         isLoadingScenes = !isLoadingScenes;
         Debug.Log("Load scenes" + isLoadingScenes);
@@ -178,6 +205,9 @@ public class Menu : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Toggles the automatic play setting and updates the GameManager instances.
+    /// </summary>
     public void isAutomaticToggle(){
         isPlayingAutomatic = !isPlayingAutomatic;
         foreach(GameObject game in Games)
@@ -188,11 +218,17 @@ public class Menu : MonoBehaviour
         back_button.SetActive(!isPlayingAutomatic);
         forward_button.SetActive(!isPlayingAutomatic);
     }
-
+    
+    /// <summary>
+    /// Quits the game and loads the main menu scene.
+    /// </summary>
     public void QuitGame(){
           SceneManager.LoadScene("MainMenu");
     }
 
+    /// <summary>
+    /// Updates the game state based on user input and automatic play setting.
+    /// </summary>
     void Update(){
 
         if(Input.GetKeyDown(KeyCode.P)){start_pause_Game();}

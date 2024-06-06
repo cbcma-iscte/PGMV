@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// The Sword class handles the sword's attack behavior, including its movement towards a target and destruction after the attack.
+/// </summary>
 public class Sword : MonoBehaviour
 {
     
@@ -14,6 +17,9 @@ public class Sword : MonoBehaviour
          target = new GameObject("target").transform;
     }
     
+    /// <summary>
+    /// Initiates the sword attack by setting the target's position and rotation.
+    /// </summary>
     public void attack(){
         target.parent = transform.parent;
         target.transform.localPosition = new Vector3(-0.0469999984f,-0.178000003f,-0.115999997f);
@@ -21,11 +27,15 @@ public class Sword : MonoBehaviour
         isAttacking = true;
     }
 
+    /// <summary>
+    /// Coroutine to destroy the target and the sword game objects after a delay.
+    /// </summary>
     private IEnumerator goDestroy(){
         yield return new WaitForSeconds(1f);
         Destroy(target.gameObject);
         Destroy(gameObject);
     }
+    
     // Update is called once per frame
     void Update()
     {

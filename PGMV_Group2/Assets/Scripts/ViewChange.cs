@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+/// <summary>
+/// The ViewChange class handles the functionality of changing the camera view
+/// between a default position and tracking a selected table or board object.
+/// </summary>
 public class ViewChange : MonoBehaviour{
     private bool view_change = false;
     public GameObject[] Tables_Boards_ToLook;
@@ -9,11 +14,20 @@ public class ViewChange : MonoBehaviour{
     public GameObject miniMapCamera;
     private GameObject gamePlaying;
 
-    // Start is called before the first frame update
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// Prevent the miniMapCamera and the main camera from being destroyed when loading a new scene.
+    /// </summary>
     void Awake(){
         DontDestroyOnLoad(miniMapCamera);
         DontDestroyOnLoad(Camera.main);
     }
+
+    /// <summary>
+    /// Start is called before the first frame update.
+    /// Sets the minimap camera's position and rotation to match the main camera.
+    /// Finds all tables existing in the scene
+    /// </summary>
     void Start()
     {  
         //transform.position = new Vector3((float)-0.37,(float)3.64,(float)-8.16);
@@ -27,7 +41,10 @@ public class ViewChange : MonoBehaviour{
           
     }   
         
-
+    /// <summary>
+    /// Changes the camera view.
+    /// </summary>
+    /// <param name="view_change">Indicates whether to switch to tracking view or default view.</param>
     void changeView(bool view_change){
         if (!view_change){
             if(gamePlaying!=null)gamePlaying.GetComponent<GameManager>().showPontuations(false);
@@ -38,7 +55,6 @@ public class ViewChange : MonoBehaviour{
             transform.localRotation = Quaternion.Euler((float)4.96,(float)0,(float)0);    
         }else{
             
-            // Activate the minimap camera
             miniMapCamera.SetActive(true);
 
             transform.parent = trackedObject.transform;
@@ -65,7 +81,10 @@ public class ViewChange : MonoBehaviour{
         }  
     }
 
-    // Update is called once per frame
+     /// <summary>
+    /// Update is called once per frame.
+    /// Verifies if the mouse is pressed to change the view to it
+    /// </summary>
     void Update()
     {
 

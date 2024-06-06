@@ -18,7 +18,7 @@ namespace UnityStandardAssets.ImageEffects
 		{
             if (!s)
 			{
-                //Debug.Log("Missing shader in " + ToString ());
+                Debug.Log("Missing shader in " + ToString ());
                 enabled = false;
                 return null;
             }
@@ -29,7 +29,7 @@ namespace UnityStandardAssets.ImageEffects
             if (!s.isSupported)
 			{
                 NotSupported ();
-                //Debug.Log("The shader " + s.ToString() + " on effect "+ToString()+" is not supported on this platform!");
+                Debug.Log("The shader " + s.ToString() + " on effect "+ToString()+" is not supported on this platform!");
                 return null;
             }
 
@@ -45,7 +45,7 @@ namespace UnityStandardAssets.ImageEffects
 		{
             if (!s)
 			{
-                //Debug.Log ("Missing shader in " + ToString ());
+                Debug.Log ("Missing shader in " + ToString ());
                 return null;
             }
 

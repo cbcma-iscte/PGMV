@@ -5,6 +5,10 @@ using System.Collections;
 using System;
 using TMPro;
 using UnityEngine.SceneManagement;
+
+/// <summary>
+/// The GameManager class handles the main game logic, including loading game data, managing turns, and controlling game state.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     [SerializeField] public GameObject Table;
@@ -36,6 +40,10 @@ public class GameManager : MonoBehaviour
     public bool isPlaying = false;
     public List<int> allPointsP1 = new List<int>();
     public List<int> allPointsP2 = new List<int>();
+
+    /// <summary>
+    /// Awake is called when the script instance is being loaded.
+    /// </summary>
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -47,6 +55,9 @@ public class GameManager : MonoBehaviour
         InitializeGame();
     }
 
+    ///<summary>
+    ///This method initializes the game by loading game data from XML files, including roles, board layout, and turns.
+    ///</summary>
     private void InitializeGame()
     {
          // Load XML data
@@ -69,6 +80,10 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Loads XML data from a given TextAsset and populates the xmlDoc field.
+    /// </summary>
+    /// <param name="xmlTextAsset">The XML file to load</param>
     private void TextToXml(TextAsset xmlTextAsset)
     {
         if (xmlTextAsset == null)
@@ -79,6 +94,10 @@ public class GameManager : MonoBehaviour
         xmlDoc.LoadXml(xmlTextAsset.text);
     }
 
+    /// <summary>
+    /// Loads role data from an XmlNode and populates the Roles list.
+    /// </summary>
+    /// <param name="rolesNode">The XmlNode containing role data</param>
     private void LoadRoles(XmlNode rolesNode)
     {
         Roles = new List<Role>();
@@ -90,12 +109,12 @@ public class GameManager : MonoBehaviour
         }
         changeInforPontuation();
     }
+    
 
-    private void changeInforPontuation(){
-        Player1.GetComponentInChildren<TextMeshProUGUI>().text = Roles[0].Name + ": " + pointsPlayer1;
-        Player2.GetComponentInChildren<TextMeshProUGUI>().text = Roles[1].Name + ": " + pointsPlayer2;
-    }
-
+    /// <summary>
+    /// Loads board data from an XmlNode and initializes the game board with the specified tiles and dimensions.
+    /// </summary>
+    /// <param name="boardNode">The XmlNode containing board data</param>
     private void LoadBoard(XmlNode boardNode){
         List<Tile> tiles = new();
         
@@ -138,11 +157,12 @@ public class GameManager : MonoBehaviour
         int board_height = int.Parse(boardNode.Attributes["height"].Value);
         Board.InitializeBoard(board_width,board_height, tileAndMaterial, tiles,Table,Roles);
 
-        //Debug.Log($"Loading board with dimensions {Board.Width}x{Board.Height}...");
-
     }
 
-
+    /// <summary>
+    /// Loads turn data from an XmlNode and populates the Turns list with Turn objects containing information about units' actions.
+    /// </summary>
+    /// <param name="turnNodes">The XmlNode containing turn data</param>
     private void LoadTurns(XmlNode turnNodes)
     {
         int turnId = 1;
@@ -170,6 +190,9 @@ public class GameManager : MonoBehaviour
         PlayGame();
     }
 
+    /// <summary>
+    /// Pauses or resumes the game by adjusting the time scale.
+    /// </summary>
     public void PauseResumeGame(){
         if(isPaused){
             Time.timeScale = 1f;
@@ -179,6 +202,10 @@ public class GameManager : MonoBehaviour
         
         isPaused = !isPaused;
     }
+    /// <summary>
+    /// Executes the game logic by processing each turn, including unit actions such as spawning, moving, holding, and attacking.
+    /// </summary>
+    /// <returns>An IEnumerator coroutine</returns>
     public IEnumerator PlayGame(){
         isPlaying=true;
         foreach(Turn turn in Turns)
@@ -217,6 +244,9 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Checks for battles in the current turn and loads the battle scene if the isLoadingScenes is true.
+    /// </summary>
     public void verifyBattles(){
        if(Board.battlesInTurn.Count>0){
             if (isLoadingScenes){
@@ -235,16 +265,29 @@ public class GameManager : MonoBehaviour
        }
 
     }
+    /// <summary>
+    /// Waits for a character to finish its movement before proceeding.
+    /// </summary>
+    /// <param name="character">The character to wait for</param>
+    /// <returns>An IEnumerator coroutine</returns>
     public IEnumerator WaitMovement(Character character){
         while(character.canMove){
             yield return null; 
         }
        
     }
+
+    /// <summary>
+    /// Waits for a turn to finish before proceeding.
+    /// </summary>
+    /// <returns>An IEnumerator coroutine</returns>
     private IEnumerator waitForTurn(){
         yield return new WaitForSeconds(1f);
     }
 
+    /// <summary>
+    /// Advances the game to the next turn.
+    /// </summary>
     public void GoForward()
     {
         if(isPlaying==false && isRestarting==false){
@@ -257,6 +300,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Moves the game back to the previous turn.
+    /// </summary>
     public void GoBack()
     {
         if(currentTurn>0){
@@ -267,6 +313,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Reverts the actions performed in a specific turn and updates the game state accordingly.
+    /// </summary>
+    /// <param name="id">The ID of the turn</param>
     public void Redo(int id){
         foreach(Turn turn in Turns){
             if(turn.Id == id-1){
@@ -278,8 +328,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    
+    /// <summary>
+    /// Reverts the actions performed in a single turn.
+    /// </summary>
+    /// <param name="turn">The Turn object representing the turn to redo</param>
     private void goBackOnce(Turn turn){
-        foreach (Unit unit in turn.Units){//Debug.Log("Unit" + unit.Action + unit.Id);
+        foreach (Unit unit in turn.Units){
             if(Board.findCharacterInBoard(unit) == null){
                 unit.Action = "spawn"; 
                 ManageActions(unit);
@@ -315,6 +370,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Verifies if a unit's previous action was movement.
+    /// </summary>
+    /// <param name="id">The ID of the turn containing the unit's previous action</param>
+    /// <param name="unit">The unit to verify</param>
+    /// <returns>True if the previous action was movement, otherwise false</returns>
     private bool verifyMovement(int id, Unit unit ){
         
         foreach(Turn turn in Turns){
@@ -326,6 +387,13 @@ public class GameManager : MonoBehaviour
         
         return false;
     }
+
+    /// <summary>
+    /// Finds the unit's previous position in a turn.
+    /// </summary>
+    /// <param name="id">The ID of the turn containing the unit's previous position</param>
+    /// <param name="unit">The unit to find</param>
+    /// <returns>The unit's previous position</returns>
     private Unit find_previousUnit(int id,Unit unit){
         foreach(Turn turn in Turns){
             if(turn.Id + 1 == id){
@@ -335,6 +403,12 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Finds a specific unit in a turn.
+    /// </summary>
+    /// <param name="turn">The Turn object to search</param>
+    /// <param name="unit">The unit to find</param>
+    /// <returns>The found unit</returns>
     private Unit findUnit(Turn turn, Unit unit){
         foreach(Unit units in turn.Units){
             if(units.Id==unit.Id){
@@ -344,6 +418,9 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Restarts the game by resetting the current turn, player points, and game state.
+    /// </summary>
     public void RestartGame()
     {   
         isRestarting = true;
@@ -365,7 +442,10 @@ public class GameManager : MonoBehaviour
     }
     
     
-
+    /// <summary>
+    /// Manages the actions of a unit based on its action type.
+    /// </summary>
+    /// <param name="unit">The unit whose action to manage</param>
     private void ManageActions(Unit unit)
     {      
         switch (unit.Action)
@@ -387,6 +467,11 @@ public class GameManager : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Retrieves the prefab GameObject associated with a specific unit type.
+    /// </summary>
+    /// <param name="type">The type of unit</param>
+    /// <returns>The prefab GameObject for the specified unit type</returns>
     private GameObject GetPrefabByType(string type)
     {
         switch (type.ToLower())
@@ -405,17 +490,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Destroys a GameObject after a specified delay.
+    /// </summary>
+    /// <param name="child">The GameObject to destroy</param>
+    /// <returns>An IEnumerator for yielding during the delay</returns>
     private IEnumerator timeTodestroy(GameObject child){
         yield return new WaitForSeconds(5f);
         Destroy(child);
         isKillingGhosts=false;
     }
     
+    /// <summary>
+    /// Shows or hides the player point UI elements based on the specified parameter.
+    /// </summary>
+    /// <param name="isToShow">True to show the UI elements, false to hide them</param>
     public void showPontuations(bool isToShow){
         Player1.SetActive(isToShow);
         Player2 .SetActive(isToShow);
     }
 
+    /// <summary>
+    /// Updates the player information displayed in the UI with the current points for each player.
+    /// </summary>
+    private void changeInforPontuation(){
+        Player1.GetComponentInChildren<TextMeshProUGUI>().text = Roles[0].Name + ": " + pointsPlayer1;
+        Player2.GetComponentInChildren<TextMeshProUGUI>().text = Roles[1].Name + ": " + pointsPlayer2;
+    }
+
+    /// <summary>
+    /// Adds or reduces points for a specific player and updates the player's information in the UI.
+    /// </summary>
+    /// <param name="nameOfPlayer">The name of the player to update</param>
+    /// <param name="point">The number of points to add or reduce</param>
     public void addReducePoints(string nameOfPlayer, int point){
         if(nameOfPlayer == Roles[0].Name){
             pointsPlayer1 = pointsPlayer1 + point;
@@ -428,13 +535,16 @@ public class GameManager : MonoBehaviour
         }
     }
         
-    
+    /// <summary>
+    /// Updates the game state based on certain conditions.
+    /// It checks if there are any ghost GameObjects in the scene.
+    /// It updates the player points and UI information if the game is not currently playing.
+    /// </summary>
     void Update(){
         
         if(isKillingGhosts == false){
             GameObject[] Ghosts = GameObject.FindGameObjectsWithTag("ghost");
             if(Ghosts.Length>0){
-                //Debug.Log("I'll start killing ghosts!");
                 isKillingGhosts =true;
                 foreach(GameObject ghost in Ghosts){
                     StartCoroutine(timeTodestroy(ghost));

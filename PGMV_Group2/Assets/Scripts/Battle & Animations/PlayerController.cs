@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
+/// <summary>
+/// Controls the player character's movement and interactions, including walking, running, jumping, and camera control.
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private GameObject player;
@@ -20,13 +20,18 @@ public class PlayerController : MonoBehaviour
 
     static public int _TERRAIN_SCALE = 1;
 
+    /// <summary>
+    /// Initializes the player position based on the terrain height.
+    /// </summary>
     void Start()
     {
         int heightMiddle = terrain.terrainData.heightmapResolution / 2;
         player.transform.position = new Vector3(player.transform.position.x, terrain.terrainData.GetHeight(heightMiddle, heightMiddle) * _TERRAIN_SCALE + 20, player.transform.position.z);
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Updates the player's movement and animations each frame.
+    /// </summary>
     void Update()
     {
 
@@ -43,24 +48,24 @@ public class PlayerController : MonoBehaviour
             camForward.Normalize();
             camRight.Normalize();
 
-            // Obtém a direção do movimento
+            // Get the direction of the movement
             float moveHorizontal = Input.GetAxis("Horizontal");
             float moveVertical = Input.GetAxis("Vertical");
 
-            // Obter direção do movimento
+            // Calculate the direction of the movement
             direction = (camForward * moveVertical + camRight * moveHorizontal).normalized;
 
             if (direction.magnitude > 0.1f)
             {
 
-                // Determina a velocidade do movimento
+                // Determine the speed of the movement
                 float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? speed * runMultiplier : speed;
                 direction *= currentSpeed;
 
                 if (!walk.isPlaying)
                     walk.Play();
 
-                // Definindo o parâmetro de movimento do animator
+                // Set animator parameters for movement
                 ccAnimator.SetBool("isIdle", false);
                 ccAnimator.SetFloat("MoveX", moveHorizontal);
                 ccAnimator.SetFloat("MoveZ", moveVertical);
@@ -69,6 +74,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                // Set animator parameters for idle
                 ccAnimator.SetBool("isIdle", true);
                 ccAnimator.SetBool("isRunning", false);
                 ccAnimator.SetBool("isWalking", false);
@@ -76,6 +82,7 @@ public class PlayerController : MonoBehaviour
                 ccAnimator.SetFloat("MoveZ", 0);
             }
 
+            // Handle jumping
             if (Input.GetKey(KeyCode.Space))
             {
                 jump.Play();
@@ -86,13 +93,16 @@ public class PlayerController : MonoBehaviour
 
             }
         }
-        // Aplicar gravidade
+        // Apply gravity
         direction.y -= gravity * Time.deltaTime;
 
-        // Mover o character
+        // Move the character
         cc.Move(direction * Time.deltaTime);
     }
 
+    /// <summary>
+    /// Processes the camera look input in LateUpdate to ensure smooth camera movement.
+    /// </summary>
     private void LateUpdate()
     {
         look.ProcessLook(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));

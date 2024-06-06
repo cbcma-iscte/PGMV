@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages the game board, including tile creation, character positioning, and score tracking.
+/// </summary>
 public class Board : MonoBehaviour
 {   
 
@@ -19,9 +22,22 @@ public class Board : MonoBehaviour
 
     public List<string> battlesInTurn = new List<string>();
     
+    /// <summary>
+    /// Prevents the board from being destroyed when loading new scenes.
+    /// </summary>
     public void Awake(){
         DontDestroyOnLoad(gameObject);
     }
+
+    /// <summary>
+    /// Initializes the board with the specified parameters.
+    /// </summary>
+    /// <param name="width">Width of the board</param>
+    /// <param name="height">Height of the board</param>
+    /// <param name="tile_material">Dictionary of tile types and their materials</param>
+    /// <param name="tiles">List of tiles to be used</param>
+    /// <param name="table">Reference to the game table</param>
+    /// <param name="roles">List of roles associated with the board</param>
     public void InitializeBoard(int width, int height, Dictionary<string,Material> tile_material, List<Tile> tiles, GameObject table, List<Role> roles ){
         Width = width;
         Height = height;
@@ -33,6 +49,9 @@ public class Board : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Creates the board and initializes the tiles.
+    /// </summary>
     public void createBoard(){
         
         baseBoard = new GameObject();
@@ -55,10 +74,17 @@ public class Board : MonoBehaviour
         
         }
     
+    /// <summary>
+    /// Returns the transform of the base board.
+    /// </summary>
+    /// <returns>Transform of the base board</returns>
     public Transform getBoardByName(){
         return baseBoard.transform;
     }
 
+    /// <summary>
+    /// Creates and initializes the tiles on the board.
+    /// </summary>
     private void createTiles(){
     int i=0;
     tilesGenerated = new GameObject[Width,Height];
@@ -71,10 +97,17 @@ public class Board : MonoBehaviour
             }
         }
 
-    private GameObject create1Tile(int x , int y,int place,string type){ //question with teacher (nomenclature)
+    /// <summary>
+    /// Creates a single tile at the specified position.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <param name="place">Height place</param>
+    /// <param name="type">Type of the tile</param>
+    /// <returns>Created tile GameObject</returns>
+    private GameObject create1Tile(int x , int y,int place,string type){
         GameObject tile_created = new GameObject(string.Format("X{0}Y{1}", x + 1, place)); //X1.
         tile_created.transform.parent = baseBoard.transform;
-        // Debug.Log("base board transform do crete1tile : " + baseBoard.transform); 
 
         Mesh mesh = new Mesh();
         tile_created.AddComponent<MeshFilter>().mesh = mesh;
@@ -108,17 +141,27 @@ public class Board : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// Gets the transform of a tile based on its name.
+    /// </summary>
+    /// <param name="valueX">X coordinate</param>
+    /// <param name="valueZ">Z coordinate</param>
+    /// <returns>Transform of the tile</returns>
     public Transform getTileFromName(float valueX, float valueZ){
         string tileName = ("X"+ valueX +"Y" + valueZ);
         foreach (GameObject tile in tilesGenerated) {
             if (tile != null && tile.name == tileName) {
-                //Debug.Log("Name looking: " + tileName + "I am here:" + tile.transform.position);
                 return tile.transform;
             }
         }
         return null;
     }
     
+    /// <summary>
+    /// Finds a character on the board based on the specified unit.
+    /// </summary>
+    /// <param name="unit">Unit to find</param>
+    /// <returns>GameObject of the found character, or null if not found</returns>
     public GameObject findCharacterInBoard(Unit unit){
         foreach(Transform child in baseBoard.transform){
             if(child.GetComponent<Character>() != null){
@@ -127,10 +170,13 @@ public class Board : MonoBehaviour
                     return child.gameObject;
             }
         }
-        //Debug.Log("not found");
         return null;
     }
 
+    /// <summary>
+    /// Adds a point to the specified player's score.
+    /// </summary>
+    /// <param name="nameOfPlayer">Name of the player</param>
     public void addPointTo(string nameOfPlayer){
         if(nameOfPlayer==Roles[0].Name){
             pontuationPlayer1 ++;
@@ -144,26 +190,47 @@ public class Board : MonoBehaviour
        
     }
 
+    /// <summary>
+    /// Resets the scores of both players to zero.
+    /// </summary>
     public void restartPontuation(){
         pontuationPlayer1 =0;
         pontuationPlayer2 =0;
     }
 
-    
+    /// <summary>
+    /// Gets the material of a tile based on its coordinates.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    /// <returns>Name of the material</returns>
     public string getMaterial(int x, int y){
         Transform tile = getTileFromName(x,y);
         return tile.GetComponent<MeshRenderer>().material.name;
     }
 
+    /// <summary>
+    /// Changes the scores of both players.
+    /// </summary>
+    /// <param name="p1">New score for player 1</param>
+    /// <param name="p2">New score for player 2</param>
     public void changePontuation(int p1, int p2){
         pontuationPlayer1 =p1;
         pontuationPlayer2 =p2;
     }
 
+    /// <summary>
+    /// Adds a battle to the current turn based on the tile material.
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
     public void addBattle(int x,int y){
         battlesInTurn.Add(getMaterial(x, y));
     }
 
+    /// <summary>
+    /// Clears the list of battles for the current turn.
+    /// </summary>
     public void battlesDelivered(){
         battlesInTurn.Clear();
     }

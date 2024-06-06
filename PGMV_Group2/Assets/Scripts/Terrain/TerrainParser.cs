@@ -3,10 +3,21 @@ using System.Globalization;
 using System.Xml;
 using UnityEngine;
 
+/// <summary>
+/// Parses the XML file containing the terrain data.
+/// </summary>
 public class TerrainParser : MonoBehaviour
 {
+    /// <summary>
+    /// The XML file containing the terrain data.
+    /// </summary>
     public TextAsset xmlFile;
 
+    /// <summary>
+    /// Parses the XML file and returns a dictionary containing the terrain data.
+    /// The key is the square type and the value is the SquareData object containing the maximum elevation and the objects data.
+    /// </summary>
+    /// <returns>The dictionary containing the terrain data.</returns>
     public Dictionary<string, SquareData> ParseXML()
     {
         Dictionary<string, SquareData> squareDataDict = new Dictionary<string, SquareData>();
@@ -31,19 +42,18 @@ public class TerrainParser : MonoBehaviour
                 objectData.DensityLowAltitude = float.Parse(obj.Attributes["density_low_altitute"].Value, CultureInfo.InvariantCulture);
                 objectData.DensityHighAltitude = float.Parse(obj.Attributes["density_high_altitute"].Value, CultureInfo.InvariantCulture);
                 squareData.Objects.Add(objectData);
-                //Debug.Log("Parsed object: " + objectData.Type);
-                //Debug.Log("Density low: " + objectData.DensityLowAltitude);
-                //Debug.Log("Density high: " + objectData.DensityHighAltitude);
             }
             
             squareDataDict.Add(squareData.Type, squareData);
-            //Debug.Log("Parsed square: " + squareData.Type);
         }
 
         return squareDataDict;
     }
 }
 
+/// <summary>
+/// Contains the data of a square.
+/// </summary>
 public class SquareData
 {
     public string Type;
@@ -51,6 +61,9 @@ public class SquareData
     public List<ObjectData> Objects = new List<ObjectData>();
 }
 
+/// <summary>
+/// Contains the data of an object in a square.
+/// </summary>
 public class ObjectData
 {
     public string Type;

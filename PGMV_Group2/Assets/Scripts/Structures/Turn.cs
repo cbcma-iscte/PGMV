@@ -1,13 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
+/// <summary>
+/// Represents a turn in the game, containing information about the units involved.
+/// </summary>
 public class Turn 
 {
-    //contains units that are a class that contains all the info that will happen
+    /// <summary>
+    /// The identifier for the turn.
+    /// </summary>
     public int Id;
+
+    /// <summary>
+    /// The list of units participating in the turn.
+    /// </summary>
     public List<Unit> Units { get; set; }
     
+    /// <summary>
+    /// Initializes a new instance of the Turn class with the specified identifier.
+    /// </summary>
+    /// <param name="id">The identifier for the turn.</param>
     public Turn(int id)
     {
         Id = id;
